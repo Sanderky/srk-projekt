@@ -11,10 +11,10 @@ Link do Figmy:
 - ### Workflow:
 
 Aplikacja pisana zgodnie z modelem MVC - dużo tutoriali na YT i bardziej czytelny kod.
+Piszemy w TypeScript.
 
 Stack technologiczny **MERN**:
 
-- TypeScript
 - MongoDB
 - Express
 - React
