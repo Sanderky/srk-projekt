@@ -5,6 +5,7 @@ Projekt zaliczeniowy Inżynieria oprogramowania.
 ## Najważniejsze informacje
 
 Link do Trello: [PYK](https://trello.com/projektinynieraiaoprogramowania)
+Link do Figmy: 
 
 - ### Workflow:
 
@@ -12,12 +13,13 @@ Aplikacja pisana zgodnie z modelem MVC - dużo tutoriali na YT i bardziej czytel
 
 Stack technologiczny **MERN**:
 
+- TypeScript
 - MongoDB
 - Express
 - React
 - NodeJS
 
-Jako ułatwienie w wyłapywaniu bezsensownych błędów typowych dla JSa, zwłaszcza na początku, piszemy w TypeScripcie.
+## Polityka commitów
 
 Każdy pracuje na swoim branchu. Przed rozpoczęciem pracy robi pulla z mastera. Commitować można u siebie dowoli oznaczając commity zgodnie z polityką, byle po mergu do mastera szło się połapać sensownie co zostało zrobione.
 Pamiętamy, że drobne zmiany typu literówki i inne pierdoły w ostatnim commicie można _amendować_ zamiast dodawać jako nowy commit (`git commit --amend`).
@@ -30,11 +32,6 @@ Po wprowadzeniu zmian i uznaniu że dana fukcjonalność działa należy ją w m
 Flagi:
 
 `[B]` - Bugfix\
-`[N]` - New feture\
-`[R]` - Rework
+`[N]` - New feature\
+`[I]` - Improvement
 
-`[M]` - Zmiany w Modelu\
-`[V]` - Zmiany we View\
-`[C]` - Zmiany w Controllerze
-
-Flagi należy ze sobą łączyć parami np. `[RC]` oznaczać będzie rework jakiegoś modułu w warstwie _Controller_.
