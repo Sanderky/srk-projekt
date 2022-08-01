@@ -5,6 +5,7 @@ Projekt zaliczeniowy Inżynieria oprogramowania.
 ## Najważniejsze informacje
 
 Link do Trello: [PYK](https://trello.com/projektinynieraiaoprogramowania)
+
 Link do Figmy: 
 
 - ### Workflow:
@@ -26,11 +27,9 @@ Pamiętamy, że drobne zmiany typu literówki i inne pierdoły w ostatnim commic
 
 Po wprowadzeniu zmian i uznaniu że dana fukcjonalność działa należy ją w miarę przetestować przed mergem do mastera, żeby nie było dużo sprzątania później. Przynajmniej taki na razie jest plan xD
 
-- ### Polityka commitów:
-  Commity opisujemy po polsku, razem z krótkim, ale dokładnym opisem zmian i z flagami.
+Commity opisujemy po polsku, razem z krótkim, ale dokładnym opisem zmian i z flagami.
 
 Flagi:
-
 `[B]` - Bugfix\
 `[N]` - New feature\
 `[I]` - Improvement
