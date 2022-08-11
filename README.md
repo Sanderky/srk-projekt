@@ -6,7 +6,7 @@ Projekt zaliczeniowy Inżynieria oprogramowania.
 
 Link do Trello: [PYK](https://trello.com/projektinynieraiaoprogramowania)
 
-Link do Figmy: 
+Link do Figmy: [PYK](https://www.figma.com/file/Vjsph7n1hasTuwlSo9PbST/System-rejestracji-i-kolejkowania?node-id=116%3A369)
 
 - ### Workflow:
 
