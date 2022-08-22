@@ -29,8 +29,16 @@ Po wprowadzeniu zmian i uznaniu że dana fukcjonalność działa należy ją w m
 
 Commity opisujemy po polsku, razem z krótkim, ale dokładnym opisem zmian i z flagami.
 
-Flagi:
+Flagi:\
 `[B]` - Bugfix\
 `[N]` - New feature\
 `[I]` - Improvement
+
+## Uruchomienie w środowisku testowym
+W celu prawidłowego funkcjonnowania serwera konieczne jest utworzenie w katalogu `api` pliku `.env`. Może on zawierać wrażliwe dane (URL bazy danych, klucze prywatne potrzebne do szyfrowania itp.), których nie chcemy pushować publicznie do repo. Przykładowa zawartość pliku konieczna do prawidowego działania:
+```
+DATABASE_URL=mongodb://127.0.0.1:27017/srk-api
+HOST=localhost
+PORT=3000
+```
 
