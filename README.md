@@ -6,8 +6,7 @@ Projekt zaliczeniowy Inżynieria oprogramowania.
 
 Link do Trello: [PYK](https://trello.com/projektinynieraiaoprogramowania)
 
-Link do
-Figmy: [PYK](https://www.figma.com/file/Vjsph7n1hasTuwlSo9PbST/System-rejestracji-i-kolejkowania?node-id=116%3A369)
+Link do Figmy: [PYK](https://www.figma.com/file/Vjsph7n1hasTuwlSo9PbST/System-rejestracji-i-kolejkowania?node-id=116%3A369)
 
 Aplikacja pisana zgodnie z modelem MVC - dużo tutoriali na YT i bardziej czytelny kod.
 Piszemy w TypeScript.
@@ -55,4 +54,3 @@ Cluster w MongoDB dostępny zdalnie został utworzony przez Core-JR na jego konc
 niego zgłosić.
 
 ### Informacje o działaniu backendu dostępne w pliku `README.md` w katalogu `api`.
-
