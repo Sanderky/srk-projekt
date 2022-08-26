@@ -49,7 +49,7 @@ const StartServer = () => {
 	// Routes
 
 	// Healthcheck
-	router.get('/healthcheck', (req, res, next) => res.status(200).json({ message: 'All good' }));
+	router.get('/healthcheck', (req, res, next) => res.status(200).json({ message: 'All good.' }));
 
 	// Error Handling
 	router.use((req, res, next) => {

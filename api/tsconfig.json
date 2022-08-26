@@ -9,24 +9,12 @@
 		"skipLibCheck": true,
 		"baseUrl": "./source",
 		"paths": {
-			"@/config/*": [
-				"config/*"
-			],
-			"@/controllers/*": [
-				"controllers/*"
-			],
-			"@/library/*": [
-				"library/*"
-			],
-			"@/middleware/*": [
-				"middleware/*"
-			],
-			"@/models/*": [
-				"models/*"
-			],
-			"@/routes/*": [
-				"routes/*"
-			]
+			"@/config/*": ["config/*"],
+			"@/controllers/*": ["controllers/*"],
+			"@/library/*": ["library/*"],
+			"@/middleware/*": ["middleware/*"],
+			"@/models/*": ["models/*"],
+			"@/routes/*": ["routes/*"]
 		}
 	}
 }
