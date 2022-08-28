@@ -6,7 +6,7 @@ export interface IDoctor {
 	specialization: string;
 }
 
-export interface IDoctorModel extends Document {}
+export interface IDoctorModel extends IDoctor, Document {}
 
 const DoctorSchema: Schema = new Schema({
 	firstname: { type: String, required: true },
@@ -15,6 +15,7 @@ const DoctorSchema: Schema = new Schema({
 	days: [
 		{
 			date: Date,
+			workday: Boolean,
 			slots: [
 				{
 					start: String,

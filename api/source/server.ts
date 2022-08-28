@@ -4,6 +4,7 @@ import http from 'http';
 import mongoose from 'mongoose';
 import { config } from '@/config/config';
 import Log from '@/library/Logging';
+import doctorRoutes from '@/routes/Doctor';
 
 const router = express();
 
@@ -47,6 +48,7 @@ const StartServer = () => {
 		next();
 	});
 	// Routes
+	router.use('/doctors', doctorRoutes);
 
 	// Healthcheck
 	router.get('/healthcheck', (req, res, next) => res.status(200).json({ message: 'All good.' }));

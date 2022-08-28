@@ -1,6 +1,11 @@
-import { settings } from '@/config/settings';
+import 'module-alias/register';
+import { settings, holidays } from '@/config/settings';
+import mongoose from 'mongoose';
+import Doctor from '@/models/Doctor';
 
-// Helper objects for creating array of days for each doctor
+//====================================================================
+// Helper classes for creating array of days for each doctor
+//====================================================================
 class SlotObject {
 	start: string;
 	end: string;
@@ -15,14 +20,19 @@ class SlotObject {
 
 class DayObject {
 	date: Date;
+	workday: Boolean;
 	slots: SlotObject[];
 
-	constructor(date: Date, slots: SlotObject[]) {
+	constructor(date: Date, workday: Boolean, slots: SlotObject[]) {
 		this.date = date;
+		this.workday = workday;
 		this.slots = slots;
 	}
 }
 
+//====================================================================
+// Helper functions
+//====================================================================
 function convertTime(time: number) {
 	const minutes = time % 60;
 	const hours = Math.floor(time / 60);
@@ -30,24 +40,25 @@ function convertTime(time: number) {
 	return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 }
 
-// Helper function for creating array of slots for each day
 function createSlotArray() {
-	const slotCount = (settings.days.start - settings.days.end) / settings.slot.duration || 14;
+	const slotCount = (settings.days.end - settings.days.start) / settings.slot.duration || 14;
 	const slotLength = settings.slot.duration || 30;
 	const firstSlotStart = settings.days.start || 480;
 	let slotArray: SlotObject[] = [];
 	for (let i = 0; i < slotCount; i++) {
 		const start = firstSlotStart + i * slotLength;
-		const end = start + slotLength;
+		const end = start + slotLength - 1;
 		const singleSlot = new SlotObject(convertTime(start), convertTime(end), true);
 		slotArray.push(singleSlot);
 	}
 	return slotArray;
 }
-// console.log(createSlotsArray());
 
-//==========================EXPORTING==========================
+//====================================================================
+//----------------------------EXPORTING-------------------------------
+//--------------------------------------------------------------------
 // Creating array of days with length configured in @/config/settings
+//====================================================================
 export function createDayArray() {
 	const dayCount = settings.days.dayCount || 30;
 	const slotArray = createSlotArray();
@@ -56,19 +67,26 @@ export function createDayArray() {
 	let dayArray: DayObject[] = [];
 
 	while (dayArray.length <= dayCount) {
-		const date_day = String(date.getDate()).padStart(2, '0');
-		const date_month = String(date.getMonth() + 1).padStart(2, '0');
-		const date_year = String(date.getFullYear());
+		const dateDay = String(date.getDate()).padStart(2, '0');
+		const dateMonth = String(date.getMonth() + 1).padStart(2, '0');
+		const dateYear = String(date.getFullYear());
 
-		const day_month = date_day + '/' + date_month;
-		const currentDate = new Date(day_month + '/' + date_year);
-
-		const newDay = new DayObject(currentDate, slotArray);
+		const monthAndDay = dateMonth + '-' + dateDay;
+		const currentDate = new Date(dateYear + '-' + monthAndDay);
+		let newDay;
+		// Validate workday
+		if (currentDate.getDay() === 0 || currentDate.getDay() === 6 || holidays.includes(monthAndDay)) {
+			newDay = new DayObject(currentDate, false, []);
+		} else {
+			newDay = new DayObject(currentDate, true, slotArray);
+		}
 		dayArray.push(newDay);
-
 		date.setDate(date.getDate() + 1);
 	}
 	return dayArray;
 }
 
-console.log(createDayArray());
+export function shiftDayArray() {
+	const doctors = Doctor.find().find();
+	console.log(doctors);
+}
