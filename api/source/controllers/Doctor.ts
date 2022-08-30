@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import Doctor from '@/models/Doctor';
-import { createDayArray, shiftDayArray } from '@/library/DayManipulation';
+import { createDayArray } from '@/library/DayManipulation';
 
 const createDoctor = (req: Request, res: Response, next: NextFunction) => {
 	const { firstname, lastname, specialization } = req.body;
@@ -29,7 +29,6 @@ const readDoctor = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const readAllDoctors = (req: Request, res: Response, next: NextFunction) => {
-	shiftDayArray();
 	return Doctor.find()
 		.then((doctors) => res.status(200).json({ doctors }))
 		.catch((error) => res.status(500).json({ error }));

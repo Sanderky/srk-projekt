@@ -1,7 +1,7 @@
 import 'module-alias/register';
 import { settings, holidays } from '@/config/settings';
-import mongoose from 'mongoose';
 import Doctor from '@/models/Doctor';
+import Logging from '@/library/Logging';
 
 //====================================================================
 // Helper classes for creating array of days for each doctor
@@ -54,6 +54,25 @@ function createSlotArray() {
 	return slotArray;
 }
 
+function createDay(date: Date) {
+	const slotArray = createSlotArray();
+
+	const dateDay = String(date.getDate()).padStart(2, '0');
+	const dateMonth = String(date.getMonth() + 1).padStart(2, '0');
+	const dateYear = String(date.getFullYear());
+
+	const monthAndDay = dateMonth + '-' + dateDay;
+	const currentDate = new Date(dateYear + '-' + monthAndDay);
+	let newDay;
+	// Validate workday //TODO - Modify holiday validating - probably new schema will be needed and each holiday as separate object in database
+	if (currentDate.getDay() === 0 || currentDate.getDay() === 6 || holidays.includes(monthAndDay)) {
+		newDay = new DayObject(currentDate, false, []);
+	} else {
+		newDay = new DayObject(currentDate, true, slotArray);
+	}
+	return newDay;
+}
+
 //====================================================================
 //----------------------------EXPORTING-------------------------------
 //--------------------------------------------------------------------
@@ -61,32 +80,30 @@ function createSlotArray() {
 //====================================================================
 export function createDayArray() {
 	const dayCount = settings.days.dayCount || 30;
-	const slotArray = createSlotArray();
 
-	let date = new Date();
 	let dayArray: DayObject[] = [];
+	let date = new Date();
 
 	while (dayArray.length <= dayCount) {
-		const dateDay = String(date.getDate()).padStart(2, '0');
-		const dateMonth = String(date.getMonth() + 1).padStart(2, '0');
-		const dateYear = String(date.getFullYear());
-
-		const monthAndDay = dateMonth + '-' + dateDay;
-		const currentDate = new Date(dateYear + '-' + monthAndDay);
-		let newDay;
-		// Validate workday
-		if (currentDate.getDay() === 0 || currentDate.getDay() === 6 || holidays.includes(monthAndDay)) {
-			newDay = new DayObject(currentDate, false, []);
-		} else {
-			newDay = new DayObject(currentDate, true, slotArray);
-		}
+		const newDay = createDay(date);
 		dayArray.push(newDay);
 		date.setDate(date.getDate() + 1);
 	}
+	Logging.debug(`Created day array with length of ${dayCount} starting from ${new Date().toLocaleDateString()}.`);
 	return dayArray;
 }
 
 export function shiftDayArray() {
-	const doctors = Doctor.find().find();
-	console.log(doctors);
+	Doctor.find().exec((err, doctorArray) => {
+		doctorArray.forEach((doctor) => {
+			doctor.days.shift();
+
+			const dayCount = settings.days.dayCount || 30;
+			const date = new Date();
+			const newDay = createDay(new Date(date.setDate(date.getDate() + dayCount)));
+			doctor.days.push(newDay);
+			doctor.save();
+		});
+	});
+	Logging.info('Executed scheduled task - Update day arrays of all doctors.');
 }

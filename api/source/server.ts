@@ -3,6 +3,7 @@ import express from 'express';
 import http from 'http';
 import mongoose from 'mongoose';
 import { config } from '@/config/config';
+import { updateDayArrays } from '@/library/CronJobs'
 import Log from '@/library/Logging';
 import doctorRoutes from '@/routes/Doctor';
 
@@ -14,6 +15,7 @@ mongoose
 	.then(() => {
 		Log.info('Connected to MongoDB.');
 		StartServer();
+		updateDayArrays();
 	})
 	.catch((error) => {
 		Log.error('Unable to connect:');
