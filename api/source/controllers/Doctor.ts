@@ -20,18 +20,23 @@ const createDoctor = (req: Request, res: Response, next: NextFunction) => {
 		.catch((error) => res.status(500).json({ error }));
 };
 
-const readDoctor = (req: Request, res: Response, next: NextFunction) => {
+const readDoctor = async (req: Request, res: Response, next: NextFunction) => {
 	const doctorId = req.params.doctorId;
-
-	return Doctor.findById(doctorId)
-		.then((doctor) => (doctor ? res.status(200).json({ doctor }) : res.status(404).json({ message: 'Not found' })))
-		.catch((error) => res.status(500).json({ error }));
+	try {
+		const doctor = await Doctor.findById(doctorId);
+		return (doctor ? res.status(200).json({ doctor }) : res.status(404).json({ message: 'Not found' }));
+	} catch (error) {
+		return res.status(500).json({ error });
+	}
 };
 
-const readAllDoctors = (req: Request, res: Response, next: NextFunction) => {
-	return Doctor.find()
-		.then((doctors) => res.status(200).json({ doctors }))
-		.catch((error) => res.status(500).json({ error }));
+const readAllDoctors = async (req: Request, res: Response, next: NextFunction) => {
+	try {
+		const doctors = await Doctor.find();
+		return res.status(200).json({ doctors });
+	} catch (error) {
+		return res.status(500).json({ error });
+	}
 };
 
 const updateDoctor = (req: Request, res: Response, next: NextFunction) => {
@@ -53,10 +58,11 @@ const updateDoctor = (req: Request, res: Response, next: NextFunction) => {
 		.catch((error) => res.status(500).json({ error }));
 };
 
-const deleteDoctor = (req: Request, res: Response, next: NextFunction) => {
+const deleteDoctor = async (req: Request, res: Response, next: NextFunction) => {
 	const doctorId = req.params.doctorId;
 
-	return Doctor.findByIdAndDelete(doctorId).then((doctor) => (doctor ? res.status(201).json({ message: `Deleted: ${doctorId})` }) : res.status(404).json({ message: 'Not found' })));
+	const doctor = await Doctor.findByIdAndDelete(doctorId);
+	return (doctor ? res.status(201).json({ message: `Deleted: ${doctorId})` }) : res.status(404).json({ message: 'Not found' }));
 };
 
 export default { createDoctor, readDoctor, readAllDoctors, updateDoctor, deleteDoctor };

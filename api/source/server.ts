@@ -6,6 +6,7 @@ import { config } from '@/config/config';
 import { updateDayArrays } from '@/library/CronJobs'
 import Log from '@/library/Logging';
 import doctorRoutes from '@/routes/Doctor';
+import reservationRoutes from '@/routes/Reservation';
 
 const router = express();
 
@@ -50,7 +51,8 @@ const StartServer = () => {
 		next();
 	});
 	// Routes
-	router.use('/doctors', doctorRoutes);
+	router.use('/doctor', doctorRoutes);
+	router.use('/reservation', reservationRoutes);
 
 	// Healthcheck
 	router.get('/healthcheck', (req, res, next) => res.status(200).json({ message: 'All good.' }));
