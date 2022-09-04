@@ -1,0 +1,60 @@
+@font-face {
+    font-family: "WorkSans";
+    src: url("./Assets/Fonts/WorkSans/WorkSans-SemiBold.woff2");
+    font-weight: bold;
+}
+@font-face {
+    font-family: "WorkSans";
+    src: url("./Assets/Fonts/WorkSans/WorkSans-Bold.woff2");
+    font-weight: bolder;
+}
+@font-face {
+    font-family: "WorkSans";
+    src: url("./Assets/Fonts/WorkSans/WorkSans-Regular.woff2");
+    font-weight: normal;
+}
+
+:root {
+    /* colors */
+    --primary: "#51B1A6";
+    --secondary: "#5E5BD9";
+    --backgorundBlack: "#24243F";
+    --backgroundDark: "#E1E5EB";
+    --background: "#FAFCFE";
+    --white: "#FFFFFF";
+    --text: "#5A5A75";
+    --subText: "#8C8CA1";
+    --error: "#ED4B68";
+    --success: "#31D0AA";
+    --warning: "#FFB802";
+    
+    /* typography */
+        /* size */
+        --small: "18px";
+        --regular: "20px";
+        --big: "24px";
+        --titleSmall: "32px";
+        --titleBig: "36px";
+        --header2: "48px";
+        --header1: "64px";
+        
+        /* fontWeight */
+        --regular: "normal";
+        --semiBold: "bold";
+        --bold: "bolder";
+        
+        /* letterSpacing */
+        --normal: "-0.015em";
+        --spread: "0.2em";
+
+        /* lineHeight */
+        --lineHeight: "1.4em";
+    
+}
+
+.App {
+    font-family: "WorkSans";
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
