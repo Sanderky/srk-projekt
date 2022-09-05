@@ -37,6 +37,7 @@ function convertTime(time: number) {
 	const minutes = time % 60;
 	const hours = Math.floor(time / 60);
 
+	// Return time in format hh:mm
 	return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 }
 
@@ -44,7 +45,7 @@ function createSlotArray() {
 	const slotCount = (settings.days.end - settings.days.start) / settings.slot.duration || 14;
 	const slotLength = settings.slot.duration || 30;
 	const firstSlotStart = settings.days.start || 480;
-	let slotArray: SlotObject[] = [];
+	const slotArray: SlotObject[] = [];
 	for (let i = 0; i < slotCount; i++) {
 		const start = firstSlotStart + i * slotLength;
 		const end = start + slotLength - 1;
@@ -105,5 +106,5 @@ export function shiftDayArray() {
 			doctor.save();
 		});
 	});
-	Logging.info('Executed scheduled task - Update day arrays of all doctors.');
+	Logging.info('Updated day arrays of all doctors.');
 }

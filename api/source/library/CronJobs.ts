@@ -1,5 +1,5 @@
 import Logging from '@/library/Logging';
-import * as cron from 'node-cron';
+import cron from 'node-cron';
 import { shiftDayArray } from '@/library/DayManipulation'
 
 //────────────────┤CRON HELPER├────────────────
@@ -14,6 +14,6 @@ import { shiftDayArray } from '@/library/DayManipulation'
 // *  *  *  *  *  *
 
 export function updateDayArrays() {
-    cron.schedule('0 0 * * *', shiftDayArray);
+    cron.schedule('0 7 * * *', shiftDayArray);
     Logging.info('Started cron job: Update day arrays every day at 00:00');
 }

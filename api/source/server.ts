@@ -5,6 +5,8 @@ import mongoose from 'mongoose';
 import { config } from '@/config/config';
 import { updateDayArrays } from '@/library/CronJobs'
 import Log from '@/library/Logging';
+import { logTraffic } from '@/middleware/LogTraffic';
+import { rules } from '@/middleware/Rules'
 import doctorRoutes from '@/routes/Doctor';
 import reservationRoutes from '@/routes/Reservation';
 
@@ -15,7 +17,7 @@ mongoose
 	.connect(config.mongo.url, { retryWrites: true, w: 'majority' })
 	.then(() => {
 		Log.info('Connected to MongoDB.');
-		StartServer();
+		startServer();
 		updateDayArrays();
 	})
 	.catch((error) => {
@@ -24,37 +26,20 @@ mongoose
 	});
 
 // Start server only if connected to Mongo
-const StartServer = () => {
-	router.use((req, res, next) => {
-		// Log the request
-		Log.info(`Incoming -> Method: [${req.method}], URL: [${req.url}], IP: [${req.socket.remoteAddress}]`);
-
-		res.on('finish', () => {
-			//Log response
-			Log.info(`Outgoing -> Method: [${req.method}], URL: [${req.url}], IP: [${req.socket.remoteAddress}], Status: [${res.statusCode} ${res.statusMessage}]`);
-		});
-		next();
-	});
+const startServer = () => {
+	// Middleware
 	router.use(express.urlencoded({ extended: true }));
 	router.use(express.json());
 
-	// Rules of API
-	router.use((req, res, next) => {
-		res.header('Access-Control-Allow-Origin', '*');
-		res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+	//Custom Middleware
+	router.use(logTraffic);
+	router.use(rules);
 
-		if (req.method == 'OPTIONS') {
-			res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
-			return res.status(200).json({});
-		}
-
-		next();
-	});
 	// Routes
 	router.use('/doctor', doctorRoutes);
 	router.use('/reservation', reservationRoutes);
 
-	// Healthcheck
+	// Healthcheck Route
 	router.get('/healthcheck', (req, res, next) => res.status(200).json({ message: 'All good.' }));
 
 	// Error Handling
