@@ -2,7 +2,6 @@ import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import Reservation from '@/models/Reservation';
 import {GenerateReservationCode} from "@/library/GenerateReservationCode";
-import Log from "@/library/Logging";
 
 const createReservation = (req: Request, res: Response, next: NextFunction) => {
     const {email, doctor, day, time } = req.body;
@@ -66,4 +65,18 @@ const deleteReservation = async (req: Request, res: Response, next: NextFunction
     return (reservation ? res.status(201).json({ message: `Deleted: ${reservationId})` }) : res.status(404).json({ message: 'Not found' }));
 };
 
-export default { createReservation, readReservation, readAllReservations, updateReservation, deleteReservation };
+const loginWithReservation =  async (req: Request, res: Response, next: NextFunction) => {
+    const {email, reservationCode} = req.body;
+    Reservation.find({email: email,reservationCode: reservationCode },(err: any,reservations: any)=>{
+        if(err) return res.status(500).json({ err });
+        if(reservations.length != 0){
+            Reservation.find({email: email},(err: any,reservations: any)=>{
+                if(err) return res.status(500).json({ err });
+                return res.status(200).json({reservations});
+            })
+        }
+        else return res.status(404).json({message: "Not found / Bad credentials"})
+    })
+}
+//TODO Poprawić powyższe spaghetti.
+export default { createReservation, readReservation, readAllReservations, updateReservation, deleteReservation, loginWithReservation };
