@@ -1,22 +1,28 @@
 import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import Reservation from '@/models/Reservation';
+import {GenerateReservationCode} from "@/library/GenerateReservationCode";
+import Log from "@/library/Logging";
 
 const createReservation = (req: Request, res: Response, next: NextFunction) => {
-    const { reservationCode, email, doctor, day, time } = req.body;
-
-    const reservation = new Reservation({
-        _id: new mongoose.Types.ObjectId(),
-        reservationCode,
-        email,
-        doctor,
-        day,
-        time
-    });
-    return reservation
-        .save()
-        .then((reservation) => res.status(201).json({ reservation }))
-        .catch((error) => res.status(500).json({ error }));
+    const {email, doctor, day, time } = req.body;
+    GenerateReservationCode().then(
+        (uniqueCode) => {
+            let reservationCode = uniqueCode;
+            const reservation = new Reservation({
+                _id: new mongoose.Types.ObjectId(),
+                reservationCode,
+                email,
+                doctor,
+                day,
+                time
+            });
+            return reservation
+                .save()
+                .then((reservation) => res.status(201).json({ reservation }))
+                .catch((error) => res.status(500).json({ error }));
+        }
+    ).catch((error) => res.status(500).json({error}));
 };
 
 const readReservation = (req: Request, res: Response, next: NextFunction) => {
