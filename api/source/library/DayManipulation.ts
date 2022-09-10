@@ -1,7 +1,7 @@
 import 'module-alias/register';
-import { settings, holidays } from '@/config/settings';
+import { workdaySettings, holidays } from '@/config/settings';
 import Doctor from '@/models/Doctor';
-import Logging from '@/library/Logging';
+import Log from '@/library/Logging';
 
 //====================================================================
 // Helper classes for creating array of days for each doctor
@@ -42,9 +42,9 @@ function convertTime(time: number) {
 }
 
 function createSlotArray() {
-	const slotCount = (settings.days.end - settings.days.start) / settings.slot.duration || 14;
-	const slotLength = settings.slot.duration || 30;
-	const firstSlotStart = settings.days.start || 480;
+	const slotCount = (workdaySettings.days.end - workdaySettings.days.start) / workdaySettings.slot.duration || 14;
+	const slotLength = workdaySettings.slot.duration || 30;
+	const firstSlotStart = workdaySettings.days.start || 480;
 	const slotArray: SlotObject[] = [];
 	for (let i = 0; i < slotCount; i++) {
 		const start = firstSlotStart + i * slotLength;
@@ -80,7 +80,7 @@ function createDay(date: Date) {
 // Creating array of days with length configured in @/config/settings
 //====================================================================
 export function createDayArray() {
-	const dayCount = settings.days.dayCount || 30;
+	const dayCount = workdaySettings.days.dayCount || 30;
 
 	let dayArray: DayObject[] = [];
 	let date = new Date();
@@ -90,21 +90,35 @@ export function createDayArray() {
 		dayArray.push(newDay);
 		date.setDate(date.getDate() + 1);
 	}
-	Logging.debug(`Created day array with length of ${dayCount} starting from ${new Date().toLocaleDateString()}.`);
+	Log.debug(`Created day array with length of ${dayCount} starting from ${new Date().toLocaleDateString()}.`);
 	return dayArray;
 }
 
-export function shiftDayArray() {
+//====================================================================
+// Shifting array of days for each doctor in database
+//====================================================================
+export function updateDoctorDayArrays() {
+	const today = new Date();
+	today.setUTCHours(0, 0, 0, 0);
+	let aux = 0;
 	Doctor.find().exec((err, doctorArray) => {
 		doctorArray.forEach((doctor) => {
-			doctor.days.shift();
-
-			const dayCount = settings.days.dayCount || 30;
-			const date = new Date();
-			const newDay = createDay(new Date(date.setDate(date.getDate() + dayCount)));
-			doctor.days.push(newDay);
-			doctor.save();
+			while (doctor.days[0].date < today) {
+				doctor.days.shift();
+				const dayCount = workdaySettings.days.dayCount || 30;
+				const date = new Date();
+				const newDay = createDay(new Date(date.setDate(date.getDate() + dayCount)));
+				doctor.days.push(newDay);
+				aux++;
+				doctor.save();
+			}
+			if (aux) {
+				Log.debug(`Updated day array of doctor ${doctor.firstname} ${doctor.lastname} ${aux} times.`);
+				aux = 0;
+			}
+			// else {
+			// 	Log.debug(`There was no need to update day array of doctor ${doctor.firstname} ${doctor.lastname}.`);
+			// }
 		});
 	});
-	Logging.info('Updated day arrays of all doctors.');
 }
