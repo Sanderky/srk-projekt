@@ -1,17 +1,5 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
-interface ISlotObject {
-	start: string;
-	end: string;
-	availability: boolean;
-}
-
-interface IDayObject {
-	date: Date;
-	workday: Boolean;
-	slots: ISlotObject[];
-}
-
 export interface IDoctor {
 	firstname: string;
 	lastname: string;
@@ -19,26 +7,14 @@ export interface IDoctor {
 }
 
 export interface IDoctorModel extends IDoctor, Document {
-	days: IDayObject[]
+	days: mongoose.Types.ObjectId
 }
 
 const DoctorSchema: Schema = new Schema({
 	firstname: { type: String, required: true },
 	lastname: { type: String, required: true },
 	specialization: { type: String, required: true },
-	days: [
-		{
-			date: Date,
-			workday: Boolean,
-			slots: [
-				{
-					start: String,
-					end: String,
-					availability: Boolean
-				}
-			]
-		}
-	]
+	days: { type: Schema.Types.ObjectId, required: true, ref: 'Days' }
 });
 
 export default mongoose.model<IDoctorModel>('Doctor', DoctorSchema);

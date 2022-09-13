@@ -1,13 +1,13 @@
 import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import Reservation from '@/models/Reservation';
-import {GenerateReservationCode} from "@/library/GenerateReservationCode";
+import { generateReservationCode } from "@/library/GenerateReservationCode";
 
 const createReservation = (req: Request, res: Response, next: NextFunction) => {
-    const {email, doctor, day, time } = req.body;
-    GenerateReservationCode().then(
+    const { email, doctor, day, time } = req.body;
+    generateReservationCode().then(
         (uniqueCode) => {
-            let reservationCode = uniqueCode;
+            const reservationCode = uniqueCode;
             const reservation = new Reservation({
                 _id: new mongoose.Types.ObjectId(),
                 reservationCode,
@@ -21,7 +21,7 @@ const createReservation = (req: Request, res: Response, next: NextFunction) => {
                 .then((reservation) => res.status(201).json({ reservation }))
                 .catch((error) => res.status(500).json({ error }));
         }
-    ).catch((error) => res.status(500).json({error}));
+    ).catch((error) => res.status(500).json({ error }));
 };
 
 const readReservation = (req: Request, res: Response, next: NextFunction) => {
@@ -46,7 +46,6 @@ const updateReservation = (req: Request, res: Response, next: NextFunction) => {
         .then((reservation) => {
             if (reservation) {
                 reservation.set(req.body);
-
                 return reservation
                     .save()
                     .then((reservation) => res.status(201).json({ reservation }))
@@ -65,17 +64,17 @@ const deleteReservation = async (req: Request, res: Response, next: NextFunction
     return (reservation ? res.status(201).json({ message: `Deleted: ${reservationId})` }) : res.status(404).json({ message: 'Not found' }));
 };
 
-const loginWithReservation =  async (req: Request, res: Response, next: NextFunction) => {
-    const {email, reservationCode} = req.body;
-    Reservation.find({email: email,reservationCode: reservationCode },(err: any,reservations: any)=>{
-        if(err) return res.status(500).json({ err });
-        if(reservations.length != 0){
-            Reservation.find({email: email},(err: any,reservations: any)=>{
-                if(err) return res.status(500).json({ err });
-                return res.status(200).json({reservations});
+const loginWithReservation = async (req: Request, res: Response, next: NextFunction) => {
+    const { email, reservationCode } = req.body;
+    Reservation.find({ email: email, reservationCode: reservationCode }, (err: any, reservations: any) => {
+        if (err) return res.status(500).json({ err });
+        if (reservations.length != 0) {
+            Reservation.find({ email: email }, (err: any, reservations: any) => {
+                if (err) return res.status(500).json({ err });
+                return res.status(200).json({ reservations });
             })
         }
-        else return res.status(404).json({message: "Not found / Bad credentials"})
+        else return res.status(404).json({ message: "Not found / Bad credentials" })
     })
 }
 //TODO Poprawić powyższe spaghetti.
