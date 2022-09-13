@@ -1,32 +1,52 @@
 import 'module-alias/register';
 import { workdaySettings, holidays } from '@/config/settings';
+import mongoose from 'mongoose';
 import Doctor from '@/models/Doctor';
+import Days, { ISingleDay } from '@/models/Days';
+import Slots, { ISingleSlot } from '@/models/Slots';
 import Log from '@/library/Logging';
 
+
 //====================================================================
-// Helper classes for creating array of days for each doctor
+// Helper classes
 //====================================================================
-class SlotObject {
+class Slot implements ISingleSlot {
 	start: string;
 	end: string;
 	availability: boolean;
 
-	constructor(start: string, end: string, availability: boolean) {
+	constructor(start: string, end: string) {
 		this.start = start;
 		this.end = end;
-		this.availability = availability;
+		this.availability = true;
 	}
 }
 
-class DayObject {
+class Day implements ISingleDay {
 	date: Date;
-	workday: Boolean;
-	slots: SlotObject[];
+	workday: boolean;
+	slots: mongoose.Types.ObjectId | null;
 
-	constructor(date: Date, workday: Boolean, slots: SlotObject[]) {
+	validateHoliday() {
+		const dateDay = String(this.date.getDate()).padStart(2, '0');
+		const dateMonth = String(this.date.getMonth() + 1).padStart(2, '0');
+		const dateYear = String(this.date.getFullYear());
+		const monthAndDay = dateMonth + '-' + dateDay;
+		const currentDate = new Date(dateYear + '-' + monthAndDay);
+		if (currentDate.getDay() === 0 || currentDate.getDay() === 6 || holidays.includes(monthAndDay)) {
+			return false;
+		} else {
+			return true;
+		}
+	}
+	constructor(date: Date, slots: mongoose.Types.ObjectId) {
 		this.date = date;
-		this.workday = workday;
-		this.slots = slots;
+		this.workday = this.validateHoliday();
+		if (this.validateHoliday()) {
+			this.slots = slots;
+		} else {
+			this.slots = null;
+		}
 	}
 }
 
@@ -45,79 +65,90 @@ function createSlotArray() {
 	const slotCount = (workdaySettings.days.end - workdaySettings.days.start) / workdaySettings.slot.duration || 14;
 	const slotLength = workdaySettings.slot.duration || 30;
 	const firstSlotStart = workdaySettings.days.start || 480;
-	const slotArray: SlotObject[] = [];
+	const slotArray: Slot[] = [];
 	for (let i = 0; i < slotCount; i++) {
 		const start = firstSlotStart + i * slotLength;
 		const end = start + slotLength - 1;
-		const singleSlot = new SlotObject(convertTime(start), convertTime(end), true);
+		const singleSlot = new Slot(convertTime(start), convertTime(end));
 		slotArray.push(singleSlot);
 	}
 	return slotArray;
 }
 
-function createDay(date: Date) {
-	const slotArray = createSlotArray();
-
-	const dateDay = String(date.getDate()).padStart(2, '0');
-	const dateMonth = String(date.getMonth() + 1).padStart(2, '0');
-	const dateYear = String(date.getFullYear());
-
-	const monthAndDay = dateMonth + '-' + dateDay;
-	const currentDate = new Date(dateYear + '-' + monthAndDay);
-	let newDay;
-	// Validate workday //TODO - Modify holiday validating - probably new schema will be needed and each holiday as separate object in database
-	if (currentDate.getDay() === 0 || currentDate.getDay() === 6 || holidays.includes(monthAndDay)) {
-		newDay = new DayObject(currentDate, false, []);
-	} else {
-		newDay = new DayObject(currentDate, true, slotArray);
-	}
-	return newDay;
-}
-
 //====================================================================
 //----------------------------EXPORTING-------------------------------
-//--------------------------------------------------------------------
+//===========================vvvvvvvvvvv==============================
+
+//====================================================================
 // Creating array of days with length configured in @/config/settings
 //====================================================================
-export function createDayArray() {
+export function createDayArray(doctorId: mongoose.Types.ObjectId, daysId: mongoose.Types.ObjectId, firstname: string, lastname: string) {
+	const slotsArray = createSlotArray();
+
 	const dayCount = workdaySettings.days.dayCount || 30;
+	const daysArray: Day[] = [];
+	const todayNonUTC = new Date();
+	const date = new Date(Date.UTC(todayNonUTC.getUTCFullYear(), todayNonUTC.getUTCMonth(), todayNonUTC.getUTCDate(), 0, 0, 0, 0));
+	let slotsId;
+	let dayId;
 
-	let dayArray: DayObject[] = [];
-	let date = new Date();
+	while (daysArray.length < dayCount) {
+		dayId = new mongoose.Types.ObjectId();
+		slotsId = new mongoose.Types.ObjectId();
+		const newDay = new Day(date, slotsId);
 
-	while (dayArray.length <= dayCount) {
-		const newDay = createDay(date);
-		dayArray.push(newDay);
+		new Slots({
+			_id: slotsId,
+			doctorId: doctorId,
+			dayId: dayId,
+			slots: slotsArray
+		}).save()
+
+		daysArray.push(newDay);
 		date.setDate(date.getDate() + 1);
 	}
-	Log.debug(`Created day array with length of ${dayCount} starting from ${new Date().toLocaleDateString()}.`);
-	return dayArray;
+	new Days({
+		_id: daysId,
+		doctorId: doctorId,
+		doctorName: `${firstname} ${lastname}`,
+		days: daysArray
+	}).save()
 }
 
 //====================================================================
-// Shifting array of days for each doctor in database
+// Shifting array of days in database
 //====================================================================
 export function updateDoctorDayArrays() {
-	const today = new Date();
-	today.setUTCHours(0, 0, 0, 0);
+	const todayNonUTC = new Date();
+	const today = new Date(Date.UTC(todayNonUTC.getUTCFullYear(), todayNonUTC.getUTCMonth(), todayNonUTC.getUTCDate(), 0, 0, 0, 0));
 	let aux = 0;
-	Doctor.find().exec((err, doctorArray) => {
-		doctorArray.forEach((doctor) => {
-			while (doctor.days[0].date < today) {
-				doctor.days.shift();
+	const slotsArray = createSlotArray();
+
+	Days.find().exec((err, daysArray) => {
+		daysArray.forEach(daysObj => {
+			while (daysObj.days[0].date < today) {
+				daysObj.days.shift();
 				const dayCount = workdaySettings.days.dayCount || 30;
 				const date = new Date();
-				const newDay = createDay(new Date(date.setDate(date.getDate() + dayCount)));
-				doctor.days.push(newDay);
+				const dayId = new mongoose.Types.ObjectId();
+				const slotsId = new mongoose.Types.ObjectId();
+				new Slots({
+					_id: slotsId,
+					doctorId: daysObj.doctorId,
+					dayId: dayId,
+					slots: slotsArray
+				}).save()
+				const newDay = new Day(new Date(date.setDate(date.getDate() + dayCount)), slotsId);
+				daysObj.days.push(newDay);
 				aux++;
-				doctor.save();
+				daysObj.save();
 			}
 			if (aux) {
-				Log.debug(`Updated day array of doctor ${doctor.firstname} ${doctor.lastname} ${aux} times.`);
+				Log.debug(`Updated day array of doctor ${daysObj.doctorName} ${aux} times.`);
 				aux = 0;
 			}
 			// else {
-			// 	Log.debug(`There was no need to update day array of doctor ${doctor.firstname} ${doctor.lastname}.`);
+			// 	Log.debug(`There was no need to update day array of doctor ${daysObj.doctorName}.`);
 			// }
 		});
 	});

@@ -35,7 +35,8 @@ Commity opisujemy po polsku, razem z krótkim, ale dokładnym opisem zmian i z f
 Flagi:\
 `[B]` - Bugfix\
 `[N]` - New feature\
-`[I]` - Improvement
+`[I]` - Improvement\
+`[R]` - Rework
 
 ## Uruchomienie w środowisku testowym
 
