@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import Doctor from '@/models/Doctor';
-import { createDayArray, updateDoctorDayArrays } from '@/library/DayManipulation';
+import { createDayArray, updateDoctorDayArrays } from '@/library/DaysUtils';
 
 const createDoctor = (req: Request, res: Response, next: NextFunction) => {
 	const { firstname, lastname, specialization } = req.body;

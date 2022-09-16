@@ -4,6 +4,7 @@ export interface ISingleDay {
     date: Date;
     workday: boolean;
     slots: mongoose.Types.ObjectId | null;
+    _id: mongoose.Types.ObjectId
 }
 
 export interface IDays {

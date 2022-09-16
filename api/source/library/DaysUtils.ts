@@ -26,6 +26,7 @@ class Day implements ISingleDay {
 	date: Date;
 	workday: boolean;
 	slots: mongoose.Types.ObjectId | null;
+	_id: mongoose.Types.ObjectId
 
 	validateHoliday() {
 		const dateDay = String(this.date.getDate()).padStart(2, '0');
@@ -40,8 +41,9 @@ class Day implements ISingleDay {
 		}
 	}
 	constructor(date: Date, slots: mongoose.Types.ObjectId) {
-		this.date = date;
+		this.date = new Date(+date);
 		this.workday = this.validateHoliday();
+		this._id = new mongoose.Types.ObjectId()
 		if (this.validateHoliday()) {
 			this.slots = slots;
 		} else {
@@ -89,23 +91,19 @@ export function createDayArray(doctorId: mongoose.Types.ObjectId, daysId: mongoo
 	const daysArray: Day[] = [];
 	const todayNonUTC = new Date();
 	const date = new Date(Date.UTC(todayNonUTC.getUTCFullYear(), todayNonUTC.getUTCMonth(), todayNonUTC.getUTCDate(), 0, 0, 0, 0));
-	let slotsId;
-	let dayId;
 
-	while (daysArray.length < dayCount) {
-		dayId = new mongoose.Types.ObjectId();
-		slotsId = new mongoose.Types.ObjectId();
+	while (daysArray.length <= dayCount) {
+		const dayId = new mongoose.Types.ObjectId();
+		const slotsId = new mongoose.Types.ObjectId();
 		const newDay = new Day(date, slotsId);
-
+		daysArray.push(newDay);
+		date.setDate(date.getDate() + 1);
 		new Slots({
 			_id: slotsId,
 			doctorId: doctorId,
 			dayId: dayId,
 			slots: slotsArray
 		}).save()
-
-		daysArray.push(newDay);
-		date.setDate(date.getDate() + 1);
 	}
 	new Days({
 		_id: daysId,

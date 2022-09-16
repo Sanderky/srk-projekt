@@ -1,6 +1,6 @@
 import Log from '@/library/Logging';
 import cron from 'node-cron';
-import { updateDoctorDayArrays } from '@/library/DayManipulation';
+import { updateDoctorDayArrays } from '@/library/DaysUtils';
 import { cronSettings } from '@/config/settings';
 
 //────────────────┤CRON HELPER├────────────────

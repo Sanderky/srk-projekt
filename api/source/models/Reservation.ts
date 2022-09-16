@@ -13,7 +13,7 @@ export interface IReservationModel extends IReservation, Document {
 const ReservationSchema: Schema = new Schema({
     reservationCode: { type: String, required: true, unique: true },
     email: { type: String, required: true },
-    doctor: { type: Schema.Types.ObjectId, required: true, ref: 'Doctor' },
+    doctorId: { type: Schema.Types.ObjectId, required: true, ref: 'Doctor' },
     day: { type: Date, required: true },
     time: { type: String, required: true }
 });
