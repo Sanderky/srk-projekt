@@ -14,7 +14,7 @@ const createDoctor = (req: Request, res: Response, next: NextFunction) => {
 		specialization,
 		days: daysId
 	});
-	createDayArray(doctorId, daysId, firstname, lastname)
+	createDayArray(doctorId, daysId, firstname, lastname);
 	return doctor
 		.save()
 		.then((doctor) => res.status(201).json({ doctor }))
@@ -37,7 +37,7 @@ const readDoctor = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const readAllDoctors = async (req: Request, res: Response, next: NextFunction) => {
-	updateDoctorDayArrays()
+	updateDoctorDayArrays();
 	return Doctor.find()
 		.populate({
 			path: 'days',
