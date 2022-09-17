@@ -3,7 +3,13 @@ import express from 'express';
 import http from 'http';
 import mongoose from 'mongoose';
 import { config } from '@/config/config';
+import { updateDoctorsDayArrays } from '@/library/CronJobs';
 import Log from '@/library/Logging';
+import { logTraffic } from '@/middleware/LogTraffic';
+import { rules } from '@/middleware/Rules';
+import doctorRoutes from '@/routes/Doctor';
+import reservationRoutes from '@/routes/Reservation';
+import userRoutes from "@/routes/User";
 
 const router = express();
 
@@ -12,7 +18,8 @@ mongoose
 	.connect(config.mongo.url, { retryWrites: true, w: 'majority' })
 	.then(() => {
 		Log.info('Connected to MongoDB.');
-		StartServer();
+		startServer();
+		updateDoctorsDayArrays();
 	})
 	.catch((error) => {
 		Log.error('Unable to connect:');
@@ -20,36 +27,22 @@ mongoose
 	});
 
 // Start server only if connected to Mongo
-const StartServer = () => {
-	router.use((req, res, next) => {
-		// Log the request
-		Log.info(`Incoming -> Method: [${req.method}], URL: [${req.url}], IP: [${req.socket.remoteAddress}]`);
-
-		res.on('finish', () => {
-			//Log response
-			Log.info(`Outgoing -> Method: [${req.method}], URL: [${req.url}], IP: [${req.socket.remoteAddress}], Status: [${res.statusCode} ${res.statusMessage}]`);
-		});
-		next();
-	});
+const startServer = () => {
+	// Middleware
 	router.use(express.urlencoded({ extended: true }));
 	router.use(express.json());
 
-	// Rules of API
-	router.use((req, res, next) => {
-		res.header('Access-Control-Allow-Origin', '*');
-		res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
+	//Custom Middleware
+	router.use(logTraffic);
+	router.use(rules);
 
-		if (req.method == 'OPTIONS') {
-			res.header('Access-Control-Allow-Methods', 'PUT, POST, PATCH, DELETE, GET');
-			return res.status(200).json({});
-		}
+    // Routes
+    router.use('/doctor', doctorRoutes);
+    router.use('/reservation', reservationRoutes);
+    router.use('/user', userRoutes)
 
-		next();
-	});
-	// Routes
-
-	// Healthcheck
-	router.get('/healthcheck', (req, res, next) => res.status(200).json({ message: 'All good' }));
+	// Healthcheck Route
+	router.get('/healthcheck', (req, res, next) => res.status(200).json({ message: 'All good.' }));
 
 	// Error Handling
 	router.use((req, res, next) => {
