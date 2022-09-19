@@ -12,8 +12,11 @@ const UserScheme = new mongoose.Schema({
         type: String,
         required: true,
         minLength: 6
+    },
+    roles: {
+        type: [],
+        required: true
     }
-    //roles: Array
 });
 
 UserScheme.pre('save', function (next) {

@@ -1,14 +1,14 @@
 import express from 'express';
 import controller from '@/controllers/Doctor';
-import {requireAuth} from '@/middleware/authMiddleware'
-import cookieParser from "cookie-parser";
+import {isAuthorized} from "@/middleware/Authorize";
 
 const router = express.Router();
-router.use(cookieParser())
-router.post('/create', requireAuth, controller.createDoctor);
-router.get('/get/:doctorId', requireAuth, controller.readDoctor);
-router.get('/get/', requireAuth, controller.readAllDoctors);
-router.patch('/update/:doctorId', requireAuth, controller.updateDoctor);
-router.delete('/delete/:doctorId', requireAuth, controller.deleteDoctor);
+
+router.use(isAuthorized("doctor"))
+router.post('/create', controller.createDoctor);
+router.get('/get/:doctorId', controller.readDoctor);
+router.get('/get/', controller.readAllDoctors);
+router.patch('/update/:doctorId', controller.updateDoctor);
+router.delete('/delete/:doctorId', controller.deleteDoctor);
 
 export = router;
