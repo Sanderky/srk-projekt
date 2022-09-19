@@ -36,10 +36,10 @@ const startServer = () => {
 	router.use(logTraffic);
 	router.use(rules);
 
-    // Routes
-    router.use('/doctor', doctorRoutes);
-    router.use('/reservation', reservationRoutes);
-    router.use('/user', userRoutes)
+	// Routes
+	router.use('/doctor', doctorRoutes);
+	router.use('/reservation', reservationRoutes);
+	router.use('/', userRoutes)
 
 	// Healthcheck Route
 	router.get('/healthcheck', (req, res, next) => res.status(200).json({ message: 'All good.' }));
