@@ -1,0 +1,89 @@
+.main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+.logo {
+    color: var(--primary);
+    font-size: var(--titleBig);
+    font-weight: var(--semiBold);
+    text-align: center;
+}
+
+.disableSelecting {
+    cursor: default;
+    user-select: none;
+}
+
+.header {
+    color: var(--dark);
+    font-size: var(--titleSmall);
+    font-weight: var(--semiBold);
+    text-align: center;
+}
+
+.label {
+    color: var(--subText);
+    font-size: var(--big);
+    font-weight: var(--semiBold);
+    margin-top: 24px;
+}
+
+.input {
+    background-color: var(--accent);
+    border-color: var(--dark);
+    border-width: 1px;
+    border-radius: 15px;
+    width: 400px;
+    height: 55px;
+    border-style: solid;
+    padding: 1em;
+    font-size: var(--big);
+    color: var(--dark);
+    text-align: center;
+}
+
+
+.input:hover {
+    border-width: 2px;
+}
+
+.input:focus {
+    border-color: var(--dark);
+    border-width: 2px;
+    outline: none;
+}
+
+.submitButton {
+    background-color: transparent;
+    border-width: 0;
+    color: var(--subText);
+    font-size: var(--big);
+    font-weight: var(--semiBold);
+    margin-top: 24px;
+    cursor: pointer;
+}
+
+.submitButton:hover {
+    color: var(--dark);
+}
+
+.loginForm {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.error {
+    color: var(--error);
+    border-color: var(--error);
+}
+
+.errorMsg {
+    color: var(--error);
+    font-size: var(--big);
+    font-weight: var(--semiBold);
+    margin-top: 24px;
+}

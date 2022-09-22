@@ -3,10 +3,14 @@ import styles from './HelloScreen.module.css';
 import { Clock } from "../../Components/Clock";
 import logo from "../../Assets/Images/logo.png"
 
-const HelloScreen = (): JSX.Element => {
+interface HelloScreenProps {
+    onClick: () => void;
+}
+
+const HelloScreen = (props: HelloScreenProps): JSX.Element => {
 
     return (
-        <div className={styles.container}>
+        <div className={styles.container} onClick={() => props.onClick()}>
             <div>
                 <div className={styles.logo}>SRK</div>
                 <img src={logo} className={styles.logoImg} />

@@ -1,4 +1,4 @@
-import React from 'react';
+import { useEffect } from "react";
 import styles from './CentralBox.module.css';
 
 const EnterCode = (): JSX.Element => {
@@ -105,11 +105,18 @@ const Warning = (): JSX.Element => {
     );
 }
 
-const CentralBox = (): JSX.Element => {
+
+interface CentralBoxProps {
+    showHelloScreen: () => void;
+}
+
+const CentralBox = (props: CentralBoxProps): JSX.Element => {
+    useEffect(() => {setInterval(() => props.showHelloScreen(), 30000)}, []);
+
     return (
         <div className={styles.containerBackground}>
             <div className={styles.container}>
-                <Warning/>
+                <EnterCode/>
             </div>
         </div>
     );
