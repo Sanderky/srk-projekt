@@ -43,7 +43,6 @@ const updateSlotForNewReservation = async (doctorId: string, dayId: string, dayD
 			if (found.availability) {
 				found.availability = false;
 				slotsObj.save();
-				return true;
 			} else {
 				throw Error('Slot occupied');
 			}

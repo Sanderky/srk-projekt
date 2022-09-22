@@ -63,6 +63,9 @@ function convertTime(time: number) {
 	return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
 }
 
+//====================================================================
+// Creating slots with parameters configured in @/config/settings
+//====================================================================
 function createSlotArray() {
 	const slotCount = (workdaySettings.days.end - workdaySettings.days.start) / workdaySettings.slot.duration || 14;
 	const slotLength = workdaySettings.slot.duration || 30;
@@ -78,13 +81,9 @@ function createSlotArray() {
 }
 
 //====================================================================
-//----------------------------EXPORTING-------------------------------
-//===========================vvvvvvvvvvv==============================
-
-//====================================================================
 // Creating array of days with length configured in @/config/settings
 //====================================================================
-export function createDayArray(doctorId: mongoose.Types.ObjectId, daysId: mongoose.Types.ObjectId, firstname: string, lastname: string) {
+const createDayArray = (doctorId: mongoose.Types.ObjectId, daysId: mongoose.Types.ObjectId, firstname: string, lastname: string) => {
 	const slotsArray = createSlotArray();
 
 	const dayCount = workdaySettings.days.dayCount || 30;
@@ -116,7 +115,7 @@ export function createDayArray(doctorId: mongoose.Types.ObjectId, daysId: mongoo
 //====================================================================
 // Shifting array of days in database
 //====================================================================
-export function updateDoctorDayArrays() {
+const updateDoctorDayArray = () => {
 	const todayNonUTC = new Date();
 	const today = new Date(Date.UTC(todayNonUTC.getUTCFullYear(), todayNonUTC.getUTCMonth(), todayNonUTC.getUTCDate(), 0, 0, 0, 0));
 	let aux = 0;
@@ -125,7 +124,7 @@ export function updateDoctorDayArrays() {
 	Days.find().exec((err, daysArray) => {
 		daysArray.forEach(async (daysObj) => {
 			while (daysObj.days[0].date < today) {
-				daysObj.days.shift();
+				const deletedDay = daysObj.days.shift();
 				const dayCount = workdaySettings.days.dayCount || 30;
 				const date = new Date();
 				const dayId = new mongoose.Types.ObjectId();
@@ -145,9 +144,17 @@ export function updateDoctorDayArrays() {
 				Log.debug(`Updated day array of doctor ${daysObj.doctorName} ${aux} times.`);
 				aux = 0;
 			}
-			// else {
-			// 	Log.debug(`There was no need to update day array of doctor ${daysObj.doctorName}.`);
-			// }
 		});
 	});
 }
+
+const cascadeDeleteDays = (dayId: string) => {
+
+}
+
+
+
+//====================================================================
+//----------------------------EXPORTING-------------------------------
+//===========================vvvvvvvvvvv==============================
+export { createDayArray, updateDoctorDayArray }

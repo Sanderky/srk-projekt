@@ -16,9 +16,6 @@ const createReservation = async (req: Request, res: Response, next: NextFunction
 				throw error;
 			});
 		await updateSlotForNewReservation(doctorId, dayId, day, time)
-			.then((result) => {
-				return result;
-			})
 			.catch((error) => {
 				throw error;
 			});
