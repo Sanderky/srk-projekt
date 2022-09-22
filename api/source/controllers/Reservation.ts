@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import Reservation from '@/models/Reservation';
 import { generateReservationCode } from '@/library/GenerateReservationCode';
 import { dayIdByDate } from '@/library/DaysUtils'
-import { updateSlotForNewReservation } from '@/library/ReservationUtils';
+import { updateSlotForNewReservation, makeSlotAvailable } from '@/library/ReservationUtils';
 import Log from '@/library/Logging';
 
 const createReservation = async (req: Request, res: Response, next: NextFunction) => {
@@ -44,21 +44,21 @@ const createReservation = async (req: Request, res: Response, next: NextFunction
 			});
 	} catch (error) {
 		Log.error(error);
-		return res.status(500).json({ error });
+		res.status(500).json({ error });
 	}
 };
 
 const readReservation = async (req: Request, res: Response, next: NextFunction) => {
 	const reservationId = req.params.reservationId;
 	return await Reservation.findById(reservationId)
-		.populate('doctor', '-days -__v')
+		.populate('doctorId', '-days -__v')
 		.then((reservation) => (reservation ? res.status(200).json({ reservation }) : res.status(404).json({ message: 'Not found' })))
 		.catch((error) => res.status(500).json({ error }));
 };
 
 const readAllReservations = async (req: Request, res: Response, next: NextFunction) => {
-	return await Reservation.find()
-		.populate('doctor', '-days -__v')
+	return Reservation.find()
+		.populate('doctorId', '-days -__v')
 		.then((reservations) => res.status(200).json({ reservations }))
 		.catch((error) => res.status(500).json({ error }));
 };
@@ -81,10 +81,18 @@ const updateReservation = async (req: Request, res: Response, next: NextFunction
 };
 
 const deleteReservation = async (req: Request, res: Response, next: NextFunction) => {
-	const reservationId = req.params.reservationId;
-
-	const reservation = await Reservation.findByIdAndDelete(reservationId);
-	return reservation ? res.status(201).json({ message: `Deleted: ${reservationId})` }) : res.status(404).json({ message: 'Not found' });
+	try {
+		const reservationId = req.params.reservationId;
+		await makeSlotAvailable(reservationId)
+			.catch((error) => {
+				throw error;
+			});
+		const reservation = await Reservation.findByIdAndDelete(reservationId);
+		return reservation ? res.status(201).json({ message: `Deleted: ${reservationId})` }) : res.status(404).json({ message: 'Not found' });
+	} catch (error) {
+		Log.error(error);
+		res.status(500).json({ error });
+	}
 };
 
 const loginWithReservation = async (req: Request, res: Response, next: NextFunction) => {
@@ -96,7 +104,7 @@ const loginWithReservation = async (req: Request, res: Response, next: NextFunct
 				if (err) return res.status(500).json({ err });
 				return res.status(200).json({ reservations });
 			});
-		} else return res.status(404).json({ message: 'Not found / Bad credentials' });
+		} else res.status(404).json({ message: 'Not found / Bad credentials' });
 	});
 };
 //TODO Poprawić powyższe spaghetti.

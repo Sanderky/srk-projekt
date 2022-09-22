@@ -39,7 +39,6 @@ const readDoctor = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const readAllDoctors = async (req: Request, res: Response, next: NextFunction) => {
-	updateDoctorDayArray();
 	return Doctor.find()
 		.populate({
 			path: 'days',

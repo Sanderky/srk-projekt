@@ -5,7 +5,8 @@ export interface IReservation {
 }
 
 export interface IReservationModel extends IReservation, Document {
-    doctor: string;
+    email: string,
+    doctorId: string;
     day: Date;
     time: string;
 }
