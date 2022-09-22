@@ -40,10 +40,10 @@ class Day implements ISingleDay {
 			return true;
 		}
 	}
-	constructor(date: Date, slots: mongoose.Types.ObjectId) {
+	constructor(date: Date, slots: mongoose.Types.ObjectId, dayId: mongoose.Types.ObjectId) {
 		this.date = new Date(+date);
 		this.workday = this.validateHoliday();
-		this._id = new mongoose.Types.ObjectId()
+		this._id = dayId;
 		if (this.validateHoliday()) {
 			this.slots = slots;
 		} else {
@@ -95,7 +95,7 @@ export function createDayArray(doctorId: mongoose.Types.ObjectId, daysId: mongoo
 	while (daysArray.length <= dayCount) {
 		const dayId = new mongoose.Types.ObjectId();
 		const slotsId = new mongoose.Types.ObjectId();
-		const newDay = new Day(date, slotsId);
+		const newDay = new Day(date, slotsId, dayId);
 		daysArray.push(newDay);
 		date.setDate(date.getDate() + 1);
 		new Slots({
@@ -123,23 +123,23 @@ export function updateDoctorDayArrays() {
 	const slotsArray = createSlotArray();
 
 	Days.find().exec((err, daysArray) => {
-		daysArray.forEach(daysObj => {
+		daysArray.forEach(async (daysObj) => {
 			while (daysObj.days[0].date < today) {
 				daysObj.days.shift();
 				const dayCount = workdaySettings.days.dayCount || 30;
 				const date = new Date();
 				const dayId = new mongoose.Types.ObjectId();
 				const slotsId = new mongoose.Types.ObjectId();
-				new Slots({
+				await new Slots({
 					_id: slotsId,
 					doctorId: daysObj.doctorId,
 					dayId: dayId,
 					slots: slotsArray
 				}).save()
-				const newDay = new Day(new Date(date.setDate(date.getDate() + dayCount)), slotsId);
+				const newDay = new Day(new Date(date.setDate(date.getDate() + dayCount)), slotsId, dayId);
 				daysObj.days.push(newDay);
 				aux++;
-				daysObj.save();
+				await daysObj.save();
 			}
 			if (aux) {
 				Log.debug(`Updated day array of doctor ${daysObj.doctorName} ${aux} times.`);

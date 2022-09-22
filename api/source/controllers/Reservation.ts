@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import Reservation from '@/models/Reservation';
 import { generateReservationCode } from '@/library/GenerateReservationCode';
-import { dayIdByDate, updateSlotForReservation } from '@/library/ReservationUtils';
+import { dayIdByDate, updateSlotForNewReservation } from '@/library/ReservationUtils';
 import Log from '@/library/Logging';
 
 const createReservation = async (req: Request, res: Response, next: NextFunction) => {
@@ -15,7 +15,14 @@ const createReservation = async (req: Request, res: Response, next: NextFunction
 			.catch((error) => {
 				throw error;
 			});
-		// const ifOccupied = updateReservation(doctorId, dayId, time).then((result) => { return result })
+		await updateSlotForNewReservation(doctorId, dayId, day, time)
+			.then((result) => {
+				return result;
+			})
+			.catch((error) => {
+				throw error;
+			});
+
 		const reservationCode = await generateReservationCode()
 			.then((result) => {
 				return result;
