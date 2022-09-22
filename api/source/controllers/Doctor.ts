@@ -75,7 +75,7 @@ const updateDoctor = (req: Request, res: Response, next: NextFunction) => {
 const deleteDoctor = async (req: Request, res: Response, next: NextFunction) => {
 	const doctorId = req.params.doctorId;
 	try {
-		const success = await cascadeDeleteDoctor(doctorId)
+		await cascadeDeleteDoctor(doctorId)
 			.catch((error) => {
 				throw error;
 			});

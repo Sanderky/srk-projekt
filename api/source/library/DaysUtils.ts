@@ -1,10 +1,12 @@
 import 'module-alias/register';
 import { workdaySettings, holidays } from '@/config/settings';
 import mongoose from 'mongoose';
-import Doctor from '@/models/Doctor';
 import Days, { ISingleDay } from '@/models/Days';
 import Slots, { ISingleSlot } from '@/models/Slots';
 import Log from '@/library/Logging';
+
+
+export { createDayArray, updateDoctorDayArray, dayIdByDate }
 
 
 //====================================================================
@@ -123,38 +125,67 @@ const updateDoctorDayArray = () => {
 
 	Days.find().exec((err, daysArray) => {
 		daysArray.forEach(async (daysObj) => {
-			while (daysObj.days[0].date < today) {
-				const deletedDay = daysObj.days.shift();
-				const dayCount = workdaySettings.days.dayCount || 30;
-				const date = new Date();
-				const dayId = new mongoose.Types.ObjectId();
-				const slotsId = new mongoose.Types.ObjectId();
-				await new Slots({
-					_id: slotsId,
-					doctorId: daysObj.doctorId,
-					dayId: dayId,
-					slots: slotsArray
-				}).save()
-				const newDay = new Day(new Date(date.setDate(date.getDate() + dayCount)), slotsId, dayId);
-				daysObj.days.push(newDay);
-				aux++;
-				await daysObj.save();
-			}
-			if (aux) {
-				Log.debug(`Updated day array of doctor ${daysObj.doctorName} ${aux} times.`);
-				aux = 0;
+			try {
+				while (daysObj.days[0].date < today) {
+					const deletedDay = daysObj.days.shift();
+					const deletedSlotsId = deletedDay?.slots?.toString();
+					await deleteSlotsForDay(deletedSlotsId!)
+						.catch((error) => {
+							throw error;
+						});
+					const dayCount = workdaySettings.days.dayCount || 30;
+					const date = new Date();
+					const dayId = new mongoose.Types.ObjectId();
+					const slotsId = new mongoose.Types.ObjectId();
+
+					await new Slots({
+						_id: slotsId,
+						doctorId: daysObj.doctorId,
+						dayId: dayId,
+						slots: slotsArray
+					}).save()
+					const newDay = new Day(new Date(date.setDate(date.getDate() + dayCount)), slotsId, dayId);
+					daysObj.days.push(newDay);
+					aux++;
+					await daysObj.save();
+				}
+				if (aux) {
+					Log.debug(`Updated day array of doctor ${daysObj.doctorName} ${aux} times.`);
+					aux = 0;
+				}
+			} catch (error) {
+				Log.error(error);
 			}
 		});
 	});
 }
 
-const cascadeDeleteDays = (dayId: string) => {
-
-}
-
-
+//====================================================================
+// Get dayId by given doctorId and date
+//====================================================================
+const dayIdByDate = async (doctorId: mongoose.Types.ObjectId, dayDate: Date) => {
+	const dayNonUTC = new Date(dayDate);
+	const givenDay = new Date(Date.UTC(dayNonUTC.getUTCFullYear(), dayNonUTC.getUTCMonth(), dayNonUTC.getUTCDate(), 0, 0, 0, 0));
+	return await Days.findOne({ doctorId: doctorId }).then((daysObj: any) => {
+		if (daysObj) {
+			const found = daysObj.days.find((day: { date: { getTime: () => number } }) => day.date.getTime() === givenDay.getTime());
+			if (found) {
+				return found._id.toString();
+			} else {
+				throw new Error('Object with specified date cannot be found in days array of days object.');
+			}
+		} else {
+			throw new Error('Doctor with specified ID does not exist.');
+		}
+	});
+};
 
 //====================================================================
-//----------------------------EXPORTING-------------------------------
-//===========================vvvvvvvvvvv==============================
-export { createDayArray, updateDoctorDayArray }
+// Delete slots linked to given day by slotsId
+//====================================================================
+const deleteSlotsForDay = async (slotsId: string) => {
+	if (!slotsId) {
+		throw Error(`Slots object with given ID does not exist.`);
+	}
+	await Slots.findByIdAndDelete(slotsId);
+}

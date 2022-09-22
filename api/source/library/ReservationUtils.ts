@@ -6,22 +6,7 @@ import Slots from '@/models/Slots';
 import mongoose from 'mongoose';
 
 
-const dayIdByDate = async (doctorId: mongoose.Types.ObjectId, dayDate: Date) => {
-	const dayNonUTC = new Date(dayDate);
-	const givenDay = new Date(Date.UTC(dayNonUTC.getUTCFullYear(), dayNonUTC.getUTCMonth(), dayNonUTC.getUTCDate(), 0, 0, 0, 0));
-	return await Days.findOne({ doctorId: doctorId }).then((daysObj: any) => {
-		if (daysObj) {
-			const found = daysObj.days.find((day: { date: { getTime: () => number } }) => day.date.getTime() === givenDay.getTime());
-			if (found) {
-				return found._id.toString();
-			} else {
-				throw new Error('Object with specified date cannot be found in days array of days object.');
-			}
-		} else {
-			throw new Error('Doctor with specified id does not exist.');
-		}
-	});
-};
+export { updateSlotForNewReservation };
 
 
 const updateSlotForNewReservation = async (doctorId: string, dayId: string, dayDate: Date, time: string) => {
@@ -44,14 +29,12 @@ const updateSlotForNewReservation = async (doctorId: string, dayId: string, dayD
 				found.availability = false;
 				slotsObj.save();
 			} else {
-				throw Error('Slot occupied');
+				throw Error('Slot occupied.');
 			}
 		} else {
 			throw Error('Object with specified time cannot be found in days array of slots object.');
 		}
 	} else {
-		throw Error('Slots object with specified doctorId or dayId does not exist.');
+		throw Error('Slots object with specified doctorID or dayID does not exist.');
 	}
 };
-
-export { dayIdByDate, updateSlotForNewReservation };
