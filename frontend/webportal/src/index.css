@@ -28,7 +28,8 @@
     --success: #31D0AA;
     --warning: #FFB802;
     --accent: #F5F7FA;
-
+    --accentDark: #E1E5EB;
+    --dark: #24243F;
     
     /* typography */
         /* size */
@@ -50,7 +51,7 @@
         --monsterText: 30px;
         
         /* fontWeight */
-        --regular: normal;
+        --regularWeight: normal;
         --semiBold: bold;
         --bold: bolder;
         
@@ -69,3 +70,4 @@
     padding: 0;
     box-sizing: border-box;
 }
+
