@@ -128,11 +128,15 @@ const updateDoctorDayArray = () => {
 			try {
 				while (daysObj.days[0].date < today) {
 					const deletedDay = daysObj.days.shift();
-					const deletedSlotsId = deletedDay?.slots?.toString();
-					await deleteSlotsForDay(deletedSlotsId!)
-						.catch((error) => {
-							throw error;
-						});
+					const deletedSlotsId = deletedDay?.slots;
+					if (deletedSlotsId !== null) {
+						await deleteSlotsForDay(deletedSlotsId?.toString()!)
+							.catch((error) => {
+								throw error;
+							});
+					} else {
+						continue;
+					}
 					const dayCount = workdaySettings.days.dayCount || 30;
 					const date = new Date();
 					const dayId = new mongoose.Types.ObjectId();
@@ -149,7 +153,10 @@ const updateDoctorDayArray = () => {
 					aux++;
 					await daysObj.save();
 				}
-				if (aux) {
+				if (aux === 1) {
+					Log.debug(`Updated day array of doctor ${daysObj.doctorName} 1 time.`);
+					aux = 0;
+				} else if (aux) {
 					Log.debug(`Updated day array of doctor ${daysObj.doctorName} ${aux} times.`);
 					aux = 0;
 				}
@@ -185,7 +192,9 @@ const dayIdByDate = async (doctorId: mongoose.Types.ObjectId, dayDate: Date) => 
 //====================================================================
 const deleteSlotsForDay = async (slotsId: string) => {
 	if (!slotsId) {
-		throw Error(`Slots object with given ID does not exist.`);
+		throw Error(`Slots object with ID ${slotsId} does not exist.`);
 	}
-	await Slots.findByIdAndDelete(slotsId);
+	else {
+		await Slots.findByIdAndDelete(slotsId);
+	}
 }
