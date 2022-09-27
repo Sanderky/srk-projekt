@@ -1,4 +1,7 @@
 /api/node_modules/
+/api/node_modules/package-lock.json
 /api/.env
 /api/build/
 /.idea
+/node_modules/
+/package-lock.json
