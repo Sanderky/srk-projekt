@@ -1,7 +1,9 @@
 import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import Doctor from '@/models/Doctor';
-import { createDayArray, updateDoctorDayArrays } from '@/library/DaysUtils';
+import { createDayArray, updateDoctorDayArray } from '@/library/DaysUtils';
+import { cascadeDeleteDoctor } from '@/library/DoctorUtils';
+import Log from '@/library/Logging';
 
 const createDoctor = (req: Request, res: Response, next: NextFunction) => {
 	const { firstname, lastname, specialization } = req.body;
@@ -37,7 +39,6 @@ const readDoctor = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const readAllDoctors = async (req: Request, res: Response, next: NextFunction) => {
-	updateDoctorDayArrays();
 	return Doctor.find()
 		.populate({
 			path: 'days',
@@ -72,9 +73,17 @@ const updateDoctor = (req: Request, res: Response, next: NextFunction) => {
 
 const deleteDoctor = async (req: Request, res: Response, next: NextFunction) => {
 	const doctorId = req.params.doctorId;
-
-	const doctor = await Doctor.findByIdAndDelete(doctorId);
-	return doctor ? res.status(201).json({ message: `Deleted: ${doctorId})` }) : res.status(404).json({ message: 'Not found' });
+	try {
+		await cascadeDeleteDoctor(doctorId)
+			.catch((error) => {
+				throw error;
+			});
+		const doctor = await Doctor.findByIdAndDelete(doctorId);
+		return doctor ? res.status(201).json({ message: `Deleted: ${doctorId}` }) : res.status(404).json({ message: 'Not found' });
+	} catch (error) {
+		Log.error(error);
+		return res.status(500).json({ error });
+	}
 };
 
 export default { createDoctor, readDoctor, readAllDoctors, updateDoctor, deleteDoctor };

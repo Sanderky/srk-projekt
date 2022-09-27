@@ -1,6 +1,6 @@
 import Log from '@/library/Logging';
 import cron from 'node-cron';
-import { updateDoctorDayArrays } from '@/library/DaysUtils';
+import { updateDoctorDayArray } from '@/library/DaysUtils';
 import { cronSettings } from '@/config/settings';
 
 //────────────────┤CRON HELPER├────────────────
@@ -14,10 +14,12 @@ import { cronSettings } from '@/config/settings';
 // ┴  ┴  ┴  ┴  ┴  ┴
 // *  *  *  *  *  *
 
-export function updateDoctorsDayArrays() {
-	updateDoctorDayArrays();
+const updateDoctorsDayArrays = () => {
+	updateDoctorDayArray();
 	const hour = cronSettings.updateDayArray.hour || 7;
 	const minutes = cronSettings.updateDayArray.minutes || 0;
-	cron.schedule(`${minutes} ${hour} * * *`, updateDoctorDayArrays);
+	cron.schedule(`${minutes} ${hour} * * *`, updateDoctorDayArray);
 	Log.info(`Started cron job: Update day arrays every day at ${hour.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}.`);
 }
+
+export { updateDoctorsDayArrays };
