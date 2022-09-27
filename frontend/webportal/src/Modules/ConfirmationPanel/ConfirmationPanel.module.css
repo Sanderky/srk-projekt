@@ -1,0 +1,10 @@
+.main {
+    height: 100vh;
+}
+
+.centralBoxWrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding-top: 120px;
+}

@@ -47,7 +47,6 @@ publicznie do repo. Przykładowa zawartość pliku konieczna do prawidowego dzia
 ```
 MONGO_USERNAME=user
 MONGO_PASSWORD=examplepassword
-
 SERVER_PORT=3000
 ```
 
