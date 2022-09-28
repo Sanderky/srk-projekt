@@ -1,15 +1,32 @@
 import { useEffect } from "react";
 import styles from './CentralBox.module.css';
-
+import axios from "axios"
 const EnterCode = (): JSX.Element => {
+    const getReservations = (e:any) => { 
+        e.preventDefault();
+        console.log(e);
+        const configuration = {
+            method: "POST",
+            url: "http://localhost:4000/reservation/login",
+            data: {
+                email:e.target.form[0].value,
+                reservationCode:e.target.form[1].value,
+            }
+        }
+        axios(configuration)
+            .then((res) => {console.log(res)})
+            .catch((error) => {console.log(error)});
+    }
+
     return (
         <div>
             <div className={`${styles.text} ${styles.title}`}>Witaj</div>
-            <div className={styles.text}>Podaj swój unikatowy kod aby potwiedzić rejestrację.</div>
+            <div className={styles.text}>Podaj swój unikatowy kod oraz adres email aby potwiedzić rejestrację.</div>
             
             <form className={styles.form}>
-                <input type="text" className={styles.input} maxLength={5} />
-                <button type="submit" className={styles.buttonSend}>Zatwierdź</button>
+                <input type="text" name="email" placeholder="Adres email" className={styles.input} maxLength={50} />
+                <input type="text" name="reservationCode" placeholder="Unikatowy kod rezerwacji" className={styles.input} maxLength={8} />
+                <button type="submit" onClick = {(e) => {getReservations(e)}} className={styles.buttonSend}>Zatwierdź</button>
             </form>
             
         </div>
