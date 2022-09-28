@@ -1,0 +1,5 @@
+.name {
+    font-weight: var(--semiBold);
+    font-size: var(--header2);
+    color: var(--white);
+}

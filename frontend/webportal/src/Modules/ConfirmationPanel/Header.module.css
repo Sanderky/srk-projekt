@@ -1,0 +1,13 @@
+.container {
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    padding: 1em 2em;
+    background-color: var(--primary);
+}
+
+.logo, .clock  {
+    font-weight: var(--semiBold);
+    font-size: var(--header2);
+    color: var(--white);
+}
