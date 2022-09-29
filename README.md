@@ -20,8 +20,7 @@ Stack technologiczny **MERN**:
 
 - ### Workflow:
 
-Każdy pracuje na swoim branchu. Przed rozpoczęciem pracy robi pulla z mastera. Commitować można u siebie dowoli
-oznaczając commity zgodnie z polityką, byle po mergu do mastera szło się połapać sensownie co zostało zrobione.
+Pracujemy każdy osobno na branchu lub na wspólnych w celu ułatwienia pracy i uniknięcia konfliktów. Przed rozpoczęciem pracy należy zaktualizować projekt. Zapobiegnie to potencjalnej dużej ilości błędów.
 Pamiętamy, że drobne zmiany typu literówki i inne drobne poprawki w ostatnim commicie można _amendować_ zamiast dodawać
 jako nowy commit (`git commit --amend`).
 
@@ -30,7 +29,7 @@ zmergować zmiany. Po naprawie ewentualnych błędów i konfilktów wspólnie me
 
 - ### Polityka commitów
 
-Commity opisujemy po polsku, razem z krótkim, ale dokładnym opisem zmian i z flagami.
+Commity opisywane po polsku, razem z krótkim, ale dokładnym opisem zmian i z flagami.
 
 Flagi:\
 `[B]` - Bugfix\
@@ -39,6 +38,8 @@ Flagi:\
 `[R]` - Rework
 
 ## Uruchomienie w środowisku testowym
+
+### Konfiguracja
 
 W celu prawidłowego funkcjonowania serwera konieczne jest utworzenie w katalogu `api` pliku `.env`. Może on zawierać
 wrażliwe dane (URL bazy danych, hasła, klucze prywatne potrzebne do szyfrowania itp.), których nie chcemy pushować
@@ -52,5 +53,15 @@ SERVER_PORT=3000
 
 Cluster w MongoDB dostępny zdalnie został utworzony przez Core-JR na jego koncie. W celu uzyskania hasła należy się do
 niego zgłosić.
+
+### Uruchomienie
+
+W katalogu głównym skonfigurowane zostały skrypty umożliwiające szybką instalację projektu oraz szybkie uruchomienie jednocześnie backendu i frontendu. Uruchamiane są za pomocą poleceń.
+
+- `npm run install` - skrypt, ktory wykonuje polecenie `npm install` w katalogu _api_ oraz w katalogu _frontend_ jednocześnie.
+
+- `npm run devstart` - skrypt umożliwiający jednoczesne uruchomienie frontendu i backendu. W katalogu _api_ uruchamiany jest polecenie `npm run serve`, a w katalogu _frontend/webportal_ `npm start`.
+
+Frontend działa na porcie `:3000`, a backend na `:4000`.
 
 ### Informacje o działaniu backendu dostępne w pliku `README.md` w katalogu `api`.
