@@ -4,7 +4,7 @@
   "description": "Projekt zaliczeniowy Inżynieria oprogramowania.",
   "scripts": {
     "install": "concurrently \"cd frontend/webportal && npm install\" \"cd api && npm install\"",
-    "start": "concurrently \"cd frontend/webportal && npm start\" \"cd api && npm run serve\""
+    "devstart": "concurrently \"cd frontend/webportal && npm start\" \"cd api && npm run serve\""
   },
   "repository": {
     "type": "git",
