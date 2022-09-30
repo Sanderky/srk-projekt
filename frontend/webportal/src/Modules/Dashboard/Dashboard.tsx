@@ -3,7 +3,7 @@ import styles from './Dashboard.module.css';
 import axios from 'axios'
 
 const Login = () => {
-    const [error, setError] = useState("Dupa dupa");
+    const [error, setError] = useState("");
 
     // useEffect(() => {
 
