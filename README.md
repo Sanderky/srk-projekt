@@ -65,3 +65,5 @@ W katalogu głównym skonfigurowane zostały skrypty umożliwiające szybką ins
 Frontend działa na porcie `:3000`, a backend na `:4000`.
 
 ### Informacje o działaniu backendu dostępne w pliku `README.md` w katalogu `api`.
+
+### Informacje o działaniu frontendu dostępne w pliku `README.md` w katalogu `frontend/webportal`.
