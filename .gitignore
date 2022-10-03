@@ -2,3 +2,4 @@
 /api/.env
 /api/build/
 /.idea
+/node_modules/

@@ -32,8 +32,7 @@ W pliku `server.ts` został skonfigurowany loger requestów przychodzących do s
 
 ## Dostępne endpointy:
 
-Serwer działa pod adresem `localhost:3000`. Na chwilę obecną w celu uzyskania dostępu ścieżek konieczne jest zarejestrowanie, a następnie zalogowanie. Można to wykonać pod adresami odpowiednio
-`localhost:3000/signup` i `localhost:3000/login`. Wymagane dane:
+Serwer działa pod adresem `localhost:4000`. Niektóre ścieżki wymagają zalogowania. Aby się zalogować, należy najpierw utworzyć użytkownika pod adresem `localhost:3000/signup`. Następnie należy się zalogować pod adresem `localhost:4000/login`. Wymagane dane w obu przypadkach:
 
 ```
 {
@@ -43,6 +42,8 @@ Serwer działa pod adresem `localhost:3000`. Na chwilę obecną w celu uzyskania
 ```
 
 _Note:_ Hasło musi mieć minimum 6 znaków.
+
+Pod adresem `localhost:4000/logout` można się wylogować.
 
 Dostępne są ścieżki dla niektórych modeli wraz z wymaganymi danymi dla niektórych z nich:
 

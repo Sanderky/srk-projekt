@@ -1,0 +1,22 @@
+{
+  "name": "srk-projekt",
+  "version": "1.0.0",
+  "description": "Projekt zaliczeniowy Inżynieria oprogramowania.",
+  "scripts": {
+    "install": "concurrently \"cd frontend/webportal && npm install\" \"cd api && npm install\"",
+    "devstart": "concurrently \"cd frontend/webportal && npm start\" \"cd api && npm run serve\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Sanderky/srk-projekt.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Sanderky/srk-projekt/issues"
+  },
+  "homepage": "https://github.com/Sanderky/srk-projekt#readme",
+  "dependencies": {
+    "concurrently": "^7.4.0"
+  }
+}

@@ -4,11 +4,11 @@ import {isAuthorized} from "@/middleware/Authorize";
 
 const router = express.Router();
 
-router.use(isAuthorized("doctor"))
-router.post('/create', controller.createDoctor);
+
+router.post('/create',isAuthorized("doctor"), controller.createDoctor);
 router.get('/get/:doctorId', controller.readDoctor);
 router.get('/get/', controller.readAllDoctors);
-router.patch('/update/:doctorId', controller.updateDoctor);
-router.delete('/delete/:doctorId', controller.deleteDoctor);
+router.patch('/update/:doctorId',isAuthorized("doctor"), controller.updateDoctor);
+router.delete('/delete/:doctorId',isAuthorized("doctor"), controller.deleteDoctor);
 
 export = router;

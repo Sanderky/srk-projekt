@@ -1,0 +1,119 @@
+.containerBackground {
+    box-shadow: 0px 20px 36px -8px rgba(14, 14, 44, 0.1), 0px 1px 1px rgba(0, 0, 0, 0.05);
+    border-radius: 24px;
+    background-color: var(--primary);
+    padding-top: 45px;
+    width: 740px;
+    height: 640px;
+}
+
+
+.container {
+    background-color: var(--white);
+    width: 100%;
+    height: 100%;
+    border-radius: 24px;
+    padding: 60px;
+}
+
+.text {
+    font-weight: var(--semiBold);
+    color: var(--dark);
+    letter-spacing: var(--normal);
+    font-size: var(--monsterText);
+}
+
+.title {
+    font-size: var(--titleBig);
+    margin-bottom: 10px;
+}
+
+.input {
+    background-color: var(--accent);
+    border: 0;
+    border-radius: 15px;
+    height: 80px;
+    width: 500px;
+    padding: 12px;
+    text-align: center;
+    font-size: var(--titleBig);
+    font-weight: var(--bold);
+    letter-spacing: var(--spread);
+    color: var(--subText);
+}
+
+.buttonSend {
+    width: 500px;
+    height: 80px;
+    padding: 12px;
+    text-align: center;
+    color: var(--white);
+    background-color: var(--primary);
+    border-radius: 15px;
+    border: 0;
+    font-size: var(--titleBig);
+    font-weight: var(--bold);
+    margin-top: 25px;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 60px;
+}
+
+.buttonError {
+    background-color: var(--error);
+}
+
+.buttonNew {
+    font-weight: var(--semiBold);
+    color: var(--text);
+    letter-spacing: var(--normal);
+    font-size: var(--monsterText);
+    background-color: transparent;
+    border: 0;
+    text-align: center;
+    align-self: center;
+    margin-top: 40px;
+}
+
+.WrongCode, .TooFast, .success {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.buttonWrapper {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    height: 100%;
+}
+
+.successInfo {
+    color: var(--subText);
+}
+
+.successData {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.ConfirmationDataContainer {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 30px;
+}
+
+.ConfirmationDataLabel {
+    font-weight: var(--semiBold);
+    color: var(--dark);
+    letter-spacing: var(--normal);
+    font-size: var(--monsterText);
+    font-size: var(--titleBig);
+    margin-right: 25px;
+}
+
