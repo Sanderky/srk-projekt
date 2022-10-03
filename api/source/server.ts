@@ -3,7 +3,7 @@ import express from 'express';
 import http from 'http';
 import mongoose from 'mongoose';
 import { config } from '@/config/config';
-import { updateDoctorsDayArrays } from '@/library/CronJobs';
+import { updateDoctorsDayArrays, deleteOutdatedReservations } from '@/library/CronJobs';
 import Log from '@/library/Logging';
 import { logTraffic } from '@/middleware/LogTraffic';
 import { rules } from '@/middleware/Rules';
@@ -25,6 +25,7 @@ mongoose
 		Log.info('Connected to MongoDB.');
 		startServer();
 		updateDoctorsDayArrays();
+		deleteOutdatedReservations();
 	})
 	.catch((error) => {
 		Log.error('Unable to connect:');
