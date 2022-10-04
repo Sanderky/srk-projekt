@@ -3,9 +3,10 @@ import Reservation from '@/models/Reservation';
 import Slots from '@/models/Slots';
 import mongoose from 'mongoose';
 import { dayIdByDate } from '@/library/DaysUtils'
+import Log from '@/library/Logging';
 
 
-export { updateSlotForNewReservation, makeSlotAvailable };
+export { updateSlotForNewReservation, makeSlotAvailable, deleteOutdatedReservation };
 
 
 const updateSlotForNewReservation = async (doctorId: string, dayId: string, dayDate: Date, time: string) => {
@@ -68,5 +69,22 @@ const makeSlotAvailable = async (reservationId: string) => {
 		} else {
 			throw Error('Slots object with specified doctorID or dayID does not exist.');
 		}
+	}
+}
+
+const deleteOutdatedReservation = async () => {
+	const todayNonUTC = new Date();
+	const today = new Date(Date.UTC(todayNonUTC.getUTCFullYear(), todayNonUTC.getUTCMonth(), todayNonUTC.getUTCDate(), 0, 0, 0, 0));
+	let aux = 0;
+
+	const reservations = await Reservation.find()
+	reservations.forEach(async (reservation) => {
+		if (reservation.day < today) {
+			await Reservation.findByIdAndDelete(reservation._id);
+			aux++;
+		}
+	})
+	if (aux !== 0) {
+		Log.info('Outdated reservations have been deleted.');
 	}
 }

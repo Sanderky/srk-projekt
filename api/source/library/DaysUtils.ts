@@ -151,7 +151,7 @@ const updateDoctorDayArray = () => {
 					const newDay = new Day(new Date(date.setDate(date.getDate() + dayCount)), slotsId, dayId);
 					daysObj.days.push(newDay);
 					aux++;
-					await daysObj.save();
+					daysObj.save();
 				}
 				if (aux === 1) {
 					Log.debug(`Updated day array of doctor ${daysObj.doctorName} 1 time.`);

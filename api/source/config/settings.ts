@@ -29,9 +29,16 @@ export const holidays = ['01-01', '01-06', '05-01', '05-03', '08-15', '11-01', '
 const TIME_OF_UPDATE_HOUR = 7; // hours 0-23
 const TIME_OF_UPDATE_MINUTES = 0; // minutes 0-59
 
+const TIME_OF_DELETE_HOUR = 7; // hours 0-23
+const TIME_OF_DELETE_MINUTES = 0; // minutes 0-59
+
 export const cronSettings = {
 	updateDayArray: {
 		hour: TIME_OF_UPDATE_HOUR,
 		minutes: TIME_OF_UPDATE_MINUTES
+	},
+	deleteOutdatedReservations: {
+		hour: TIME_OF_DELETE_HOUR,
+		minutes: TIME_OF_DELETE_MINUTES
 	}
 };

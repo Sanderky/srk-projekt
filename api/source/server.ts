@@ -3,13 +3,15 @@ import express from 'express';
 import http from 'http';
 import mongoose from 'mongoose';
 import { config } from '@/config/config';
-import { updateDoctorsDayArrays } from '@/library/CronJobs';
+import { updateDoctorsDayArrays, deleteOutdatedReservations } from '@/library/CronJobs';
 import Log from '@/library/Logging';
 import { logTraffic } from '@/middleware/LogTraffic';
 import { rules } from '@/middleware/Rules';
 import doctorRoutes from '@/routes/Doctor';
 import reservationRoutes from '@/routes/Reservation';
 import userRoutes from '@/routes/User';
+import daysRoutes from '@/routes/Days';
+import slotsRoutes from '@/routes/Slots';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import passport from 'passport';
@@ -23,6 +25,7 @@ mongoose
 		Log.info('Connected to MongoDB.');
 		startServer();
 		updateDoctorsDayArrays();
+		deleteOutdatedReservations();
 	})
 	.catch((error) => {
 		Log.error('Unable to connect:');
@@ -64,6 +67,8 @@ const startServer = () => {
 	require('@/middleware/Passport');
 	// Routes
 	router.use('/doctor', doctorRoutes);
+	router.use('/days', daysRoutes);
+	router.use('/slots', slotsRoutes);
 	router.use('/reservation', reservationRoutes);
 	router.use('/user', userRoutes);
 
