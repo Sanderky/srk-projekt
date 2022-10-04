@@ -100,3 +100,12 @@ Dostępne są ścieżki dla niektórych modeli wraz z wymaganymi danymi dla niek
         ```
 
     -   `DELETE` - `/update/:reservationId`
+
+-   ### Dni:
+    - `GET` - `/days/get/:doctorId`
+    - `GET` - `/days/get/`
+
+-   ### Sloty:
+    - `GET` - `/slots/get/:doctorId/:dayId`
+    - `GET` - `/slots/get/:doctorId`
+    - `GET` - `/slots/get/`
