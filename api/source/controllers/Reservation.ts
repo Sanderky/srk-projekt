@@ -65,19 +65,42 @@ const readAllReservations = async (req: Request, res: Response, next: NextFuncti
 
 const updateReservation = async (req: Request, res: Response, next: NextFunction) => {
 	const reservationId = req.params.reservationId;
-	return await Reservation.findById(reservationId)
-		.then((reservation) => {
-			if (reservation) {
-				reservation.set(req.body);
-				return reservation
-					.save()
-					.then((reservation) => res.status(201).json({ reservation }))
-					.catch((error) => res.status(500).json({ error }));
-			} else {
-				res.status(404).json({ message: 'Not found' });
-			}
-		})
-		.catch((error) => res.status(500).json({ error }));
+	const { doctorId, day, time } = req.body;
+	try {
+		await makeSlotAvailable(reservationId)
+			.catch((error) => {
+				throw error;
+			});
+		const dayId = await dayIdByDate(doctorId, day)
+			.then((result) => {
+				return result;
+			})
+			.catch((error) => {
+				throw error;
+			});
+		await updateSlotForNewReservation(doctorId, dayId, day, time)
+			.catch((error) => {
+				throw error;
+			});
+		return await Reservation.findById(reservationId)
+			.then((reservation) => {
+				if (reservation) {
+					reservation.set(req.body);
+					return reservation
+						.save()
+						.then((reservation) => res.status(201).json({ reservation }))
+						.catch((error) => res.status(500).json({ error }));
+				} else {
+					res.status(404).json({ message: 'Not found' });
+				}
+			})
+			.catch((error) => {
+				throw error;
+			});
+	} catch (error) {
+		Log.error(error);
+		res.status(500).json({ error });
+	}
 };
 
 const deleteReservation = async (req: Request, res: Response, next: NextFunction) => {
