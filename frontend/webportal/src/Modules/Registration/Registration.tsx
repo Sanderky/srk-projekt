@@ -6,7 +6,7 @@ import LoadingIcon from "../../Assets/Images/loading.png";
 import styles from "./Registration.module.css";
 import { useEffect, useState, useRef } from "react";
 import React from "react";
-import { table } from "console";
+import { SpecialistSelection, VisitDate } from "./Forms";
 
 const HelloScreen = () => {
     const scrollDown = () => {
@@ -176,11 +176,11 @@ const Summary = ({ code }: SummaryProps ) => {
 const Forms = () => {
     return (
         <div className={styles.expandableWrapper}>
-            <ExpandableView expandedContentHeight={50} expanded={true} number={1} title={"Wybierz specjalistę"} status={ExpandableStatus.Active} style={{marginBottom: "30px"}}>
-                <div>Test</div>
+            <ExpandableView expandedContentHeight={500} expanded={true} number={1} title={"Wybierz specjalistę"} status={ExpandableStatus.Active} style={{marginBottom: "30px"}}>
+                <SpecialistSelection/>
             </ExpandableView>
-            <ExpandableView expandedContentHeight={50} expanded={false} number={2} title={"Wybierz termin wizyty"} status={ExpandableStatus.Blocked} style={{marginBottom: "30px"}}>
-                <div>Test</div>
+            <ExpandableView expandedContentHeight={500} expanded={false} number={2} title={"Wybierz termin wizyty"} status={ExpandableStatus.Active} style={{marginBottom: "30px"}}>
+                <VisitDate/>
             </ExpandableView>
             <ExpandableView expandedContentHeight={50} expanded={false} number={3} title={"Formularz rejestracyjny"} status={ExpandableStatus.Blocked}>
                 <div>Test</div>

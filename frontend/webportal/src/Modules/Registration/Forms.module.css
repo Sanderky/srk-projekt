@@ -1,0 +1,93 @@
+.search {
+    background: none;
+    border-width: 0;
+    flex: 1;
+    border-radius: 15px 0 0 15px;
+    padding: 10px;
+    font-weight: var(--semiBold);
+    color: var(--subText);
+    letter-spacing: var(--normal);
+    font-size: var(--titleSmall);
+}
+
+.search:focus {
+    outline: 0;
+}
+
+.search::placeholder {
+    color: var(--subText);
+    opacity: 0.5;
+}
+
+.searchWrapper {
+    display: flex;
+    flex-direction: row;
+    width: 710px;
+    border-radius: 15px;
+    background-color: var(--accent);
+    align-items: center;
+}
+
+.searchIcon {
+    width: 28px;
+    height: 28px;
+    margin: 0 5px;
+}
+
+.specialistSelection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 30px;
+}
+
+.specialistBox {
+    background-color: var(--accent);
+    font-weight: var(--semiBold);
+    color: var(--text);
+    letter-spacing: var(--normal);
+    font-size: var(--regular);
+    display: flex;
+    flex-direction: row;
+}
+
+.specialistBoxName {
+    flex: 2;
+    border-right: 1px solid var(--accentDark);
+    padding: 30px 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.specialistBoxInfo {
+    flex: 6;
+    padding: 30px 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.specialistSelectionWrapper {
+    height: 750px;
+}
+
+.specialistsList {
+    display: flex;
+    flex-direction: column;
+}
+
+.hourBox {
+    padding: 10px;
+    background-color: var(--text);
+    font-weight: var(--semiBold);
+    color: var(--white);
+    letter-spacing: var(--normal);
+    font-size: var(--big);
+    margin: 10px;
+}
+
+.calendarHours {
+    display: flex;
+    flex-flow: row wrap;
+}
