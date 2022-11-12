@@ -1,0 +1,17 @@
+import mongoose, { Document, Schema } from 'mongoose';
+
+export interface ITicket {
+	queId: mongoose.Types.ObjectId;
+	priority: number;
+	visitCode: string;
+}
+
+export interface ITicketModel extends ITicket, Document {}
+
+const TicketSchema: Schema = new Schema({
+	queId: { type: Schema.Types.ObjectId, required: true, ref: 'Que' },
+	priority: Number,
+	visitCode: { type: String, required: true }
+});
+
+export default mongoose.model<ITicketModel>('Ticket', TicketSchema);
