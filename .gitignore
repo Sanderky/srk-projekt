@@ -1,5 +1,2 @@
-/api/node_modules/
-/api/.env
-/api/build/
-/.idea
 /node_modules/
+*.code-workspace
