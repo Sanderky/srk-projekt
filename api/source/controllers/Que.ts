@@ -3,11 +3,19 @@ import mongoose from 'mongoose';
 import Que from '@/models/Que';
 import Log from '@/library/Logging';
 
-const createQue = async (req: Request, res: Response) => {
+const createQue = (req: Request, res: Response) => {
 	const { doctorId, roomNumber } = req.body;
+	const doctorIdObj = new mongoose.Types.ObjectId(doctorId);
+	Log.warn(doctorIdObj);
+	Log.warn(roomNumber);
 	const ticketArray: mongoose.AnyObject = [];
+	const que = new Que({
+		doctorId: doctorIdObj,
+		roomNumber,
+		activeTickets: ticketArray
+	});
 	try {
-		return await new Que(doctorId, roomNumber, ticketArray)
+		return que
 			.save()
 			.then((que) => res.status(201).json({ que }))
 			.catch((error) => {
@@ -19,14 +27,66 @@ const createQue = async (req: Request, res: Response) => {
 	}
 };
 
-const readQue = (req: Request, res: Response) => {};
+const readQue = async (req: Request, res: Response) => {
+	const queId = req.params.queId;
+	try {
+		return await Que.findById(queId)
+			.populate('doctorId', 'firstname lastname')
+			.then((que) => (que ? res.status(200).json({ que }) : res.status(404).json({ message: 'Not found' })));
+	} catch (error) {
+		Log.error(error);
+		res.status(500).json({ error });
+	}
+};
 
-const readAllQues = (req: Request, res: Response) => {};
+const readAllQues = async (req: Request, res: Response) => {
+	try {
+		return await Que.find()
+			.populate('doctorId', 'firstname lastname')
+			.then((que) => (que ? res.status(200).json({ que }) : res.status(404).json({ message: 'Not found' })));
+	} catch (error) {
+		Log.error(error);
+		res.status(500).json({ error });
+	}
+};
 
-const readQueFofDoctor = (req: Request, res: Response) => {};
+const readQueFofDoctor = async (req: Request, res: Response) => {
+	const doctorId = req.params.doctorId;
+	try {
+		return await Que.findOne({ doctorId: doctorId })
+			.populate('doctorId', 'firstname lastname')
+			.then((que) => (que ? res.status(200).json({ que }) : res.status(404).json({ message: 'Not found' })));
+	} catch (error) {
+		Log.error(error);
+		res.status(500).json({ error });
+	}
+};
 
-const updateQue = (req: Request, res: Response) => {};
+const updateQue = async (req: Request, res: Response) => {
+	const queId = req.params.queId;
 
-const deleteQue = (req: Request, res: Response) => {};
+	return await Que.findById(queId)
+		.then((que) => {
+			if (que) {
+				que.set(req.body);
+
+				return que.save().then((que) => res.status(201).json({ que }));
+			} else {
+				res.status(404).json({ message: 'Not found' });
+			}
+		})
+		.catch((error) => res.status(500).json({ error }));
+};
+
+const deleteQue = async (req: Request, res: Response) => {
+	const queId = req.params.queId;
+	try {
+		const que = await Que.findByIdAndDelete(queId);
+		return que ? res.status(201).json({ message: `Deleted que: ${queId}` }) : res.status(404).json({ message: 'Not found' });
+	} catch (error) {
+		Log.error(error);
+		return res.status(500).json({ error });
+	}
+};
 
 export default { createQue, readQue, readAllQues, readQueFofDoctor, updateQue, deleteQue };

@@ -12,6 +12,7 @@ import reservationRoutes from '@/routes/Reservation';
 import userRoutes from '@/routes/User';
 import daysRoutes from '@/routes/Days';
 import slotsRoutes from '@/routes/Slots';
+import queRoutes from '@/routes/Que';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import passport from 'passport';
@@ -70,6 +71,7 @@ const startServer = () => {
 	router.use('/days', daysRoutes);
 	router.use('/slots', slotsRoutes);
 	router.use('/reservation', reservationRoutes);
+	router.use('/que', queRoutes);
 	router.use('/user', userRoutes);
 
 	// Healthcheck Route
