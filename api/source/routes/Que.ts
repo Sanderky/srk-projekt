@@ -8,7 +8,7 @@ router.post('/create', isAuthorized('doctor'), controller.createQue);
 router.get('/get/:queId', controller.readQue);
 router.get('/get/', controller.readAllQues);
 router.get('/get/', controller.readQueFofDoctor);
-router.patch('/update/:queId', isAuthorized('que'), controller.updateQue);
-router.delete('/delete/:queId', isAuthorized('que'), controller.deleteQue);
+router.patch('/update/:queId', isAuthorized('doctor'), controller.updateQue);
+router.delete('/delete/:queId', isAuthorized('doctor'), controller.deleteQue);
 
 export = router;

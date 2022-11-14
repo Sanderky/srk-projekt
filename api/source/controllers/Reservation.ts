@@ -1,9 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import Reservation from '@/models/Reservation';
-import { generateReservationCode } from '@/library/GenerateReservationCode';
 import { dayIdByDate } from '@/library/DaysUtils'
-import { updateSlotForNewReservation, makeSlotAvailable } from '@/library/ReservationUtils';
+import { generateReservationCode, updateSlotForNewReservation, makeSlotAvailable } from '@/library/ReservationUtils';
 import Log from '@/library/Logging';
 
 const createReservation = async (req: Request, res: Response, next: NextFunction) => {

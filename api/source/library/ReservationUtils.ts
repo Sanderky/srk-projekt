@@ -6,8 +6,18 @@ import { dayIdByDate } from '@/library/DaysUtils'
 import Log from '@/library/Logging';
 
 
-export { updateSlotForNewReservation, makeSlotAvailable, deleteOutdatedReservation };
+export { generateReservationCode, updateSlotForNewReservation, makeSlotAvailable, deleteOutdatedReservation };
 
+const generateReservationCode = async () => {
+	let resp: any = [];
+	let randCode;
+	do {
+		randCode = 'REZ' + Math.floor(Math.random() * 99999);
+		resp = await Reservation.find({ reservationCode: randCode }).exec();
+	}
+	while (resp.length != 0)
+	return randCode;
+}
 
 const updateSlotForNewReservation = async (doctorId: string, dayId: string, dayDate: Date, time: string) => {
 	const doctor = new mongoose.Types.ObjectId(doctorId);

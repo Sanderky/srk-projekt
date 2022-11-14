@@ -6,8 +6,6 @@ import Log from '@/library/Logging';
 const createQue = (req: Request, res: Response) => {
 	const { doctorId, roomNumber } = req.body;
 	const doctorIdObj = new mongoose.Types.ObjectId(doctorId);
-	Log.warn(doctorIdObj);
-	Log.warn(roomNumber);
 	const ticketArray: mongoose.AnyObject = [];
 	const que = new Que({
 		doctorId: doctorIdObj,
