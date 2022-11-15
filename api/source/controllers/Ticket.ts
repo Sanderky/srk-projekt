@@ -3,13 +3,16 @@ import mongoose from 'mongoose';
 import Ticket from '@/models/Ticket';
 import Log from '@/library/Logging';
 import { generateVisitCode } from '@/library/TicketUtils';
+import { insertTicketIntoQue } from '@/library/QueEngine';
 
 const createTicket = async (req: Request, res: Response) => {
 	const { queId, visitTime } = req.body;
 	const queIdObj = new mongoose.Types.ObjectId(queId);
 	try {
 		const visitCode = await generateVisitCode(queId)
+		const ticketId = new mongoose.Types.ObjectId()
 		const ticket = new Ticket({
+			_id: ticketId,
 			queId: queIdObj,
 			priority: 5,
 			visitCode,
@@ -17,7 +20,10 @@ const createTicket = async (req: Request, res: Response) => {
 		});
 		return ticket
 			.save()
-			.then((ticket) => res.status(201).json({ ticket }))
+			.then(async (ticket) => {
+				await insertTicketIntoQue(ticketId)
+				res.status(201).json({ ticket })
+			})
 			.catch((error) => {
 				throw error;
 			});
