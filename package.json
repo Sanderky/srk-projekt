@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Projekt zaliczeniowy Inżynieria oprogramowania.",
   "scripts": {
-    "install": "concurrently \"cd frontend/webportal && npm install\" \"cd api && npm install\"",
+    "install": "npm install concurrently && concurrently \"cd frontend/webportal && npm install\" \"cd api && npm install\"",
     "devstart": "concurrently \"cd frontend/webportal && npm start\" \"cd api && npm run serve\""
   },
   "repository": {
@@ -17,6 +17,6 @@
   },
   "homepage": "https://github.com/Sanderky/srk-projekt#readme",
   "dependencies": {
-    "concurrently": "^7.4.0"
+    "concurrently": "^7.5.0"
   }
 }
