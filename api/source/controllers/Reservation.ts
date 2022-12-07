@@ -129,5 +129,5 @@ const loginWithReservation = async (req: Request, res: Response, next: NextFunct
 		} else res.status(404).json({ message: 'Not found / Bad credentials' });
 	});
 };
-//TODO Poprawić powyższe spaghetti.
+
 export default { createReservation, readReservation, readAllReservations, updateReservation, deleteReservation, loginWithReservation };

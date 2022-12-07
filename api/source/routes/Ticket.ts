@@ -4,7 +4,7 @@ import { isAuthorized } from '@/middleware/Authorize';
 
 const router = express.Router();
 
-router.post('/create', isAuthorized('doctor'), controller.createTicket);
+router.post('/create', controller.createTicket);
 router.get('/get/:ticketId', controller.readTicket);
 router.get('/get/', controller.readAllTickets);
 router.get('/get/', controller.readTicketsForQue);
