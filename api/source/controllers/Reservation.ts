@@ -118,15 +118,16 @@ const deleteReservation = async (req: Request, res: Response, next: NextFunction
 };
 
 const loginWithReservation = async (req: Request, res: Response, next: NextFunction) => {
-	const { email, reservationCode } = req.body;
-	Reservation.find({ email: email, reservationCode: reservationCode }, (err: any, reservations: any) => {
+	const {reservationCode } = req.body;
+	Reservation.find({reservationCode: reservationCode }, (err: any, reservations: any) => {
 		if (err) return res.status(500).json({ err });
-		if (reservations.length != 0) {
-			Reservation.find({ email: email }, (err: any, reservations: any) => {
-				if (err) return res.status(500).json({ err });
+		else if (reservations.length != 0) {
+			
 				return res.status(200).json({ reservations });
-			});
-		} else res.status(404).json({ message: 'Not found / Bad credentials' });
+		}
+		else{ 
+		 res.status(404).json({ message: 'Not found / Bad credentials' });
+		}
 	});
 };
 

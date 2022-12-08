@@ -36,7 +36,7 @@
     width: 500px;
     padding: 12px;
     text-align: center;
-    font-size: var(--titleBig);
+    font-size: 25px;
     font-weight: var(--bold);
     letter-spacing: var(--spread);
     color: var(--subText);

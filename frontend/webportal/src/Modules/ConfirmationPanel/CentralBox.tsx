@@ -3,26 +3,6 @@ import styles from './CentralBox.module.css';
 import axios from "axios"
 import React from "react";
 
-const WrongCode = (): JSX.Element => {
-    return (
-        <div className={styles.WrongCode}>
-            <div className={`${styles.text} ${styles.title}`}>Błędny kod</div>
-            <div className={styles.text}>Podany kod nie istnieje. Spróbuj ponownie.</div>
-            
-            <form className={styles.form}>
-                <input type="text" className={styles.input} maxLength={5} />
-                <button type="submit" className={`${styles.buttonSend} ${styles.buttonError}`}>Zatwierdź</button>
-            </form>
-
-            <div className={styles.buttonWrapper}>
-                <button className={styles.buttonNew}>Nowa rejestracja</button>
-            </div>
-            
-            
-        </div>
-    );
-}
-
 const TooFast = (): JSX.Element => {
     return (
         <div className={styles.TooFast}>
@@ -50,25 +30,6 @@ const ConfirmationData = ({ label, data, color = "var(--subText)"} : SuccessData
     );
 }
 
-const Success = (): JSX.Element => {
-    return (
-        <div className={styles.success}>
-            <div className={styles.successData}>
-                <ConfirmationData label={"Twój numer"} data={"AC3"}/>
-                <ConfirmationData label={"Stanowisko:"} data={115}/>
-                <ConfirmationData label={"Godzina wizyty:"} data={"10:00"}/>
-                <ConfirmationData label={"Miejsce w kolejce:"} data={2}/>
-            </div>
-            <div className={`${styles.successInfo} ${styles.text}`}>
-                Proszę obserwować tablicę wywoławczą i oczekiwać na swoją kolej.
-                Po wywołaniu można udać się do swojego stanowiska.
-            </div>
-            <div className={styles.buttonWrapper}>
-                <button className={styles.buttonNew}>Zakończ</button>
-            </div>
-        </div>
-    );
-}
 
 const Warning = (): JSX.Element => {
     const addZero = (minutes: number): string => minutes < 10 ? "0" + minutes : minutes.toString();
@@ -93,8 +54,16 @@ const Warning = (): JSX.Element => {
 }
 
 
+class CentralBox extends React.Component <any,any> {
+    constructor(props:any){
+        super(props)
+        this.state = {panelStatus: "enterInformation", time:"", roomNumber: 0, visitCode:""}
+    }
 
-class CentralBox extends React.Component  {
+    backToLogin = () => {
+        this.setState({panelStatus:"enterInformation"});
+    }
+
     getReservations = (e:any) => { 
         e.preventDefault();
         console.log(e);
@@ -102,8 +71,7 @@ class CentralBox extends React.Component  {
             method: "POST",
             url: "http://localhost:3000/reservation/login",
             data: {
-                email:e.target.form[0].value,
-                reservationCode:e.target.form[1].value,
+                reservationCode:e.target.form[0].value,
             }
         }
         axios(configuration)
@@ -130,7 +98,13 @@ class CentralBox extends React.Component  {
                     axios(addToQueConfig)
                         .then((res3)=>{
                             console.log(res3)
-                            this.setState({pageStatus:"success"});
+                            this.setState({
+                            panelStatus:"success", 
+                            time: res1.data.reservations[0].time, 
+                            roomNumber: res2.data.que[0].roomNumber,
+                            visitCode: res3.data.ticket.visitCode
+                        });
+
                         })
                         .catch((err) => {console.log(err)})
                     console.log(res2.data.que[0]._id)
@@ -138,31 +112,72 @@ class CentralBox extends React.Component  {
                 })
                 .catch((err) => console.log("Nie znaleziono kolejki"))
         })
-            .catch((error) => {console.log(error)});
+            .catch((error) => {this.setState({panelStatus:"wrongCode"})});
     }
 
     EnterCode = (): JSX.Element => {
         return (
             <div>
                 <div className={`${styles.text} ${styles.title}`}>Witaj</div>
-                <div className={styles.text}>Podaj swój unikatowy kod oraz adres email aby potwiedzić rejestrację.</div>
-                
+                <div className={styles.text}>Podaj swój unikatowy kod rezerwacji</div>
                 <form className={styles.form}>
-                    <input type="text" name="email" placeholder="Adres email" className={styles.input} maxLength={50} />
                     <input type="text" name="reservationCode" placeholder="Unikatowy kod rezerwacji" className={styles.input} maxLength={8} />
                     <button type="submit" onClick = {(e) => {this.getReservations(e)}} className={styles.buttonSend}>Zatwierdź</button>
                 </form>
+            </div>
+        );
+    }
+
+
+    Success = (): JSX.Element => {
+        return (
+            <div className={styles.success}>
+                <div className={styles.successData}>
+                    <ConfirmationData label={"Twój numer"} data={this.state.visitCode}/>
+                    <ConfirmationData label={"Stanowisko:"} data={this.state.roomNumber}/>
+                    <ConfirmationData label={"Godzina wizyty:"} data={this.state.time}/>
+                    <ConfirmationData label={"Miejsce w kolejce:"} data={"Todo"}/>
+                </div>
+                <div className={`${styles.successInfo} ${styles.text}`}>
+                    Proszę obserwować tablicę wywoławczą i oczekiwać na swoją kolej.
+                    Po wywołaniu można udać się do swojego stanowiska.
+                </div>
+                <div className={styles.buttonWrapper}>
+                    <button type="submit" onClick= {(e) => {this.backToLogin()}} className={styles.buttonNew}>Zakończ</button>
+                </div>
+            </div>
+        );
+    }
+    
+    WrongCode = (): JSX.Element => {
+        return (
+            <div className={styles.WrongCode}>
+                <div className={`${styles.text} ${styles.title}`}>Błędny kod</div>
+                <div className={styles.text}>Podany kod nie istnieje. Spróbuj ponownie.</div>
                 
+                <form className={styles.form}>
+                    <input type="text" className={styles.input} maxLength={10} />
+                    <button type="submit" className={`${styles.buttonSend} ${styles.buttonError}`} onClick = {(e) => {this.getReservations(e)}}>Zatwierdź</button>
+                </form> 
             </div>
         );
     }
 
     // useEffect(() => {setInterval(() => props.showHelloScreen(), 30000)}, []);
     render(){
+        let toRender;
+        if(this.state.panelStatus === "enterInformation"){
+            toRender = <this.EnterCode/>;
+        }else if(this.state.panelStatus === "success"){
+            toRender = <this.Success/>
+        }
+        else if(this.state.panelStatus === "wrongCode"){
+            toRender = <this.WrongCode/>;
+        }
         return (
             <div className={styles.containerBackground}>
                 <div className={styles.container}>
-                    <this.EnterCode/>
+                    {toRender}
                 </div>
             </div>
         );
