@@ -3,21 +3,14 @@ import 'module-alias/register';
 import mongoose from 'mongoose';
 import Que from '@/models/Que'
 import Ticket from '@/models/Ticket'
+const AsyncAF = require('async-af');
+
 
 function convertTime(time: string) {
-    const hourString = time.split(':')[0]
-    const minutesString = time.split(':')[1]
-    const hour = parseInt(hourString)
-    const minutes = parseInt(minutesString)
+    const hour = parseInt(time.split(':')[0])
+    const minutes = parseInt(time.split(':')[1])
 
     return (hour * 60 + minutes)
-}
-
-function getTimeDifference(visitTimeString: string) {
-    const today = new Date()
-    const currentTime = today.getHours() * 60 + today.getMinutes()
-    const visitTime = convertTime(visitTimeString)
-    return (visitTime - currentTime)
 }
 
 export { insertTicketIntoQue }
@@ -36,10 +29,22 @@ const insertTicketIntoQue = async (ticketId: mongoose.Types.ObjectId) => {
                 que.activeTickets.push(ticket._id)
                 que.save()
             } else {
-                const timeDifference = getTimeDifference(ticket.visitTime)
-                //TODO 
+                const ticketToInsertTime = convertTime(ticket.visitTime)
+                const mappedTickets = await AsyncAF(que.activeTickets).mapAF(async (ticket: mongoose.Types.ObjectId) => {
+                    const mappedTicket = await Ticket.findById(ticket).exec()
+                    return mappedTicket?.visitTime
+                })
+                const index = mappedTickets.findIndex((time: string) =>
+                    convertTime(time) > ticketToInsertTime
+                )
+                if (index < 0) {
+                    que.activeTickets.push(ticket._id)
+                    que.save()
+                } else {
+                    que.activeTickets.splice(index, 0, ticket._id)
+                    que.save()
+                }
             }
-
         }
     }
 }

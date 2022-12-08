@@ -7,12 +7,17 @@ const createQue = (req: Request, res: Response) => {
 	const { doctorId, roomNumber } = req.body;
 	const doctorIdObj = new mongoose.Types.ObjectId(doctorId);
 	const ticketArray: mongoose.AnyObject = [];
-	const que = new Que({
-		doctorId: doctorIdObj,
-		roomNumber,
-		activeTickets: ticketArray
-	});
 	try {
+		let que;
+		if (!doctorIdObj) {
+			throw new Error('DoctorId is empty!')
+		} else {
+			que = new Que({
+				doctorId: doctorIdObj,
+				roomNumber,
+				activeTickets: ticketArray
+			});
+		}
 		return que
 			.save()
 			.then((que) => res.status(201).json({ que }))
@@ -29,7 +34,7 @@ const readQue = async (req: Request, res: Response) => {
 	const queId = req.params.queId;
 	try {
 		return await Que.findById(queId)
-			.populate('doctorId', 'firstname lastname')
+			.populate('doctorId activeTickets', 'firstname lastname visitTime visitCode')
 			.then((que) => (que ? res.status(200).json({ que }) : res.status(404).json({ message: 'Not found' })));
 	} catch (error) {
 		Log.error(error);
@@ -40,7 +45,7 @@ const readQue = async (req: Request, res: Response) => {
 const readAllQues = async (req: Request, res: Response) => {
 	try {
 		return await Que.find()
-			.populate('doctorId', 'firstname lastname')
+			.populate('doctorId activeTickets', 'firstname lastname visitTime visitCode')
 			.then((que) => (que ? res.status(200).json({ que }) : res.status(404).json({ message: 'Not found' })));
 	} catch (error) {
 		Log.error(error);
@@ -52,7 +57,7 @@ const readQueFofDoctor = async (req: Request, res: Response) => {
 	const doctorId = req.params.doctorId;
 	try {
 		return await Que.findOne({ doctorId: doctorId })
-			.populate('doctorId', 'firstname lastname')
+			.populate('doctorId activeTickets', 'firstname lastname visitTime visitCode')
 			.then((que) => (que ? res.status(200).json({ que }) : res.status(404).json({ message: 'Not found' })));
 	} catch (error) {
 		Log.error(error);

@@ -6,7 +6,7 @@ export interface IQue {
 	activeTickets: mongoose.Types.ObjectId[];
 }
 
-export interface IQueModel extends IQue, Document {}
+export interface IQueModel extends IQue, Document { }
 
 const QueSchema: Schema = new Schema({
 	doctorId: { type: Schema.Types.ObjectId, required: true, ref: 'Doctor' },

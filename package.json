@@ -1,22 +1,22 @@
 {
   "name": "srk-projekt",
   "version": "1.0.0",
-  "description": "Projekt zaliczeniowy Inżynieria oprogramowania.",
+  "description": "Praca dyplomowa inżynierska",
   "scripts": {
     "install": "npm install concurrently && concurrently \"cd frontend/webportal && npm install\" \"cd api && npm install\"",
     "devstart": "concurrently \"cd frontend/webportal && npm start\" \"cd api && npm run serve\""
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Sanderky/srk-projekt.git"
+    "url": "git+https://github.com/qubrat/srk-projekt.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Sanderky/srk-projekt/issues"
+    "url": "https://github.com/qubrat/srk-projekt/issues"
   },
-  "homepage": "https://github.com/Sanderky/srk-projekt#readme",
+  "homepage": "https://github.com/qubrat/srk-projekt#readme",
   "dependencies": {
-    "concurrently": "^7.5.0"
+    "concurrently": "^7.6.0"
   }
 }
