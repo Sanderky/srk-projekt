@@ -53,6 +53,7 @@
     background-color: transparent;
     border-width: 0;
     cursor: pointer;
+    transition: 0.3s;
 }
 
 .goNextBtn:hover {
@@ -147,7 +148,7 @@
     flex: 1;
 }
 
-.stickyHeader + .landingPageContent {
+.stickyHeader+.landingPageContent {
     padding-top: 147px;
 }
 
@@ -171,10 +172,11 @@
 
 @keyframes rotating {
     from {
-      transform: rotate(0deg);
+        transform: rotate(0deg);
     }
+
     to {
-      transform: rotate(360deg);
+        transform: rotate(360deg);
     }
 }
 

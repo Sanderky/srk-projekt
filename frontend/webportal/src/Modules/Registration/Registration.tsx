@@ -11,19 +11,19 @@ import { table } from "console";
 const HelloScreen = () => {
     const scrollDown = () => {
         const section = document.querySelector(`.${styles.landingPage}`);
-        section?.scrollIntoView({behavior: 'smooth', block: 'start'});
+        section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     return (
         <div className={styles.helloScreen}>
-            <CompanyName color={"var(--white)"} size={"var(--header1"} style={{marginTop: "70px", marginBottom: "10px"}}/>
-            <Logo width="150px" height="150px"/>
+            <CompanyName color={"var(--white)"} size={"var(--header1"} style={{ marginTop: "70px", marginBottom: "10px" }} />
+            <Logo width="150px" height="150px" />
             <div className={styles.helloHeader}>Witamy!</div>
             <div className={styles.subHelloHeader}>Internetowa rejestracja wizyty</div>
+            <div className={styles.helloInfo}>Tutaj zarejestrujesz się u jednego ze specjalistów SRK</div>
             <div className={styles.goNextWrapper}>
                 <button className={styles.goNextBtn} onClick={() => scrollDown()}>Przejdź dalej</button>
             </div>
-            <div className={styles.helloInfo}>Tutaj bezproblemowo zarejestrujesz się u jednego ze specjalistów SRK</div>
         </div>
     )
 }
@@ -37,7 +37,7 @@ const Header = () => {
         const onScroll = () => {
             if (window.scrollY >= windowHeight) {
                 headerRef.current?.classList.add(styles.stickyHeader);
-            } 
+            }
             else {
                 headerRef.current?.classList.remove(styles.stickyHeader);
             }
@@ -46,13 +46,13 @@ const Header = () => {
     }, [])
 
     return <div ref={headerRef} className={styles.header}>
-        <CompanyName color={"var(--white)"} size={"var(--header2"}/>
+        <CompanyName color={"var(--white)"} size={"var(--header2"} />
         <div className={styles.headerInfo}>Rejestracja wizyty</div>
-        <CompanyName color={"var(--white)"} size={"var(--header2"} style={{visibility: "hidden"}}/>
+        <CompanyName color={"var(--white)"} size={"var(--header2"} style={{ visibility: "hidden" }} />
     </div>;
 }
 
-interface ExpandableViewProps{
+interface ExpandableViewProps {
     children: React.ReactElement;
     title: string;
     expandedContentHeight: number;
@@ -73,9 +73,9 @@ const ExpandableView = ({ children, style, expandedContentHeight, expanded, titl
     const [expandedView, setExpand] = useState(expanded ?? false);
 
     const toggleExpand = () => {
-        if(expandedView) {
+        if (expandedView) {
             setExpand(false);
-        } 
+        }
         else {
             setExpand(true);
         }
@@ -91,29 +91,29 @@ const ExpandableView = ({ children, style, expandedContentHeight, expanded, titl
             }
             case ExpandableStatus.Done: {
                 return "var(--success)";
-           }
+            }
         }
     }
 
     const renderIcon = () => {
         const icon = status === ExpandableStatus.Blocked ? ArrowDark : ArrowWhite;
-        return <img src={icon} style={{transform: expandedView ? "rotateX(0deg)" : "rotateX(180deg)", transition: "0.8s"}}/>
+        return <img src={icon} style={{ transform: expandedView ? "rotateX(0deg)" : "rotateX(180deg)", transition: "0.8s" }} />
     }
 
     const renderSubtitle = () => {
-        if(subtitle) {
+        if (subtitle) {
             return <div className={styles.expandSubtitle}>{subtitle}</div>
         }
         return null;
     }
 
     return (
-        <div style={{...style}}>
-            <div 
-                className={styles.expandBtn} 
-                onClick={() => status === ExpandableStatus.Blocked ? null : toggleExpand()} 
+        <div style={{ ...style }}>
+            <div
+                className={styles.expandBtn}
+                onClick={() => status === ExpandableStatus.Blocked ? null : toggleExpand()}
                 style={{
-                    backgroundColor: colorPicker(), 
+                    backgroundColor: colorPicker(),
                     color: status === ExpandableStatus.Blocked ? "var(--subText)" : "var(--white)",
                     paddingTop: subtitle ? "20px" : 0,
                     paddingBottom: subtitle ? "20px" : 0,
@@ -121,7 +121,7 @@ const ExpandableView = ({ children, style, expandedContentHeight, expanded, titl
                 }}
             >
                 <div className={styles.expandInfoWrapper}>
-                    <div className={styles.expandNumber} style={{justifyContent: subtitle ? "flex-start" : "center"}}>{number.toString()}</div>
+                    <div className={styles.expandNumber} style={{ justifyContent: subtitle ? "flex-start" : "center" }}>{number.toString()}</div>
                     <div className={styles.expandTitles}>
                         <div className={styles.expandTitle}>{title}</div>
                         {renderSubtitle()}
@@ -129,7 +129,7 @@ const ExpandableView = ({ children, style, expandedContentHeight, expanded, titl
                 </div>
                 {renderIcon()}
             </div>
-            <div className={styles.expandContent} style={{ height: expandedView ? `${expandedContentHeight}px`: "0"}}>
+            <div className={styles.expandContent} style={{ height: expandedView ? `${expandedContentHeight}px` : "0" }}>
                 {children}
             </div>
         </div>
@@ -147,7 +147,7 @@ interface SummaryProps {
     code: string;
 }
 
-const Summary = ({ code }: SummaryProps ) => {
+const Summary = ({ code }: SummaryProps) => {
     const renderSeparator = () => {
         return <div className={styles.separator}></div>;
     }
@@ -176,10 +176,13 @@ const Summary = ({ code }: SummaryProps ) => {
 const Forms = () => {
     return (
         <div className={styles.expandableWrapper}>
-            <ExpandableView expandedContentHeight={50} expanded={true} number={1} title={"Wybierz specjalistę"} status={ExpandableStatus.Active} style={{marginBottom: "30px"}}>
-                <div>Test</div>
+            <ExpandableView expandedContentHeight={50} expanded={true} number={1} title={"Wybierz specjalistę"} status={ExpandableStatus.Active} style={{ marginBottom: "30px" }}>
+                <div>
+                    <div>Test</div>
+                    <div>Test</div>
+                </div>
             </ExpandableView>
-            <ExpandableView expandedContentHeight={50} expanded={false} number={2} title={"Wybierz termin wizyty"} status={ExpandableStatus.Blocked} style={{marginBottom: "30px"}}>
+            <ExpandableView expandedContentHeight={50} expanded={false} number={2} title={"Wybierz termin wizyty"} status={ExpandableStatus.Blocked} style={{ marginBottom: "30px" }}>
                 <div>Test</div>
             </ExpandableView>
             <ExpandableView expandedContentHeight={50} expanded={false} number={3} title={"Formularz rejestracyjny"} status={ExpandableStatus.Blocked}>
@@ -192,31 +195,31 @@ const Forms = () => {
 const Loading = () => {
     return (
         <div className={styles.loadingWrapper}>
-            <img src={LoadingIcon} className={`${styles.loadingIcon} ${styles.rotating}`}/>
+            <img src={LoadingIcon} className={`${styles.loadingIcon} ${styles.rotating}`} />
         </div>
     );
 }
 
 const Registration = () => {
-    useEffect(() => {document.title = "SRK - Rejestracja"}, [])
+    useEffect(() => { document.title = "SRK - Rejestracja" }, [])
 
-    const [ loading, setLoading ] = useState(false);
-    const [ summary, setSummary ] = useState(false);
-    const [ code, setCode ] = useState("");
+    const [loading, setLoading] = useState(false);
+    const [summary, setSummary] = useState(false);
+    const [code, setCode] = useState("");
 
 
     return (
         <div>
-            <HelloScreen/>
+            <HelloScreen />
             <div className={styles.landingPage}>
-                
-                <Header/>
 
-                <div className={styles.landingPageContent} style={{justifyContent: loading ? "center" : "flex-start"}}>
-                    {summary ? (loading ? <Loading/> : <Summary code={code}/>) : <Forms/>}
+                <Header />
+
+                <div className={styles.landingPageContent} style={{ justifyContent: loading ? "center" : "flex-start" }}>
+                    {summary ? (loading ? <Loading /> : <Summary code={code} />) : <Forms />}
                 </div>
 
-                <Footer/>
+                <Footer />
             </div>
         </div>
     );

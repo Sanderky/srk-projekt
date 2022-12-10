@@ -1,22 +1,48 @@
-@font-face {
+/* @font-face {
     font-family: WorkSans;
     src: url(./Assets/Fonts/WorkSans/WorkSans-SemiBold.woff2);
     font-weight: bold;
 }
+
 @font-face {
     font-family: WorkSans;
     src: url(./Assets/Fonts/WorkSans/WorkSans-Bold.woff2);
     font-weight: bolder;
 }
+
 @font-face {
     font-family: WorkSans;
     src: url(./Assets/Fonts/WorkSans/WorkSans-Regular.woff2);
     font-weight: normal;
+} */
+@font-face {
+    font-family: Poppins;
+    src: url(./Assets/Fonts/Poppins/Poppins-SemiBold.ttf);
+    font-weight: bold;
+}
+
+@font-face {
+    font-family: Poppins;
+    src: url(./Assets/Fonts/Poppins/Poppins-Bold.ttf);
+    font-weight: bolder;
+}
+
+@font-face {
+    font-family: Poppins;
+    src: url(./Assets/Fonts/Poppins/Poppins-Regular.ttf);
+    font-weight: normal;
+}
+
+@font-face {
+    font-family: Poppins;
+    src: url(./Assets/Fonts/Poppins/Poppins-Light.ttf);
+    font-weight: light;
 }
 
 :root {
     /* colors */
     --primary: #51B1A6;
+    --primaryHover: #428f86;
     --secondary: #5E5BD9;
     --backgorundBlack: #24243F;
     --backgroundDark: #E1E5EB;
@@ -30,44 +56,48 @@
     --accent: #F5F7FA;
     --accentDark: #E1E5EB;
     --dark: #24243F;
-    
+
     /* typography */
-        /* size */
-        /* --small: 18px;
+    /* size */
+    /* --small: 18px;
         --regular: 20px;
         --big: 24px;
         --titleSmall: 32px;
         --titleBig: 36px;
         --header2: 48px;
         --header1: 64px; */
-        --small: 18px;
-        --regular: 22px;
-        --big: 24px;
-        --titleSmall: 32px;
-        --titleBig: 38px;
-        --header2: 48px;
-        --header1: 64px;
+    --small: 18px;
+    --regular: 22px;
+    --big: 24px;
+    --titleSmall: 32px;
+    --titleBig: 38px;
+    --header2: 48px;
+    --header1: 64px;
 
-        --monsterText: 30px;
-        
-        /* fontWeight */
-        --regularWeight: normal;
-        --semiBold: bold;
-        --bold: bolder;
-        
-        /* letterSpacing */
-        --normal: -0.02em;
-        --spread: 0.2em;
+    --monsterText: 30px;
 
-        /* lineHeight */
-        --lineHeight: 1.4em;
-    
+    /* fontWeight */
+    --regularWeight: normal;
+    --semiBold: bold;
+    --bold: bolder;
+    --light: light;
+
+    /* font */
+    --fontFace: 'Poppins', sans-serif;
+    ;
+
+    /* letterSpacing */
+    --normal: -0.02em;
+    --spread: 0.2em;
+
+    /* lineHeight */
+    --lineHeight: 1.4em;
+
 }
 
 * {
-    font-family: WorkSans;
+    font-family: var(--fontFace);
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-

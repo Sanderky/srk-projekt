@@ -7,6 +7,10 @@
     height: 640px;
 }
 
+.wrongCodeLabel {
+    background-color: var(--error);
+}
+
 
 .container {
     background-color: var(--white);
@@ -14,6 +18,7 @@
     height: 100%;
     border-radius: 24px;
     padding: 60px;
+    text-align: center;
 }
 
 .text {
@@ -54,6 +59,11 @@
     font-size: var(--titleBig);
     font-weight: var(--bold);
     margin-top: 25px;
+    transition: 0.2s;
+}
+
+.buttonSend:hover {
+    background-color: var(--primaryHover);
 }
 
 .form {
@@ -79,7 +89,9 @@
     margin-top: 40px;
 }
 
-.WrongCode, .TooFast, .success {
+.WrongCode,
+.TooFast,
+.success {
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -116,4 +128,3 @@
     font-size: var(--titleBig);
     margin-right: 25px;
 }
-

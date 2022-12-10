@@ -20,6 +20,7 @@ import passport from 'passport';
 
 const router = express();
 
+mongoose.set('strictQuery', true);
 // Connect to Mongo
 mongoose
 	.connect(config.mongo.url, { retryWrites: true, w: 'majority' })

@@ -28,6 +28,7 @@ const insertTicketIntoQue = async (ticketId: mongoose.Types.ObjectId) => {
             if (que.activeTickets.length === 0) {
                 que.activeTickets.push(ticket._id)
                 que.save()
+                return 1;
             } else {
                 const ticketToInsertTime = convertTime(ticket.visitTime)
                 const mappedTickets = await AsyncAF(que.activeTickets).mapAF(async (ticket: mongoose.Types.ObjectId) => {
@@ -43,6 +44,11 @@ const insertTicketIntoQue = async (ticketId: mongoose.Types.ObjectId) => {
                 } else {
                     que.activeTickets.splice(index, 0, ticket._id)
                     que.save()
+                }
+                if (index < 0) {
+                    return que.activeTickets.length;
+                } else {
+                    return index + 1;
                 }
             }
         }
