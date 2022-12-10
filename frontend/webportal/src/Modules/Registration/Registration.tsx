@@ -6,7 +6,7 @@ import LoadingIcon from "../../Assets/Images/loading.png";
 import styles from "./Registration.module.css";
 import { useEffect, useState, useRef } from "react";
 import React from "react";
-import { table } from "console";
+import { SpecialistSelection, VisitDate } from "./Forms";
 
 const HelloScreen = () => {
     const scrollDown = () => {
@@ -20,10 +20,10 @@ const HelloScreen = () => {
             <Logo width="150px" height="150px" />
             <div className={styles.helloHeader}>Witamy!</div>
             <div className={styles.subHelloHeader}>Internetowa rejestracja wizyty</div>
-            <div className={styles.helloInfo}>Tutaj zarejestrujesz się u jednego ze specjalistów SRK</div>
             <div className={styles.goNextWrapper}>
                 <button className={styles.goNextBtn} onClick={() => scrollDown()}>Przejdź dalej</button>
             </div>
+            <div className={styles.helloInfo}>Tutaj bezproblemowo zarejestrujesz się u jednego ze specjalistów SRK</div>
         </div>
     )
 }
@@ -176,14 +176,11 @@ const Summary = ({ code }: SummaryProps) => {
 const Forms = () => {
     return (
         <div className={styles.expandableWrapper}>
-            <ExpandableView expandedContentHeight={50} expanded={true} number={1} title={"Wybierz specjalistę"} status={ExpandableStatus.Active} style={{ marginBottom: "30px" }}>
-                <div>
-                    <div>Test</div>
-                    <div>Test</div>
-                </div>
+            <ExpandableView expandedContentHeight={500} expanded={true} number={1} title={"Wybierz specjalistę"} status={ExpandableStatus.Active} style={{ marginBottom: "30px" }}>
+                <SpecialistSelection />
             </ExpandableView>
-            <ExpandableView expandedContentHeight={50} expanded={false} number={2} title={"Wybierz termin wizyty"} status={ExpandableStatus.Blocked} style={{ marginBottom: "30px" }}>
-                <div>Test</div>
+            <ExpandableView expandedContentHeight={500} expanded={false} number={2} title={"Wybierz termin wizyty"} status={ExpandableStatus.Active} style={{ marginBottom: "30px" }}>
+                <VisitDate />
             </ExpandableView>
             <ExpandableView expandedContentHeight={50} expanded={false} number={3} title={"Formularz rejestracyjny"} status={ExpandableStatus.Blocked}>
                 <div>Test</div>
