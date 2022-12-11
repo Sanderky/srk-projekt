@@ -4,11 +4,16 @@
     background-color: var(--primary);
     padding-top: 45px;
     width: 740px;
-    height: 640px;
+    display: flex;
+    flex-direction: column;
 }
 
 .wrongCodeLabel {
     background-color: var(--error);
+}
+
+.warningLabel {
+    background-color: var(--warning);
 }
 
 
@@ -75,6 +80,11 @@
 
 .buttonError {
     background-color: var(--error);
+    transition: 0.2s;
+}
+
+.buttonError:hover {
+    background-color: var(--errorHover);
 }
 
 .buttonNew {
@@ -87,6 +97,15 @@
     text-align: center;
     align-self: center;
     margin-top: 40px;
+    transition: 0.2s;
+    border: 1px solid var(--text);
+    border-radius: 15px;
+    padding: 10px 40px;
+}
+
+.buttonNew:hover {
+    color: var(--dark);
+    background-color: var(--whiteHover);
 }
 
 .WrongCode,

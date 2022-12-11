@@ -79,3 +79,8 @@ export const roomLetter = [
 	{ roomNumber: 27, letter: 'Z' }
 ]
 
+//====================================================================
+// SETTINGS FOR TICKETS
+//====================================================================
+const FIRST_IN_QUE_THESHOLD = 20 //minutes threshold after which ticket is directed to last index
+export const lateThreshhold = FIRST_IN_QUE_THESHOLD;

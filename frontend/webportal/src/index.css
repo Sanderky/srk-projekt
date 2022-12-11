@@ -48,9 +48,11 @@
     --backgroundDark: #E1E5EB;
     --background: #FAFCFE;
     --white: #FFFFFF;
+    --whiteHover: #ebebeb;
     --text: #5A5A75;
     --subText: #8C8CA1;
     --error: #ED4B68;
+    --errorHover: #b93c53;
     --success: #31D0AA;
     --warning: #FFB802;
     --accent: #F5F7FA;

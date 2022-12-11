@@ -30,30 +30,6 @@ const ConfirmationData = ({ label, data, color = "var(--subText)" }: SuccessData
     );
 }
 
-
-const Warning = (): JSX.Element => {
-    const addZero = (minutes: number): string => minutes < 10 ? "0" + minutes : minutes.toString();
-    const today = new Date();
-    const confirmationTime = today.getHours() + ":" + addZero(today.getMinutes());
-
-    return (
-        <div className={styles.success}>
-            <div className={styles.text} style={{ marginBottom: "30px" }}>
-                Rejestracja potwierdzona z opóźnieniem.
-                Wizyta nadal może się odbyć lecz kolejność przyjęcia mogła ulec zmianie.
-            </div>
-            <div className={styles.successData}>
-                <ConfirmationData label={"Godzina wizyty:"} data={"10:00"} />
-                <ConfirmationData label={"Godzina potwierdzenia:"} data={confirmationTime} color={"var(--warning)"} />
-            </div>
-            <div className={styles.buttonWrapper}>
-                <button className={styles.buttonNew}>Dalej</button>
-            </div>
-        </div>
-    );
-}
-
-
 class CentralBox extends React.Component<any, any> {
     constructor(props: any) {
         super(props)
@@ -99,11 +75,11 @@ class CentralBox extends React.Component<any, any> {
                             .then((res3) => {
                                 console.log(res3)
                                 this.setState({
-                                    panelStatus: "success",
+                                    panelStatus: res3.data.queResponse.lateStatus,
                                     time: res1.data.reservations[0].time,
                                     roomNumber: res2.data.que[0].roomNumber,
                                     visitCode: res3.data.ticket.visitCode,
-                                    queIndex: res3.data.index
+                                    queIndex: res3.data.queResponse.queIndex
                                 });
 
                             })
@@ -134,14 +110,14 @@ class CentralBox extends React.Component<any, any> {
         return (
             <div className={styles.success}>
                 <div className={styles.successData}>
-                    <ConfirmationData label={"Twój numer"} data={this.state.visitCode} />
-                    <ConfirmationData label={"Stanowisko:"} data={this.state.roomNumber} />
+                    <ConfirmationData label={"Twój numer:"} data={this.state.visitCode} />
+                    <ConfirmationData label={"Gabinet:"} data={this.state.roomNumber} />
                     <ConfirmationData label={"Godzina wizyty:"} data={this.state.time} />
                     <ConfirmationData label={"Miejsce w kolejce:"} data={this.state.queIndex} />
                 </div>
                 <div className={`${styles.successInfo} ${styles.text}`}>
                     Proszę obserwować tablicę wywoławczą i oczekiwać na swoją kolej.
-                    Po wywołaniu można udać się do swojego stanowiska.
+                    Po wywołaniu można udać się do odpowiedniego gabinetu.
                 </div>
                 <div className={styles.buttonWrapper}>
                     <button type="submit" onClick={(e) => { this.backToLogin() }} className={styles.buttonNew}>Zakończ</button>
@@ -158,9 +134,33 @@ class CentralBox extends React.Component<any, any> {
 
                 <form className={styles.form}>
                     <input type="text" className={styles.input} maxLength={10} />
-                    {/* <button type="submit" className={`${styles.buttonSend} ${styles.buttonError}`} onClick={(e) => { this.getReservations(e) }}>Zatwierdź</button> */}
-                    <button type="submit" className={`${styles.buttonSend}`} onClick={(e) => { this.getReservations(e) }}>Zatwierdź</button>
+                    <button type="submit" className={`${styles.buttonSend} ${styles.buttonError}`} onClick={(e) => { this.getReservations(e) }}>Zatwierdź</button>
                 </form>
+            </div>
+        );
+    }
+
+    Warning = (): JSX.Element => {
+        const addZero = (minutes: number): string => minutes < 10 ? "0" + minutes : minutes.toString();
+        const today = new Date();
+        const confirmationTime = today.getHours() + ":" + addZero(today.getMinutes());
+
+        return (
+            <div className={styles.success}>
+                <div className={styles.text} style={{ marginBottom: "30px" }}>
+                    Rejestracja potwierdzona z opóźnieniem. <br />
+                    Kolejność przyjęcia mogła ulec zmianie.
+                </div>
+                <div className={styles.successData}>
+                    <ConfirmationData label={"Twój numer:"} data={this.state.visitCode} />
+                    <ConfirmationData label={"Gabinet:"} data={this.state.roomNumber} />
+                    <ConfirmationData label={"Miejsce w kolejce:"} data={this.state.queIndex} />
+                    <ConfirmationData label={"Godzina wizyty:"} data={"10:00"} />
+                    <ConfirmationData label={"Godzina potwierdzenia:"} data={confirmationTime} color={"var(--warning)"} />
+                </div>
+                <div className={styles.buttonWrapper}>
+                    <button className={styles.buttonNew} onClick={(e) => { this.backToLogin() }}>Powrót</button>
+                </div>
             </div>
         );
     }
@@ -171,8 +171,12 @@ class CentralBox extends React.Component<any, any> {
         let labelColor;
         if (this.state.panelStatus === "enterInformation") {
             toRender = <this.EnterCode />;
-        } else if (this.state.panelStatus === "success") {
+        } else if (this.state.panelStatus === "onTime") {
             toRender = <this.Success />
+        }
+        else if (this.state.panelStatus === "late") {
+            toRender = <this.Warning />;
+            labelColor = styles.warningLabel;
         }
         else if (this.state.panelStatus === "wrongCode") {
             toRender = <this.WrongCode />;

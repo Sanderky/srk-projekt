@@ -21,8 +21,8 @@ const createTicket = async (req: Request, res: Response) => {
 		return ticket
 			.save()
 			.then(async (ticket) => {
-				const index = await insertTicketIntoQue(ticketId)
-				res.status(201).json({ ticket, index })
+				const queResponse = await insertTicketIntoQue(ticketId)
+				res.status(201).json({ ticket, queResponse })
 			})
 			.catch((error) => {
 				throw error;
