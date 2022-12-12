@@ -1,9 +1,25 @@
-import { Request, Response } from 'express';
+import { Request, response, Response } from 'express';
 import mongoose from 'mongoose';
 import Ticket from '@/models/Ticket';
 import Log from '@/library/Logging';
 import { generateVisitCode } from '@/library/TicketUtils';
 import { insertTicketIntoQue } from '@/library/QueEngine';
+
+let updateResponse: Response;
+
+function queEventsHandler(request:any, response:any) {
+	const headers = {
+	  'Content-Type': 'text/event-stream',
+	  'Connection': 'keep-alive',
+	  'Cache-Control': 'no-cache'
+	};
+	response.writeHead(200, headers);
+  
+	const data = `data: ${JSON.stringify("Connection Established")}\n\n`;
+  
+	response.write(data);
+	updateResponse = response;
+}
 
 const createTicket = async (req: Request, res: Response) => {
 	const { queId, visitTime } = req.body;
@@ -22,6 +38,7 @@ const createTicket = async (req: Request, res: Response) => {
 			.save()
 			.then(async (ticket) => {
 				const queResponse = await insertTicketIntoQue(ticketId)
+				updateResponse.write(`data: ${JSON.stringify("Added To Que")}\n\n`)
 				res.status(201).json({ ticket, queResponse })
 			})
 			.catch((error) => {
@@ -92,4 +109,4 @@ const deleteTicket = async (req: Request, res: Response) => {
 	}
 };
 
-export default { createTicket, readTicket, readAllTickets, readTicketsForQue, updateTicket, deleteTicket };
+export default { createTicket, readTicket, readAllTickets, readTicketsForQue, updateTicket, deleteTicket,queEventsHandler, };

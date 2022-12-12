@@ -42,7 +42,6 @@ class CentralBox extends React.Component<any, any> {
 
     getReservations = (e: any) => {
         e.preventDefault();
-        console.log(e);
         const configuration = {
             method: "POST",
             url: "http://localhost:3000/reservation/login",
