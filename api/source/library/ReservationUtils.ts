@@ -6,7 +6,7 @@ import { dayIdByDate } from '@/library/DaysUtils'
 import Log from '@/library/Logging';
 
 
-export { generateReservationCode, updateSlotForNewReservation, makeSlotAvailable, deleteOutdatedReservation };
+export { generateReservationCode, updateSlotForNewReservation, makeSlotAvailable, deleteOutdatedReservation, flagAsRegistered };
 
 const generateReservationCode = async () => {
 	let resp: any = [];
@@ -95,6 +95,16 @@ const deleteOutdatedReservation = async () => {
 		}
 	})
 	if (aux !== 0) {
-		Log.info('Outdated reservations have been deleted.');
+		Log.debug('Outdated reservations have been deleted.');
 	}
 }
+
+const flagAsRegistered = async (reservationCode: string) => {
+	const reservation = await Reservation.findOne({ reservationCode: reservationCode }).exec();
+	if (!reservation) {
+		throw Error('Reservation with given code not found.');
+	} else {
+		reservation.registered = true;
+		reservation.save()
+	}
+}	

@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import Reservation from '@/models/Reservation';
 import { dayIdByDate } from '@/library/DaysUtils'
-import { generateReservationCode, updateSlotForNewReservation, makeSlotAvailable } from '@/library/ReservationUtils';
+import { generateReservationCode, updateSlotForNewReservation, makeSlotAvailable, flagAsRegistered } from '@/library/ReservationUtils';
 import Log from '@/library/Logging';
 
 const createReservation = async (req: Request, res: Response, next: NextFunction) => {
@@ -118,17 +118,22 @@ const deleteReservation = async (req: Request, res: Response, next: NextFunction
 };
 
 const loginWithReservation = async (req: Request, res: Response, next: NextFunction) => {
-	const {reservationCode } = req.body;
-	Reservation.find({reservationCode: reservationCode }, (err: any, reservations: any) => {
-		if (err) return res.status(500).json({ err });
-		else if (reservations.length != 0) {
-			
+	const { reservationCode } = req.body;
+	try {
+		Reservation.find({ reservationCode: reservationCode }, (error: any, reservations: any) => {
+			if (error) {
+				throw error;
+			} else if (reservations.length !== 0) {
+				flagAsRegistered(reservationCode)
 				return res.status(200).json({ reservations });
-		}
-		else{ 
-		 res.status(404).json({ message: 'Not found / Bad credentials' });
-		}
-	});
+			} else {
+				res.status(404).json({ message: 'Not found.' });
+			}
+		});
+	} catch (error) {
+		Log.error(error);
+		res.status(500).json({ error });
+	}
 };
 
 export default { createReservation, readReservation, readAllReservations, updateReservation, deleteReservation, loginWithReservation };

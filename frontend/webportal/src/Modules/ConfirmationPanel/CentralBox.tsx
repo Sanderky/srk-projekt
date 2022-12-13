@@ -78,7 +78,8 @@ class CentralBox extends React.Component<any, any> {
                                     time: res1.data.reservations[0].time,
                                     roomNumber: res2.data.que[0].roomNumber,
                                     visitCode: res3.data.ticket.visitCode,
-                                    queIndex: res3.data.queResponse.queIndex
+                                    queIndex: res3.data.queResponse.queIndex,
+                                    reservationRegistered: res1.data.reservations[0].registered
                                 });
 
                             })
@@ -154,8 +155,27 @@ class CentralBox extends React.Component<any, any> {
                     <ConfirmationData label={"Twój numer:"} data={this.state.visitCode} />
                     <ConfirmationData label={"Gabinet:"} data={this.state.roomNumber} />
                     <ConfirmationData label={"Miejsce w kolejce:"} data={this.state.queIndex} />
-                    <ConfirmationData label={"Godzina wizyty:"} data={"10:00"} />
+                    <ConfirmationData label={"Godzina wizyty:"} data={this.state.time} />
                     <ConfirmationData label={"Godzina potwierdzenia:"} data={confirmationTime} color={"var(--warning)"} />
+                </div>
+                <div className={styles.buttonWrapper}>
+                    <button className={styles.buttonNew} onClick={(e) => { this.backToLogin() }}>Powrót</button>
+                </div>
+            </div>
+        );
+    }
+
+    Duplicate = (): JSX.Element => {
+        return (
+            <div className={styles.success}>
+                <div className={styles.text} style={{ marginBottom: "30px" }}>
+                    Rezerwacja została już potwierdzona
+                </div>
+                <div className={styles.successData}>
+                    <ConfirmationData label={"Twój numer:"} data={this.state.visitCode} />
+                    <ConfirmationData label={"Gabinet:"} data={this.state.roomNumber} />
+                    <ConfirmationData label={"Miejsce w kolejce:"} data={this.state.queIndex} />
+                    <ConfirmationData label={"Godzina wizyty:"} data={this.state.time} />
                 </div>
                 <div className={styles.buttonWrapper}>
                     <button className={styles.buttonNew} onClick={(e) => { this.backToLogin() }}>Powrót</button>
@@ -168,18 +188,22 @@ class CentralBox extends React.Component<any, any> {
     render() {
         let toRender;
         let labelColor;
+
         if (this.state.panelStatus === "enterInformation") {
             toRender = <this.EnterCode />;
+        } else if (this.state.reservationRegistered) {
+            labelColor = styles.warningLabel;
+            toRender = <this.Duplicate />
         } else if (this.state.panelStatus === "onTime") {
             toRender = <this.Success />
         }
         else if (this.state.panelStatus === "late") {
-            toRender = <this.Warning />;
             labelColor = styles.warningLabel;
+            toRender = <this.Warning />;
         }
         else if (this.state.panelStatus === "wrongCode") {
-            toRender = <this.WrongCode />;
             labelColor = styles.wrongCodeLabel;
+            toRender = <this.WrongCode />;
         }
         return (
             <div className={`${styles.containerBackground} ${labelColor}`}>
