@@ -5,9 +5,9 @@ import Log from '@/library/Logging';
 import { generateVisitCode } from '@/library/TicketUtils';
 import { insertTicketIntoQue } from '@/library/QueEngine';
 
-let updateResponse: Response;
+let updateResponse: Response = response;
 
-function queEventsHandler(request:any, response:any) {
+function queEventsHandler(request:Request, response:Response) {
 	const headers = {
 	  'Content-Type': 'text/event-stream',
 	  'Connection': 'keep-alive',
