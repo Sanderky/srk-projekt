@@ -1,27 +1,36 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import axios from "axios"
-
-
+import Que from "./Que";
 
 const QueueDisplay = () => {
-    let ques = [];
-    const events = new EventSource('http://localhost:3000/ticket/events');
-    events.onmessage = (event) => { 
-        const getQueConfig = {
-            method: "GET",
-            url: "http://localhost:3000/que/get",
-            data: {
-                doctorId: "6370fa34475c11d908fb0ad8"
+    const [newQue,setNewQue] = useState([])
+    const [listening,setListening] = useState(false);
+
+    useEffect(() => {
+        if(!listening){
+            const events = new EventSource('http://localhost:3000/ticket/events');
+            events.onmessage = (event) => { 
+            console.log("Dostałem message")
+            const getQueConfig = {
+                method: "GET",
+                url: "http://localhost:3000/que/get",
             }
+            axios(getQueConfig)
+                .then((res) => {
+                    setNewQue(res.data.que)
+                    console.log(res.data.que);
+                })
+                .catch((err) => console.log(err))
+            }
+            setListening(true)
         }
-        axios(getQueConfig)
-        .then((res) => ques = res.data.que)
-        .catch((err) => console.log(err))
-    }
+    },[listening]);
     
+    const ques = newQue.map((item,index) => {
+        return <Que key={index} tickets={item}></Que>
+    })
 
-
-    return (<h1>To  jest testowy komponent ekranu jebanego</h1>);
+   return <>{ques}</>
 }
 
 export default QueueDisplay;
