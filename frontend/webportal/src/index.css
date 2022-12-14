@@ -41,8 +41,8 @@
 
 :root {
     /* colors */
-    --primary: #51B1A6;
-    --primaryHover: #428f86;
+    /* --primary: #51B1A6;
+    --primaryHover: #4ca89e;
     --secondary: #5E5BD9;
     --backgorundBlack: #24243F;
     --backgroundDark: #E1E5EB;
@@ -57,17 +57,30 @@
     --warning: #FFB802;
     --accent: #F5F7FA;
     --accentDark: #E1E5EB;
-    --dark: #24243F;
+    --dark: #24243F; */
+
+
+    /* colors */
+    --primary: #64acc4;
+    --primaryHover: #50a1bc;
+    --secondary: #4987b8;
+    --backgorundBlack: #080f10;
+    --backgroundDark: #E1E5EB;
+    --background: #FAFCFE;
+    --white: #FFFFFF;
+    --whiteHover: #ebebeb;
+    --text: #5A5A75;
+    --subText: #8C8CA1;
+    --error: #eb5d47;
+    --errorHover: #d15441;
+    --success: #56C878;
+    --warning: #F6AE2D;
+    --accent: #F5F7FA;
+    --accentDark: #E1E5EB;
+    --dark: #132735;
 
     /* typography */
     /* size */
-    /* --small: 18px;
-        --regular: 20px;
-        --big: 24px;
-        --titleSmall: 32px;
-        --titleBig: 36px;
-        --header2: 48px;
-        --header1: 64px; */
     --small: 18px;
     --regular: 22px;
     --big: 24px;
@@ -86,15 +99,13 @@
 
     /* font */
     --fontFace: 'Poppins', sans-serif;
-    ;
 
     /* letterSpacing */
     --normal: -0.02em;
-    --spread: 0.2em;
+    --spread: 0.1em;
 
     /* lineHeight */
     --lineHeight: 1.4em;
-
 }
 
 * {
