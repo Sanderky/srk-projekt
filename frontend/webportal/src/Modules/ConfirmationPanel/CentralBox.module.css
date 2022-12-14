@@ -8,6 +8,10 @@
     flex-direction: column;
 }
 
+.successLabel {
+    background-color: var(--success);
+}
+
 .wrongCodeLabel {
     background-color: var(--error);
 }

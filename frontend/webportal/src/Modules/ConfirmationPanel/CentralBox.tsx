@@ -133,7 +133,7 @@ class CentralBox extends React.Component<any, any> {
                 <div className={styles.text}>Podany kod nie istnieje. <br /> Spróbuj ponownie.</div>
 
                 <form className={styles.form}>
-                    <input type="text" className={styles.input} maxLength={10} />
+                    <input type="text" className={styles.input} maxLength={10} placeholder="Unikatowy kod rezerwacji" />
                     <button type="submit" className={`${styles.buttonSend} ${styles.buttonError}`} onClick={(e) => { this.getReservations(e) }}>Zatwierdź</button>
                 </form>
             </div>
@@ -195,6 +195,7 @@ class CentralBox extends React.Component<any, any> {
             labelColor = styles.warningLabel;
             toRender = <this.Duplicate />
         } else if (this.state.panelStatus === "onTime") {
+            labelColor = styles.successLabel;
             toRender = <this.Success />
         }
         else if (this.state.panelStatus === "late") {

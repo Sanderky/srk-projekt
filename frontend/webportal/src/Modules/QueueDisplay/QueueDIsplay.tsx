@@ -6,21 +6,18 @@ import axios from "axios"
 const QueueDisplay = () => {
     let ques = [];
     const events = new EventSource('http://localhost:3000/ticket/events');
-    events.onmessage = (event) => { 
+    events.onmessage = (event) => {
         const getQueConfig = {
             method: "GET",
             url: "http://localhost:3000/que/get",
             data: {
-                doctorId: "6370fa34475c11d908fb0ad8"
+                doctorId: "6397b76391859488332a649c"
             }
         }
         axios(getQueConfig)
-        .then((res) => ques = res.data.que)
-        .catch((err) => console.log(err))
+            .then((res) => console.log(res.data.que))
+            .catch((err) => console.log(err))
     }
-    
-
-
     return (<h1>To  jest testowy komponent ekranu jebanego</h1>);
 }
 

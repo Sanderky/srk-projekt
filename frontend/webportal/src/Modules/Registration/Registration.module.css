@@ -4,6 +4,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    background-image: url(../../Assets/Images/logo_BG.svg);
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: cover;
 }
 
 .landingPage {
@@ -33,7 +37,6 @@
     color: var(--white);
     letter-spacing: var(--normal);
     font-size: var(--header1);
-    margin-top: 100px;
 }
 
 .subHelloHeader {
@@ -41,35 +44,41 @@
     color: var(--white);
     letter-spacing: var(--normal);
     font-size: var(--header2);
-    margin-top: 10px;
+    margin-top: 40px;
+    margin-bottom: 40px;
 }
 
 .goNextBtn {
     font-weight: var(--semiBold);
-    color: var(--text);
+    color: var(--dark);
     letter-spacing: var(--normal);
     font-size: var(--titleSmall);
     text-decoration: none;
-    background-color: transparent;
-    border-width: 0;
+    background-color: var(--background);
     cursor: pointer;
+    border: 3px solid var(--dark);
+    border-radius: 15px;
+    padding: 15px 40px;
+    margin-top: 40px;
+    margin-bottom: 40px;
+    transition: 0.3s;
 }
 
 .goNextBtn:hover {
     font-size: calc(var(--titleSmall) + 5px);
+    background-color: var(--backgroundDark);
 }
 
-.goNextWrapper {
+/* .goNextWrapper {
     height: 50px;
     margin-top: 55px;
-}
+} */
 
 .helloInfo {
     font-weight: var(--semiBold);
     color: var(--white);
     letter-spacing: var(--normal);
     font-size: var(--titleSmall);
-    margin-top: 40px;
 }
 
 .headerInfo {
@@ -84,7 +93,7 @@
     flex-direction: row;
     align-items: center;
     justify-content: space-between;
-    padding-left: 20px;
+    padding: 30px;
     border-radius: 15px;
 }
 
@@ -98,15 +107,15 @@
 .expandInfoWrapper {
     display: flex;
     flex-direction: row;
+    padding-top: 1.5rem;
+    padding-bottom: 1.5rem;
 }
 
 .expandNumber {
     margin-right: 30px;
     font-weight: var(--semiBold);
     letter-spacing: var(--normal);
-    font-size: var(--titleSmall);
-    display: flex;
-    flex-direction: column;
+    font-size: var(--titleBig);
 }
 
 .expandTitle {
