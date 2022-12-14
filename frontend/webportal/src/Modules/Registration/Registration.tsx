@@ -13,17 +13,16 @@ const HelloScreen = () => {
         const section = document.querySelector(`.${styles.landingPage}`);
         section?.scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
-
     return (
         <div className={styles.helloScreen}>
             <CompanyName color={"var(--white)"} size={"var(--header1"} style={{ marginTop: "70px", marginBottom: "10px" }} />
             <Logo width="150px" height="150px" />
             <div className={styles.helloHeader}>Witamy!</div>
             <div className={styles.subHelloHeader}>Internetowa rejestracja wizyty</div>
+            <div className={styles.helloInfo}>Tutaj bezproblemowo zarejestrujesz się u jednego ze specjalistów SRK</div>
             <div className={styles.goNextWrapper}>
                 <button className={styles.goNextBtn} onClick={() => scrollDown()}>Przejdź dalej</button>
             </div>
-            <div className={styles.helloInfo}>Tutaj bezproblemowo zarejestrujesz się u jednego ze specjalistów SRK</div>
         </div>
     )
 }
@@ -118,8 +117,7 @@ const ExpandableView = ({ children, style, expandedContentHeight, expanded, titl
                     paddingTop: subtitle ? "20px" : 0,
                     paddingBottom: subtitle ? "20px" : 0,
                     cursor: status === ExpandableStatus.Blocked ? "default" : "pointer"
-                }}
-            >
+                }} >
                 <div className={styles.expandInfoWrapper}>
                     <div className={styles.expandNumber} style={{ justifyContent: subtitle ? "flex-start" : "center" }}>{number.toString()}</div>
                     <div className={styles.expandTitles}>
@@ -167,7 +165,7 @@ const Summary = ({ code }: SummaryProps) => {
                     Proszę przybyć do placówki w dzień swojej wizyty nie wcześniej niż 30 minut przed godziną wizyty. Na miejscu konieczne jest wprowadzenie swojego kodu w terminalu.
                 </div>
             </div>
-            <div className={`${styles.summary_text} ${styles.summary_newInfo}`}>Chcesz umówić kolejną wizyte?</div>
+            <div className={`${styles.summary_text} ${styles.summary_newInfo}`}>Chcesz umówić kolejną wizytę?</div>
             <button className={styles.summary_btn}>Nowa wizyta</button>
         </div>
     );
@@ -179,7 +177,7 @@ const Forms = () => {
             <ExpandableView expandedContentHeight={500} expanded={true} number={1} title={"Wybierz specjalistę"} status={ExpandableStatus.Active} style={{ marginBottom: "30px" }}>
                 <SpecialistSelection />
             </ExpandableView>
-            <ExpandableView expandedContentHeight={500} expanded={false} number={2} title={"Wybierz termin wizyty"} status={ExpandableStatus.Active} style={{ marginBottom: "30px" }}>
+            <ExpandableView expandedContentHeight={600} expanded={false} number={2} title={"Wybierz termin wizyty"} status={ExpandableStatus.Active} style={{ marginBottom: "30px" }}>
                 <VisitDate />
             </ExpandableView>
             <ExpandableView expandedContentHeight={50} expanded={false} number={3} title={"Formularz rejestracyjny"} status={ExpandableStatus.Blocked}>

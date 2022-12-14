@@ -1,4 +1,5 @@
 import logo from "../Assets/Images/logo.png";
+import styles from './Logo.module.css'
 
 interface LogoProps {
     width: string;
@@ -7,7 +8,7 @@ interface LogoProps {
 }
 
 const Logo = (props: LogoProps) => {
-    return <img src={logo} style={{width: props.width, height: props.height, ...props.styles ?? null}}/>
+    return <img src={logo} className='logo-img' style={{ width: props.width, height: props.height, ...styles ?? null }} />
 }
 
 export default Logo;

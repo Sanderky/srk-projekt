@@ -7,16 +7,16 @@ import { insertTicketIntoQue } from '@/library/QueEngine';
 
 let updateResponse: Response = response;
 
-function queEventsHandler(request:Request, response:Response) {
+function queEventsHandler(request: Request, response: Response) {
 	const headers = {
-	  'Content-Type': 'text/event-stream',
-	  'Connection': 'keep-alive',
-	  'Cache-Control': 'no-cache'
+		'Content-Type': 'text/event-stream',
+		'Connection': 'keep-alive',
+		'Cache-Control': 'no-cache'
 	};
 	response.writeHead(200, headers);
-  
+
 	const data = `data: ${JSON.stringify("Connection Established")}\n\n`;
-  
+
 	response.write(data);
 	updateResponse = response;
 }
@@ -109,4 +109,4 @@ const deleteTicket = async (req: Request, res: Response) => {
 	}
 };
 
-export default { createTicket, readTicket, readAllTickets, readTicketsForQue, updateTicket, deleteTicket,queEventsHandler, };
+export default { createTicket, readTicket, readAllTickets, readTicketsForQue, updateTicket, deleteTicket, queEventsHandler };
