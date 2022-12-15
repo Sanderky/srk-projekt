@@ -13,7 +13,8 @@ const TicketSchema: Schema = new Schema({
 	queId: { type: Schema.Types.ObjectId, required: true, ref: 'Que' },
 	priority: Number,
 	visitCode: { type: String, required: true },
-	visitTime: String
+	visitTime: String,
+	reservationCode: String
 });
 
 export default mongoose.model<ITicketModel>('Ticket', TicketSchema);

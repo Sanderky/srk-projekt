@@ -22,7 +22,7 @@ function queEventsHandler(request: Request, response: Response) {
 }
 
 const createTicket = async (req: Request, res: Response) => {
-	const { queId, visitTime } = req.body;
+	const { queId, visitTime, reservationCode } = req.body;
 	const queIdObj = new mongoose.Types.ObjectId(queId);
 	try {
 		const visitCode = await generateVisitCode(queId)
@@ -31,8 +31,9 @@ const createTicket = async (req: Request, res: Response) => {
 			_id: ticketId,
 			queId: queIdObj,
 			priority: 5,
-			visitCode,
-			visitTime: visitTime
+			visitCode: visitCode,
+			visitTime: visitTime,
+			reservationCode: reservationCode
 		});
 		return ticket
 			.save()
@@ -62,20 +63,15 @@ const readTicket = async (req: Request, res: Response) => {
 };
 
 const readAllTickets = async (req: Request, res: Response) => {
+	const reservationCode = req.query.reservationCode; //TODO - query dla pojedynczej kolejki jako queId
 	try {
-		return await Ticket.find()
-			.then((ticket) => (ticket ? res.status(200).json({ ticket }) : res.status(404).json({ message: 'Not found' })));
-	} catch (error) {
-		Log.error(error);
-		res.status(500).json({ error });
-	}
-};
-
-const readTicketsForQue = async (req: Request, res: Response) => {
-	const queId = req.params.queId;
-	try {
-		return await Ticket.findOne({ queId: queId })
-			.then((ticket) => (ticket ? res.status(200).json({ ticket }) : res.status(404).json({ message: 'Not found' })));
+		if (reservationCode) {
+			return await Ticket.findOne({ reservationCode: reservationCode })
+				.then((ticket) => (ticket ? res.status(200).json({ ticket }) : res.status(404).json({ message: 'Not found' })));
+		} else {
+			return await Ticket.find()
+				.then((ticket) => (ticket ? res.status(200).json({ ticket }) : res.status(404).json({ message: 'Not found' })));
+		}
 	} catch (error) {
 		Log.error(error);
 		res.status(500).json({ error });
@@ -109,4 +105,4 @@ const deleteTicket = async (req: Request, res: Response) => {
 	}
 };
 
-export default { createTicket, readTicket, readAllTickets, readTicketsForQue, updateTicket, deleteTicket, queEventsHandler };
+export default { createTicket, readTicket, readAllTickets, updateTicket, deleteTicket, queEventsHandler };

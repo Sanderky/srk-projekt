@@ -56,10 +56,21 @@ const readReservation = async (req: Request, res: Response, next: NextFunction) 
 };
 
 const readAllReservations = async (req: Request, res: Response, next: NextFunction) => {
-	return Reservation.find()
-		.populate('doctorId', '-days -__v')
-		.then((reservations) => res.status(200).json({ reservations }))
-		.catch((error) => res.status(500).json({ error }));
+	const reservationCode = req.query.reservationCode;
+	try {
+		if (reservationCode) {
+			return await Reservation.findOne({ reservationCode: reservationCode })
+				.populate('doctorId', '-days -__v')
+				.then((reservation) => (reservation ? res.status(200).json({ reservation }) : res.status(404).json({ message: 'Not found' })));
+		} else {
+			return await Reservation.find()
+				.populate('doctorId', '-days -__v')
+				.then((reservations) => res.status(200).json({ reservations }))
+		}
+	} catch (error) {
+		Log.error(error);
+		res.status(500).json({ error });
+	}
 };
 
 const updateReservation = async (req: Request, res: Response, next: NextFunction) => {
@@ -120,17 +131,17 @@ const deleteReservation = async (req: Request, res: Response, next: NextFunction
 const loginWithReservation = async (req: Request, res: Response, next: NextFunction) => {
 	const { reservationCode } = req.body;
 	try {
-		Reservation.find({ reservationCode: reservationCode }, (error: any, reservations: any) => {
-			if (error) {
-				throw error;
-			} else if (reservations.length !== 0) {
-				flagAsRegistered(reservationCode)
-				return res.status(200).json({ reservations });
-			} else {
-				res.status(404).json({ message: 'Not found.' });
-			}
-		});
-	} catch (error) {
+		const reservations = await Reservation.find({ reservationCode: reservationCode }).exec()
+		if (reservations.length === 1) {
+			flagAsRegistered(reservationCode)
+			return res.status(200).json({ message: 'Registered' });
+		} else if (reservations.length > 1) {
+			throw new Error('Multiple reservations with the same code.')
+		} else {
+			return res.status(404).json({ message: 'Not found.' });
+		}
+	}
+	catch (error) {
 		Log.error(error);
 		res.status(500).json({ error });
 	}

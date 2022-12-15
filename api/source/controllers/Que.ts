@@ -43,22 +43,17 @@ const readQue = async (req: Request, res: Response) => {
 };
 
 const readAllQues = async (req: Request, res: Response) => {
+	const doctorId = req.query.doctorId;
 	try {
-		return await Que.find()
-			.populate('doctorId activeTickets', 'firstname lastname visitTime visitCode')
-			.then((que) => (que ? res.status(200).json({ que }) : res.status(404).json({ message: 'Not found' })));
-	} catch (error) {
-		Log.error(error);
-		res.status(500).json({ error });
-	}
-};
-
-const readQueFofDoctor = async (req: Request, res: Response) => {
-	const doctorId = req.params.doctorId;
-	try {
-		return await Que.findOne({ doctorId: doctorId })
-			.populate('doctorId activeTickets', 'firstname lastname visitTime visitCode')
-			.then((que) => (que ? res.status(200).json({ que }) : res.status(404).json({ message: 'Not found' })));
+		if (doctorId) {
+			return await Que.findOne({ doctorId: doctorId })
+				.populate('doctorId activeTickets', 'firstname lastname visitTime visitCode')
+				.then((que) => (que ? res.status(200).json({ que }) : res.status(404).json({ message: 'Not found' })));
+		} else {
+			return await Que.find()
+				.populate('doctorId activeTickets', 'firstname lastname visitTime visitCode')
+				.then((que) => (que ? res.status(200).json({ que }) : res.status(404).json({ message: 'Not found' })));
+		}
 	} catch (error) {
 		Log.error(error);
 		res.status(500).json({ error });
@@ -92,4 +87,4 @@ const deleteQue = async (req: Request, res: Response) => {
 	}
 };
 
-export default { createQue, readQue, readAllQues, readQueFofDoctor, updateQue, deleteQue };
+export default { createQue, readQue, readAllQues, updateQue, deleteQue };

@@ -8,6 +8,10 @@
     flex-direction: column;
 }
 
+.defaultLabel {
+    background-color: var(--primary);
+}
+
 .successLabel {
     background-color: var(--success);
 }

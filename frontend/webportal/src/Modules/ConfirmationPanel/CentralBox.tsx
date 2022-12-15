@@ -1,19 +1,19 @@
-import { useEffect } from "react";
+// import { useEffect } from "react";
 import styles from './CentralBox.module.css';
 import axios from "axios"
 import React from "react";
 
-const TooFast = (): JSX.Element => {
-    return (
-        <div className={styles.TooFast}>
-            <div className={`${styles.text} ${styles.title}`}>Jesteś za szybko!</div>
-            <div className={styles.text}>Proszę przybyć w dzień swojej wizyty.</div>
-            <div className={styles.buttonWrapper}>
-                <button className={styles.buttonNew}>Nowa rejestracja</button>
-            </div>
-        </div>
-    );
-}
+// const TooFast = (): JSX.Element => {
+//     return (
+//         <div className={styles.TooFast}>
+//             <div className={`${styles.text} ${styles.title}`}>Jesteś za szybko!</div>
+//             <div className={styles.text}>Proszę przybyć w dzień swojej wizyty.</div>
+//             <div className={styles.buttonWrapper}>
+//                 <button className={styles.buttonNew}>Nowa rejestracja</button>
+//             </div>
+//         </div>
+//     );
+// }
 
 interface SuccessDataProps {
     label: string;
@@ -33,64 +33,71 @@ const ConfirmationData = ({ label, data, color = "var(--subText)" }: SuccessData
 class CentralBox extends React.Component<any, any> {
     constructor(props: any) {
         super(props)
-        this.state = { panelStatus: "enterInformation", time: "", roomNumber: 0, visitCode: "" }
+        this.state = { panelStatus: "enterInformation", time: "-", roomNumber: -1, visitCode: "-", queIndex: -1 }
     }
 
     backToLogin = () => {
-        this.setState({ panelStatus: "enterInformation" });
+        this.setState({ panelStatus: "enterInformation", time: "-", roomNumber: -1, visitCode: "-", queIndex: -1 });
     }
 
-    getReservations = (e: any) => {
-        e.preventDefault();
-        const configuration = {
-            method: "POST",
-            url: "http://localhost:3000/reservation/login",
-            data: {
-                reservationCode: e.target.form[0].value,
-            }
+    confirmReservation = async (event: any) => {
+        event.preventDefault();
+        const reservationPayload = { reservationCode: event.target.form[0].value };
+        const reservationParams = new URLSearchParams(reservationPayload)
+        let reservation;
+        try {
+            reservation = await axios.get(`http://localhost:3000/reservation/get?${reservationParams}`);
+        } catch (error) {
+            console.log(error)
+            this.setState({ panelStatus: "wrongCode" })
+            return
         }
-        axios(configuration)
-            .then((res1) => {
-                const getQueConfig = {
-                    method: "GET",
-                    url: "http://localhost:3000/que/get",
-                    data: {
-                        doctorId: res1.data.reservations[0].doctorId,
-                    }
-                }
+        const reservationData = reservation?.data.reservation;
 
-                axios(getQueConfig)
-                    .then((res2) => {
-                        const addToQueConfig = {
-                            method: "POST",
-                            url: "http://localhost:3000/ticket/create",
-                            data: {
-                                queId: res2.data.que[0]._id,
-                                visitTime: res1.data.reservations[0].time,
-                            }
-                        }
+        if (reservationData.registered) {
+            //Get ticket data
+            const ticketData = await axios.get(`http://localhost:3000/ticket/get?${reservationParams}`);
+            const ticket = ticketData.data.ticket;
 
-                        axios(addToQueConfig)
-                            .then((res3) => {
-                                console.log(res3)
-                                this.setState({
-                                    panelStatus: res3.data.queResponse.lateStatus,
-                                    time: res1.data.reservations[0].time,
-                                    roomNumber: res2.data.que[0].roomNumber,
-                                    visitCode: res3.data.ticket.visitCode,
-                                    queIndex: res3.data.queResponse.queIndex,
-                                    reservationRegistered: res1.data.reservations[0].registered
-                                });
+            const queId = ticket.queId;
+            const queData = await axios.get(`http://localhost:3000/que/get/${queId}`);
+            const que = queData.data.que;
 
-                            })
-                            .catch((err) => { console.log(err) })
-                        console.log(res2.data.que[0]._id)
-                        console.log(res1.data.reservations[0].time)
-                    })
-                    .catch((err) => console.log("Nie znaleziono kolejki"))
-            })
-            .catch((error) => { this.setState({ panelStatus: "wrongCode" }) });
+            const queIndex = que.activeTickets.findIndex((t: { _id: any; }) => t._id === ticket._id)
+            this.setState({
+                panelStatus: "duplicate",
+                roomNumber: que.roomNumber,
+                visitCode: ticket.visitCode,
+                queIndex: queIndex + 1
+            });
+        } else {
+            //Create ticket
+            const queParams = new URLSearchParams({ doctorId: reservationData.doctorId._id })
+            const que = await axios.get(`http://localhost:3000/que/get?${queParams}`);
+            const queData = que.data.que;
+            const queId = queData._id;
+
+            const ticketPayload = {
+                queId: queId,
+                visitTime: reservationData.visitTime,
+                reservationCode: reservationData.reservationCode,
+                roomNumber: queData.roomNumber
+            }
+            const createTicketResponse = await axios.post('http://localhost:3000/ticket/create', ticketPayload)
+            const ticket = createTicketResponse.data.ticket;
+            const queResponse = createTicketResponse.data.queResponse;
+
+            this.setState({
+                panelStatus: queResponse.lateStatus,
+                time: ticket.visitTime,
+                roomNumber: queData.roomNumber,
+                visitCode: ticket.visitCode,
+                queIndex: queResponse.queIndex
+            });
+            axios.post('http://localhost:3000/reservation/login/', reservationPayload);
+        }
     }
+
 
     EnterCode = (): JSX.Element => {
         return (
@@ -99,7 +106,7 @@ class CentralBox extends React.Component<any, any> {
                 <div className={styles.text}>Podaj swój unikatowy kod rezerwacji</div>
                 <form className={styles.form}>
                     <input type="text" name="reservationCode" placeholder="Unikatowy kod rezerwacji" className={styles.input} maxLength={8} />
-                    <button type="submit" onClick={(e) => { this.getReservations(e) }} className={styles.buttonSend}>Zatwierdź</button>
+                    <button type="submit" onClick={event => this.confirmReservation(event)} className={styles.buttonSend}>Zatwierdź</button>
                 </form>
             </div>
         );
@@ -116,11 +123,11 @@ class CentralBox extends React.Component<any, any> {
                     <ConfirmationData label={"Miejsce w kolejce:"} data={this.state.queIndex} />
                 </div>
                 <div className={`${styles.successInfo} ${styles.text}`}>
-                    Proszę obserwować tablicę wywoławczą i oczekiwać na swoją kolej.
-                    Po wywołaniu można udać się do odpowiedniego gabinetu.
+                    Proszę obserwować tablicę wywoławczą i oczekiwać na swoją kolej
+                    Po wywołaniu można udać się do odpowiedniego gabinetu
                 </div>
                 <div className={styles.buttonWrapper}>
-                    <button type="submit" onClick={(e) => { this.backToLogin() }} className={styles.buttonNew}>Zakończ</button>
+                    <button type="submit" onClick={() => { this.backToLogin() }} className={styles.buttonNew}>Zakończ</button>
                 </div>
             </div>
         );
@@ -130,11 +137,12 @@ class CentralBox extends React.Component<any, any> {
         return (
             <div className={styles.WrongCode}>
                 <div className={`${styles.text} ${styles.title}`}>Błędny kod</div>
-                <div className={styles.text}>Podany kod nie istnieje. <br /> Spróbuj ponownie.</div>
+                <div className={styles.text}>Podany kod jest nieprawidłowy <br /> Spróbuj ponownie</div>
 
                 <form className={styles.form}>
                     <input type="text" className={styles.input} maxLength={10} placeholder="Unikatowy kod rezerwacji" />
-                    <button type="submit" className={`${styles.buttonSend} ${styles.buttonError}`} onClick={(e) => { this.getReservations(e) }}>Zatwierdź</button>
+                    <button type="submit" className={`${styles.buttonSend} ${styles.buttonError}`} onClick={event => this.confirmReservation(event)}>Zatwierdź</button>
+                    <button type="submit" onClick={() => { this.backToLogin() }} className={styles.buttonNew}>Powrót</button>
                 </form>
             </div>
         );
@@ -148,8 +156,8 @@ class CentralBox extends React.Component<any, any> {
         return (
             <div className={styles.success}>
                 <div className={styles.text} style={{ marginBottom: "30px" }}>
-                    Rejestracja potwierdzona z opóźnieniem. <br />
-                    Kolejność przyjęcia mogła ulec zmianie.
+                    Rejestracja potwierdzona z opóźnieniem <br />
+                    Kolejność przyjęcia mogła ulec zmianie
                 </div>
                 <div className={styles.successData}>
                     <ConfirmationData label={"Twój numer:"} data={this.state.visitCode} />
@@ -159,7 +167,7 @@ class CentralBox extends React.Component<any, any> {
                     <ConfirmationData label={"Godzina potwierdzenia:"} data={confirmationTime} color={"var(--warning)"} />
                 </div>
                 <div className={styles.buttonWrapper}>
-                    <button className={styles.buttonNew} onClick={(e) => { this.backToLogin() }}>Powrót</button>
+                    <button className={styles.buttonNew} onClick={() => { this.backToLogin() }}>Powrót</button>
                 </div>
             </div>
         );
@@ -174,24 +182,31 @@ class CentralBox extends React.Component<any, any> {
                 <div className={styles.successData}>
                     <ConfirmationData label={"Twój numer:"} data={this.state.visitCode} />
                     <ConfirmationData label={"Gabinet:"} data={this.state.roomNumber} />
-                    <ConfirmationData label={"Miejsce w kolejce:"} data={this.state.queIndex} />
-                    <ConfirmationData label={"Godzina wizyty:"} data={this.state.time} />
+                    <ConfirmationData label={"Aktualne miejsce w kolejce:"} data={this.state.queIndex} />
                 </div>
                 <div className={styles.buttonWrapper}>
-                    <button className={styles.buttonNew} onClick={(e) => { this.backToLogin() }}>Powrót</button>
+                    <button className={styles.buttonNew} onClick={() => { this.backToLogin() }}>Powrót</button>
                 </div>
             </div>
         );
     }
 
     // useEffect(() => {setInterval(() => props.showHelloScreen(), 30000)}, []);
+
+    //Automatyczny powrót do ekranu wprowadzania danych po 30 sekundach
+    componentDidUpdate() {
+        setTimeout(() => {
+            this.backToLogin()
+        }, 30000);
+    }
+
     render() {
         let toRender;
         let labelColor;
 
         if (this.state.panelStatus === "enterInformation") {
             toRender = <this.EnterCode />;
-        } else if (this.state.reservationRegistered) {
+        } else if (this.state.panelStatus === "duplicate") {
             labelColor = styles.warningLabel;
             toRender = <this.Duplicate />
         } else if (this.state.panelStatus === "onTime") {
