@@ -238,28 +238,40 @@ class CentralBox extends React.Component<any, any> {
         let toRender;
         let labelColor;
 
-        if (this.state.panelStatus === "enterInformation") {
-            labelColor = styles.defaultLabel;
-            toRender = <this.EnterCode />;
-        } else if (this.state.panelStatus === "duplicate") {
-            labelColor = styles.warningLabel;
-            toRender = <this.Duplicate />
-        } else if (this.state.panelStatus === "onTime") {
-            labelColor = styles.successLabel;
-            toRender = <this.Success />
-        } else if (this.state.panelStatus === "late") {
-            labelColor = styles.warningLabel;
-            toRender = <this.Warning />;
-        } else if (this.state.panelStatus === "wrongCode") {
-            labelColor = styles.wrongCodeLabel;
-            toRender = <this.WrongCode />;
-        } else if (this.state.panelStatus === "tooFast") {
-            labelColor = styles.warningLabel;
-            toRender = <this.TooFast />;
-        } else if (this.state.panelStatus === "tooLate") {
-            labelColor = styles.warningLabel;
-            toRender = <this.TooLate />;
+        switch (this.state.panelStatus) {
+            case "enterInformation":
+                labelColor = styles.defaultLabel;
+                toRender = <this.EnterCode />;
+                break;
+            case "success":
+                labelColor = styles.successLabel;
+                toRender = <this.Success />
+                break;
+            case "duplicate":
+                labelColor = styles.warningLabel;
+                toRender = <this.Duplicate />
+                break;
+            case "late":
+                labelColor = styles.warningLabel;
+                toRender = <this.Warning />;
+                break;
+            case "tooFast":
+                labelColor = styles.warningLabel;
+                toRender = <this.TooFast />;
+                break;
+            case "tooLate":
+                labelColor = styles.warningLabel;
+                toRender = <this.TooLate />;
+                break;
+            case "wrongCode":
+                labelColor = styles.wrongCodeLabel;
+                toRender = <this.WrongCode />;
+                break;
+            default:
+                labelColor = styles.defaultLabel;
+                toRender = <this.EnterCode />;
         }
+
         return (
             <div className={`${styles.containerBackground} ${labelColor}`}>
                 <div className={styles.container}>
