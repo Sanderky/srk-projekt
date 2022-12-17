@@ -1,0 +1,222 @@
+.search {
+    background: none;
+    border-width: 0;
+    flex: 1;
+    border-radius: 15px 0 0 15px;
+    padding: 10px;
+    font-weight: var(--semiBold);
+    color: var(--subText);
+    letter-spacing: var(--normal);
+    font-size: var(--titleSmall);
+}
+
+.search:focus {
+    outline: 0;
+}
+
+.search::placeholder {
+    color: var(--subText);
+    opacity: 0.5;
+}
+
+.searchWrapper {
+    display: flex;
+    flex-direction: row;
+    width: 710px;
+    border-radius: 15px;
+    background-color: var(--accent);
+    align-items: center;
+}
+
+.searchIcon {
+    width: 28px;
+    height: 28px;
+    margin: 0 5px;
+}
+
+.specialistSelection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 30px;
+}
+
+.specialistBox {
+    background-color: var(--accent);
+    font-weight: var(--semiBold);
+    color: var(--text);
+    letter-spacing: var(--normal);
+    font-size: var(--regular);
+    display: flex;
+    flex-direction: row;
+}
+
+.specialistBoxName {
+    flex: 2;
+    border-right: 1px solid var(--accentDark);
+    padding: 30px 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.specialistBoxInfo {
+    flex: 6;
+    padding: 30px 10px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+}
+
+.specialistSelectionWrapper {
+    height: 750px;
+}
+
+.specialistsList {
+    display: flex;
+    flex-direction: column;
+}
+
+.hourBox {
+    padding: 10px;
+    background-color: var(--text);
+    font-weight: var(--semiBold);
+    color: var(--white);
+    letter-spacing: var(--normal);
+    font-size: var(--big);
+    margin: 10px;
+    border-width: 0;
+    cursor: pointer;
+}
+
+.hourBox:hover {
+    background-color: var(--dark);
+}
+
+.calendarHours {
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.calendar {
+    margin-top: 30px;
+}
+
+.calendarDaysHeader {
+    padding: 20px;
+    background-color: var(--dark);
+    font-weight: var(--semiBold);
+    color: var(--white);
+    letter-spacing: var(--normal);
+    font-size: var(--big);
+    
+}
+
+.calendarMonthWeekdays {
+    display: flex;
+    flex: 1;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+    border-bottom: 1px solid var(--accentDark);
+    font-weight: var(--semiBold);
+    color: var(--subText);
+    letter-spacing: var(--normal);
+    font-size: var(--big);
+    padding: 10px 0;
+}
+
+.calendarMonthDays {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    justify-items: center;
+    row-gap: 15px;
+    padding: 5px 0;
+}
+
+.dayActive {
+    font-weight: var(--semiBold);
+    color: #000;
+    /* letter-spacing: var(--normal); */
+    font-size: var(--big);
+    cursor: pointer;
+    padding: 4px;
+    /* height: 35px;
+    width: 35px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center; */
+}
+
+.dayActive:hover {
+    background-color: var(--dark);
+    color: var(--subText);
+
+}
+
+.dayInactive {
+    font-weight: var(--semiBold);
+    color: var(--accentDark);
+    /* letter-spacing: var(--normal); */
+    font-size: var(--big);
+    padding: 4px;
+    /* height: 35px;
+    width: 35px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center; */
+}
+
+.daySelected {
+    font-weight: var(--semiBold);
+    background-color: var(--dark);
+    color: var(--white);
+    letter-spacing: var(--normal);
+    font-size: var(--big);
+    cursor: pointer;
+    padding: 3px;
+}
+
+.select {
+    appearance: none;
+    background-color: transparent;
+    border: none;
+    margin: 0;
+    cursor: pointer;
+    font-weight: var(--semiBold);
+    color: #000;
+    font-size: var(--big);
+    padding-right: 15px;
+    background: url("../../Assets/Images/dropdown_arrow.png") no-repeat right;
+    background-position-x: 90px;
+    background-position-y: 50%;
+    background-size: 40px;
+    padding-left: 5px;
+}
+
+.select:focus-visible {
+    appearance: none;
+    background-color: transparent;
+    border: none;
+    outline: none;
+    margin: 0; 
+}
+
+.selectWrapper {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    padding: 10px 0;
+}
+
+.select:hover {
+    color: var(--subText);
+}
+
+
+
+
+
+

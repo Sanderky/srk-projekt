@@ -33,7 +33,7 @@
 
 .input {
     background-color: var(--accent);
-    border-color: var(--dark);
+    border-color: var(--text);
     border-width: 1px;
     border-radius: 15px;
     width: 400px;
@@ -52,7 +52,7 @@
 
 .input:focus {
     border-color: var(--dark);
-    border-width: 2px;
+    border-width: 3px;
     outline: none;
 }
 
@@ -64,6 +64,7 @@
     font-weight: var(--semiBold);
     margin-top: 24px;
     cursor: pointer;
+    transition: 0.2s;
 }
 
 .submitButton:hover {

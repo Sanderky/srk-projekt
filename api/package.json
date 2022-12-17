@@ -21,6 +21,7 @@
     "@types/node-cron": "^3.0.2",
     "@types/passport": "^1.0.11",
     "@types/passport-local": "^1.0.34",
+    "async-af": "^7.0.39",
     "bcrypt": "^5.0.1",
     "bcryptjs": "^2.4.3",
     "chalk": "^4.1.2",

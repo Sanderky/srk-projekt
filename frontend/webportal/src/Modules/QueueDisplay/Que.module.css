@@ -1,0 +1,28 @@
+.queDefault {
+    flex: 1;
+    height: 100%;
+    overflow: hidden;
+}
+
+.queDefault:nth-child(even) {
+    background-color: var(--whiteHover);
+}
+
+.queDefault:nth-child(odd) {
+    background-color: var(--white);
+}
+
+.queDefault:last-child {
+    border-top-right-radius: 24px;
+    border-bottom-right-radius: 24px;
+}
+
+.roomNumber {
+    text-align: center;
+    padding: 39px;
+    font-size: var(--titleBig);
+}
+
+.roomNumberDivider {
+    border: 3px solid var(--primary);
+}

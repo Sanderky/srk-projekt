@@ -4,7 +4,24 @@
     background-color: var(--primary);
     padding-top: 45px;
     width: 740px;
-    height: 640px;
+    display: flex;
+    flex-direction: column;
+}
+
+.defaultLabel {
+    background-color: var(--primary);
+}
+
+.successLabel {
+    background-color: var(--success);
+}
+
+.wrongCodeLabel {
+    background-color: var(--error);
+}
+
+.warningLabel {
+    background-color: var(--warning);
 }
 
 
@@ -14,6 +31,7 @@
     height: 100%;
     border-radius: 24px;
     padding: 60px;
+    text-align: center;
 }
 
 .text {
@@ -36,7 +54,7 @@
     width: 500px;
     padding: 12px;
     text-align: center;
-    font-size: var(--titleBig);
+    font-size: 25px;
     font-weight: var(--bold);
     letter-spacing: var(--spread);
     color: var(--subText);
@@ -54,6 +72,12 @@
     font-size: var(--titleBig);
     font-weight: var(--bold);
     margin-top: 25px;
+    margin-bottom: 25px;
+    transition: 0.2s;
+}
+
+.buttonSend:hover {
+    background-color: var(--primaryHover);
 }
 
 .form {
@@ -65,6 +89,11 @@
 
 .buttonError {
     background-color: var(--error);
+    transition: 0.2s;
+}
+
+.buttonError:hover {
+    background-color: var(--errorHover);
 }
 
 .buttonNew {
@@ -77,12 +106,25 @@
     text-align: center;
     align-self: center;
     margin-top: 40px;
+    transition: 0.2s;
+    border: 1px solid var(--text);
+    border-radius: 15px;
+    padding: 10px 40px;
 }
 
-.WrongCode, .TooFast, .success {
+.buttonNew:hover {
+    color: var(--dark);
+    background-color: var(--whiteHover);
+}
+
+.WrongCode,
+.TooFast,
+.TooLate,
+.success {
     display: flex;
     flex-direction: column;
     height: 100%;
+    align-items: center;
 }
 
 .buttonWrapper {
@@ -117,3 +159,23 @@
     margin-right: 25px;
 }
 
+@keyframes spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.spinnerActive {
+    height: 80px;
+    width: 80px;
+    margin: 20px;
+    animation: spinner 1.5s linear infinite;
+}
+
+.spinnerDisabled {
+    display: none;
+}

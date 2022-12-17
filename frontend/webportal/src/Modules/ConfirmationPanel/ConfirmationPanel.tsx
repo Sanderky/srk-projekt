@@ -16,21 +16,21 @@ const ConfirmationPanel = () => {
         renderHelloScreen(true);
     }
 
-    if(helloScreen) {
-        return <HelloScreen onClick={hideHelloScreen}/>;
-    }
-    else{
+    // if(helloScreen) {
+    //     return <HelloScreen onClick={hideHelloScreen}/>;
+    // }
+    // else{   
         return (
             <div className={styles.main}>
                 <Header/>
                 <div className={styles.centralBoxWrapper}>
-                    <CentralBox showHelloScreen={showHelloScreen}/>
+                    <CentralBox/>
                 </div>
                 
             </div>
             
         );
-    }
+    // }
     
 }
 
