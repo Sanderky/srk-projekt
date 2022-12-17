@@ -14,7 +14,8 @@ const TicketSchema: Schema = new Schema({
 	priority: Number,
 	visitCode: { type: String, required: true },
 	visitTime: String,
-	reservationCode: String
+	reservationCode: String,
+	inRoom: { type: Boolean, default: false }
 });
 
 export default mongoose.model<ITicketModel>('Ticket', TicketSchema);

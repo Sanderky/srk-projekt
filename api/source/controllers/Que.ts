@@ -50,7 +50,7 @@ const readAllQues = async (req: Request, res: Response) => {
 				.populate('doctorId activeTickets', 'firstname lastname visitTime visitCode')
 				.then((que) => (que ? res.status(200).json({ que }) : res.status(404).json({ message: 'Not found' })));
 		} else {
-			return await Que.find()
+			return await Que.find().sort({ roomNumber: 1 })
 				.populate('doctorId activeTickets', 'firstname lastname visitTime visitCode')
 				.then((que) => (que ? res.status(200).json({ que }) : res.status(404).json({ message: 'Not found' })));
 		}

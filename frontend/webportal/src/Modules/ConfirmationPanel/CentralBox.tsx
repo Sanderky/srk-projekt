@@ -79,7 +79,7 @@ class CentralBox extends React.Component<any, any> {
 
             const ticketPayload = {
                 queId: queId,
-                visitTime: reservationData.visitTime,
+                visitTime: reservationData.time,
                 reservationCode: reservationData.reservationCode,
                 roomNumber: queData.roomNumber
             }
