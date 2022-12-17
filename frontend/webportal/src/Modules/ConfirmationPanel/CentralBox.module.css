@@ -72,6 +72,7 @@
     font-size: var(--titleBig);
     font-weight: var(--bold);
     margin-top: 25px;
+    margin-bottom: 25px;
     transition: 0.2s;
 }
 
@@ -118,10 +119,12 @@
 
 .WrongCode,
 .TooFast,
+.TooLate,
 .success {
     display: flex;
     flex-direction: column;
     height: 100%;
+    align-items: center;
 }
 
 .buttonWrapper {
@@ -154,4 +157,25 @@
     font-size: var(--monsterText);
     font-size: var(--titleBig);
     margin-right: 25px;
+}
+
+@keyframes spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.spinnerActive {
+    height: 80px;
+    width: 80px;
+    margin: 20px;
+    animation: spinner 1.5s linear infinite;
+}
+
+.spinnerDisabled {
+    display: none;
 }

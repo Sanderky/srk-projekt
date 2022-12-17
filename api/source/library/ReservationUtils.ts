@@ -4,6 +4,7 @@ import Slots from '@/models/Slots';
 import mongoose from 'mongoose';
 import { dayIdByDate } from '@/library/DaysUtils'
 import Log from '@/library/Logging';
+const AsyncAF = require('async-af');
 
 
 export { generateReservationCode, updateSlotForNewReservation, makeSlotAvailable, deleteOutdatedReservation, flagAsRegistered };
@@ -87,9 +88,9 @@ const deleteOutdatedReservation = async () => {
 	const today = new Date(Date.UTC(todayNonUTC.getUTCFullYear(), todayNonUTC.getUTCMonth(), todayNonUTC.getUTCDate(), 0, 0, 0, 0));
 	let aux = 0;
 
-	const reservations = await Reservation.find()
-	reservations.forEach(async (reservation) => {
-		if (reservation.day < today) {
+	const reservations = await Reservation.find().exec()
+	AsyncAF(reservations).forEachAF(async (reservation: { day: { getTime: () => number; }; _id: any; }) => {
+		if (reservation.day.getTime() < today.getTime()) {
 			await Reservation.findByIdAndDelete(reservation._id);
 			aux++;
 		}

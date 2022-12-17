@@ -2,18 +2,7 @@
 import styles from './CentralBox.module.css';
 import axios from "axios"
 import React from "react";
-
-// const TooFast = (): JSX.Element => {
-//     return (
-//         <div className={styles.TooFast}>
-//             <div className={`${styles.text} ${styles.title}`}>Jesteś za szybko!</div>
-//             <div className={styles.text}>Proszę przybyć w dzień swojej wizyty.</div>
-//             <div className={styles.buttonWrapper}>
-//                 <button className={styles.buttonNew}>Nowa rejestracja</button>
-//             </div>
-//         </div>
-//     );
-// }
+import spinnerImg from "../../Assets/Images/spinner.png"
 
 interface SuccessDataProps {
     label: string;
@@ -33,14 +22,19 @@ const ConfirmationData = ({ label, data, color = "var(--subText)" }: SuccessData
 class CentralBox extends React.Component<any, any> {
     constructor(props: any) {
         super(props)
-        this.state = { panelStatus: "enterInformation", time: "-", roomNumber: -1, visitCode: "-", queIndex: -1 }
+        this.state = { panelStatus: "enterInformation", time: "-", roomNumber: -1, visitCode: "-", queIndex: -1, loading: false }
     }
 
     backToLogin = () => {
-        this.setState({ panelStatus: "enterInformation", time: "-", roomNumber: -1, visitCode: "-", queIndex: -1 });
+        this.setState({ panelStatus: "enterInformation", time: "-", roomNumber: -1, visitCode: "-", queIndex: -1, loading: false });
     }
 
     confirmReservation = async (event: any) => {
+        this.setState({ loading: true });
+        if (event.target.form[0].value === '') {
+            this.setState({ loading: false });
+            this.backToLogin()
+        }
         event.preventDefault();
         const reservationPayload = { reservationCode: event.target.form[0].value };
         const reservationParams = new URLSearchParams(reservationPayload)
@@ -49,10 +43,24 @@ class CentralBox extends React.Component<any, any> {
             reservation = await axios.get(`http://localhost:3000/reservation/get?${reservationParams}`);
         } catch (error) {
             console.log(error)
-            this.setState({ panelStatus: "wrongCode" })
+            this.setState({ panelStatus: "wrongCode" });
+            this.setState({ loading: false });
             return
         }
         const reservationData = reservation?.data.reservation;
+
+        const nonUTC = new Date();
+        const today = new Date(Date.UTC(nonUTC.getUTCFullYear(), nonUTC.getUTCMonth(), nonUTC.getUTCDate(), 0, 0, 0, 0));
+        const reservationDay = new Date(reservationData.day)
+        if (reservationDay.getTime() > today.getTime()) {
+            this.setState({ panelStatus: "tooFast" })
+            this.setState({ loading: false });
+            return
+        } else if (reservationDay.getTime() < today.getTime()) {
+            this.setState({ panelStatus: "tooLate" })
+            this.setState({ loading: false });
+            return
+        }
 
         if (reservationData.registered) {
             //Get ticket data
@@ -108,6 +116,7 @@ class CentralBox extends React.Component<any, any> {
                     <input type="text" name="reservationCode" placeholder="Unikatowy kod rezerwacji" className={styles.input} maxLength={8} />
                     <button type="submit" onClick={event => this.confirmReservation(event)} className={styles.buttonSend}>Zatwierdź</button>
                 </form>
+                <img src={spinnerImg} alt="" className={this.state.loading ? styles.spinnerActive : styles.spinnerDisabled} />
             </div>
         );
     }
@@ -144,6 +153,7 @@ class CentralBox extends React.Component<any, any> {
                     <button type="submit" className={`${styles.buttonSend} ${styles.buttonError}`} onClick={event => this.confirmReservation(event)}>Zatwierdź</button>
                     <button type="submit" onClick={() => { this.backToLogin() }} className={styles.buttonNew}>Powrót</button>
                 </form>
+                <img src={spinnerImg} alt="" className={this.state.loading ? styles.spinnerActive : styles.spinnerDisabled} />
             </div>
         );
     }
@@ -191,6 +201,30 @@ class CentralBox extends React.Component<any, any> {
         );
     }
 
+    TooFast = (): JSX.Element => {
+        return (
+            <div className={styles.TooFast}>
+                <div className={`${styles.text} ${styles.title}`}>Jesteś za szybko!</div>
+                <div className={styles.text}>Proszę przybyć w dzień swojej wizyty.</div>
+                <div className={styles.buttonWrapper}>
+                    <button className={styles.buttonNew} onClick={() => { this.backToLogin() }}>Powrót</button>
+                </div>
+            </div>
+        );
+    }
+
+    TooLate = (): JSX.Element => {
+        return (
+            <div className={styles.TooLate}>
+                <div className={`${styles.text} ${styles.title}`}>Jesteś za późno!</div>
+                <div className={styles.text}>Przykro nam, termin Twojej wizyty minął.</div>
+                <div className={styles.buttonWrapper}>
+                    <button className={styles.buttonNew} onClick={() => { this.backToLogin() }}>Powrót</button>
+                </div>
+            </div>
+        );
+    }
+
     // useEffect(() => {setInterval(() => props.showHelloScreen(), 30000)}, []);
 
     //Automatyczny powrót do ekranu wprowadzania danych po 30 sekundach
@@ -205,6 +239,7 @@ class CentralBox extends React.Component<any, any> {
         let labelColor;
 
         if (this.state.panelStatus === "enterInformation") {
+            labelColor = styles.defaultLabel;
             toRender = <this.EnterCode />;
         } else if (this.state.panelStatus === "duplicate") {
             labelColor = styles.warningLabel;
@@ -212,14 +247,18 @@ class CentralBox extends React.Component<any, any> {
         } else if (this.state.panelStatus === "onTime") {
             labelColor = styles.successLabel;
             toRender = <this.Success />
-        }
-        else if (this.state.panelStatus === "late") {
+        } else if (this.state.panelStatus === "late") {
             labelColor = styles.warningLabel;
             toRender = <this.Warning />;
-        }
-        else if (this.state.panelStatus === "wrongCode") {
+        } else if (this.state.panelStatus === "wrongCode") {
             labelColor = styles.wrongCodeLabel;
             toRender = <this.WrongCode />;
+        } else if (this.state.panelStatus === "tooFast") {
+            labelColor = styles.warningLabel;
+            toRender = <this.TooFast />;
+        } else if (this.state.panelStatus === "tooLate") {
+            labelColor = styles.warningLabel;
+            toRender = <this.TooLate />;
         }
         return (
             <div className={`${styles.containerBackground} ${labelColor}`}>
