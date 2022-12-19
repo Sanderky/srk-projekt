@@ -3,7 +3,8 @@
     border-width: 0;
     flex: 1;
     border-radius: 15px 0 0 15px;
-    padding: 10px;
+    padding: 15px;
+    padding-left: 30px;
     font-weight: var(--semiBold);
     color: var(--subText);
     letter-spacing: var(--normal);
@@ -34,11 +35,9 @@
     margin: 0 5px;
 }
 
-.specialistSelection {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding-top: 30px;
+.specialistNotDataText {
+    padding: 10px;
+    font-size: var(--regular);
 }
 
 .specialistBox {
@@ -49,32 +48,51 @@
     font-size: var(--regular);
     display: flex;
     flex-direction: row;
+    padding: 10px;
+    transition: 0.1s;
+}
+
+.specialistBox:hover {
+    background-color: var(--whiteHover);
+    cursor: pointer;
 }
 
 .specialistBoxName {
     flex: 2;
     border-right: 1px solid var(--accentDark);
-    padding: 30px 10px;
     display: flex;
     justify-content: center;
     align-items: center;
+    text-align: center;
+    padding: 10px;
 }
 
 .specialistBoxInfo {
-    flex: 6;
-    padding: 30px 10px;
+    flex: 3;
     display: flex;
     justify-content: flex-start;
     align-items: center;
+    padding: 10px;
+}
+
+.specialistSelection {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 30px;
+    height: 100%;
 }
 
 .specialistSelectionWrapper {
-    height: 750px;
+    height: 100%;
 }
 
 .specialistsList {
+    height: 80%;
     display: flex;
+    overflow-y: scroll;
     flex-direction: column;
+    padding-right: 10px;
 }
 
 .hourBox {
@@ -109,7 +127,7 @@
     color: var(--white);
     letter-spacing: var(--normal);
     font-size: var(--big);
-    
+
 }
 
 .calendarMonthWeekdays {
@@ -201,7 +219,7 @@
     background-color: transparent;
     border: none;
     outline: none;
-    margin: 0; 
+    margin: 0;
 }
 
 .selectWrapper {
@@ -214,9 +232,3 @@
 .select:hover {
     color: var(--subText);
 }
-
-
-
-
-
-

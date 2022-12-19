@@ -1,6 +1,8 @@
 import styles from "./Forms.module.css";
 import searchIcon from "../../Assets/Images/search.png";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import axios from "../../APIs/Doctor";
+import useAxiosFunction, { AxiosConfig } from '../../Hooks/useAxiosFunction'
 
 interface SearchBarProps {
     style?: React.CSSProperties;
@@ -23,16 +25,49 @@ interface SpecialistBoxProps {
 const SpecialistBox = ({ name, description }: SpecialistBoxProps) => {
     return (
         <div className={styles.specialistBox}>
-            <div className={styles.specialistBoxName}>{name}</div>
-            <div className={styles.specialistBoxInfo}>{description}</div>
+            <p className={styles.specialistBoxName}>{name}</p>
+            <p className={styles.specialistBoxInfo}>{description}</p>
         </div>
     );
 }
 
 const SpecialistsList = () => {
+    // @ts-ignore
+    const [doctorsObj, error, loading, axiosFetch]: [{}, unknown, boolean, (configObj: AxiosConfig) => Promise<void>] = useAxiosFunction();
+
+    const getData = () => {
+        axiosFetch({
+            axiosInstance: axios,
+            method: 'GET',
+            url: '/get',
+            requestConfig: {}
+        });
+    }
+
+    useEffect(() => {
+        getData();
+    }, [])
+
+    // @ts-ignore
+    const doctors: [] = doctorsObj.doctors
+
+    const toRender = () => {
+        if (loading) {
+            return <p className={styles.specialistNotDataText}>Ładowanie...</p>
+        } else if (!loading && error) {
+            return <p className={styles.specialistNotDataText}>Wystąpił błąd.</p>
+        } else if (!loading && !error && doctors?.length) {
+            return doctors.map((doctor, i) => {
+                // @ts-ignore
+                return <SpecialistBox name={`${doctor?.firstname} ${doctor?.lastname}`} description={`${doctor?.specialization}`} key={i} />
+            })
+        } else return <p className={styles.specialistNotDataText}>Brak wyników.</p>
+    }
+    const doctorsJSX = toRender()
+
     return (
         <div className={styles.specialistsList}>
-            <SpecialistBox name={`test`} description={'test test test'} />
+            {doctorsJSX}
         </div>
     );
 }
@@ -41,7 +76,7 @@ export const SpecialistSelection = () => {
     return (
         <div className={styles.specialistSelection}>
             <div className={styles.specialistSelectionWrapper}>
-                <SearchBar style={{ marginBottom: "50px" }} />
+                <SearchBar style={{ marginBottom: "20px" }} />
                 <SpecialistsList />
             </div>
 
@@ -85,7 +120,7 @@ const CalendarMonth = () => {
     const [year, setYear] = useState(2022);
     const weekdays = ["po", "wt", "śr", "cz", "pt", "so", "nd"];
     const renderWeekdays = weekdays.map(day => <div>{day}</div>);
-    const renderMonthDays = (month: number) => {
+    const renderMonthDays = () => {
         const days = 31;
         const daysArr: JSX.Element[] = [];
 
@@ -123,7 +158,7 @@ const CalendarMonth = () => {
                     {renderWeekdays}
                 </div>
                 <div>
-                    {renderMonthDays(8)}
+                    {renderMonthDays()}
                 </div>
             </div>
         </div>
