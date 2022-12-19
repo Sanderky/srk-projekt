@@ -1,7 +1,6 @@
 .containerBackground {
     box-shadow: 0px 20px 36px -8px rgba(14, 14, 44, 0.1), 0px 1px 1px rgba(0, 0, 0, 0.05);
     border-radius: 24px;
-    background-color: var(--primary);
     padding-top: 45px;
     width: 740px;
     display: flex;

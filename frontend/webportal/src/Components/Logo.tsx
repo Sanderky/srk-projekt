@@ -8,7 +8,7 @@ interface LogoProps {
 }
 
 const Logo = (props: LogoProps) => {
-    return <img src={logo} className='logo-img' style={{ width: props.width, height: props.height, ...styles ?? null }} />
+    return <img src={logo} className='logoImg' style={{ width: props.width, height: props.height, ...styles ?? null }} />
 }
 
 export default Logo;

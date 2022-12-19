@@ -10,6 +10,8 @@ interface SuccessDataProps {
     color?: string;
 }
 
+const BASE_URL = 'http://localhost:3000'
+
 const ConfirmationData = ({ label, data, color = "var(--subText)" }: SuccessDataProps): JSX.Element => {
     return (
         <div className={styles.ConfirmationDataContainer}>
@@ -40,7 +42,7 @@ class CentralBox extends React.Component<any, any> {
         const reservationParams = new URLSearchParams(reservationPayload)
         let reservation;
         try {
-            reservation = await axios.get(`http://localhost:3000/reservation/get?${reservationParams}`);
+            reservation = await axios.get(`${BASE_URL}/reservation/get?${reservationParams}`);
         } catch (error) {
             console.log(error)
             this.setState({ panelStatus: "wrongCode" });
@@ -64,11 +66,11 @@ class CentralBox extends React.Component<any, any> {
 
         if (reservationData.registered) {
             //Get ticket data
-            const ticketData = await axios.get(`http://localhost:3000/ticket/get?${reservationParams}`);
+            const ticketData = await axios.get(`${BASE_URL}/ticket/get?${reservationParams}`);
             const ticket = ticketData.data.ticket;
 
             const queId = ticket.queId;
-            const queData = await axios.get(`http://localhost:3000/que/get/${queId}`);
+            const queData = await axios.get(`${BASE_URL}/que/get/${queId}`);
             const que = queData.data.que;
 
             const queIndex = que.activeTickets.findIndex((t: { _id: any; }) => t._id === ticket._id)
@@ -81,7 +83,7 @@ class CentralBox extends React.Component<any, any> {
         } else {
             //Create ticket
             const queParams = new URLSearchParams({ doctorId: reservationData.doctorId._id })
-            const que = await axios.get(`http://localhost:3000/que/get?${queParams}`);
+            const que = await axios.get(`${BASE_URL}/que/get?${queParams}`);
             const queData = que.data.que;
             const queId = queData._id;
 
@@ -91,7 +93,7 @@ class CentralBox extends React.Component<any, any> {
                 reservationCode: reservationData.reservationCode,
                 roomNumber: queData.roomNumber
             }
-            const createTicketResponse = await axios.post('http://localhost:3000/ticket/create', ticketPayload)
+            const createTicketResponse = await axios.post(`${BASE_URL}/ticket/create`, ticketPayload)
             const ticket = createTicketResponse.data.ticket;
             const queResponse = createTicketResponse.data.queResponse;
 
@@ -102,7 +104,7 @@ class CentralBox extends React.Component<any, any> {
                 visitCode: ticket.visitCode,
                 queIndex: queResponse.queIndex
             });
-            axios.post('http://localhost:3000/reservation/login/', reservationPayload);
+            axios.post(`${BASE_URL}/reservation/login/`, reservationPayload);
         }
     }
 
