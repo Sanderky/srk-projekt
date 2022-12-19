@@ -58,12 +58,18 @@ const insertTicketIntoQue = async (ticketId: mongoose.Types.ObjectId) => {
                     return queResponse;
                 }
 
-                const mappedTickets = await AsyncAF(que.activeTickets).mapAF(async (ticket: mongoose.Types.ObjectId) => {
-                    const mappedTicket = await Ticket.findById(ticket).exec()
-                    return mappedTicket?.visitTime
-                })
-                const index = mappedTickets.findIndex((time: string) =>
-                    convertTime(time) > ticketToInsertTime
+                const mapTickets = async () => {
+                    const timeArray = []
+                    for (const ticket of que.activeTickets) {
+                        let singleTicket = await Ticket.findById(ticket).exec()
+                        timeArray.push(singleTicket?.visitTime)
+                    }
+                    return timeArray;
+                }
+                const mappedTickets = await mapTickets()
+
+                const index = mappedTickets.findIndex((time) =>
+                    convertTime(time!) > ticketToInsertTime
                 )
                 if (index < 0) {
                     que.activeTickets.push(ticket._id)
