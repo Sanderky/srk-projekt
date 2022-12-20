@@ -2,9 +2,8 @@
     background: none;
     border-width: 0;
     flex: 1;
-    border-radius: 15px 0 0 15px;
-    padding: 15px;
-    padding-left: 30px;
+    border-radius: var(--radiusSmall);
+    padding: 15px 30px;
     font-weight: var(--semiBold);
     color: var(--subText);
     letter-spacing: var(--normal);
@@ -24,7 +23,7 @@
     display: flex;
     flex-direction: row;
     width: 710px;
-    border-radius: 15px;
+    border-radius: var(--radiusSmall);
     background-color: var(--accent);
     align-items: center;
 }
@@ -32,7 +31,7 @@
 .searchIcon {
     width: 28px;
     height: 28px;
-    margin: 0 5px;
+    margin-left: 30px;
 }
 
 .specialistNotDataText {
@@ -88,11 +87,18 @@
 }
 
 .specialistsList {
-    height: 80%;
+    height: 75%;
     display: flex;
     overflow-y: scroll;
     flex-direction: column;
     padding-right: 10px;
+    border-radius: var(--radiusSmall);
+    -ms-overflow-style: thin;
+    scrollbar-width: thin;
+}
+
+.specialistsList::-webkit-scrollbar {
+    display: hidden;
 }
 
 .hourBox {

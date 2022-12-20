@@ -11,8 +11,8 @@ interface SearchBarProps {
 const SearchBar = ({ style }: SearchBarProps) => {
     return (
         <div className={styles.searchWrapper} style={style}>
-            <input type={"text"} className={styles.search} placeholder={"Szukaj..."} />
             <img src={searchIcon} className={styles.searchIcon} />
+            <input type={"text"} className={styles.search} placeholder={"Szukaj..."} />
         </div>
     );
 }

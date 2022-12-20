@@ -21,7 +21,7 @@
 .contentWrapper {
     width: 100%;
     background-color: var(--primary);
-    border-radius: 24px;
+    border-radius: var(--radiusNormal);
 }
 
 /* contentContainer with descriptions and ques */

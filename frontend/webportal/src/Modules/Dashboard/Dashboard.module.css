@@ -35,7 +35,7 @@
     background-color: var(--accent);
     border-color: var(--text);
     border-width: 1px;
-    border-radius: 15px;
+    border-radius: var(--radiusSmall);
     width: 400px;
     height: 55px;
     border-style: solid;

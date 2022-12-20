@@ -96,7 +96,7 @@ const ExpandableView = ({ children, style, expandedContentHeight, expanded, titl
 
     const renderIcon = () => {
         const icon = status === ExpandableStatus.Blocked ? ArrowDark : ArrowWhite;
-        return <img src={icon} style={{ transform: expandedView ? "rotateX(0deg)" : "rotateX(180deg)", transition: "0.8s" }} />
+        return <img src={icon} style={{ transform: expandedView ? "rotateZ(0deg)" : "rotateZ(-180deg)", transition: "0.5s" }} />
     }
 
     const renderSubtitle = () => {

@@ -10,7 +10,7 @@
     font-weight: bold;
     text-align: center;
     padding: 10px;
-    text-decoration: underline var(--warning) solid 10px;
+    text-decoration: underline var(--primary) solid 12px;
     text-underline-offset: 10px;
     /* border: 1px solid black; */
 }
