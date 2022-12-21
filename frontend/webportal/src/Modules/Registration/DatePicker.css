@@ -1,0 +1,35 @@
+.rdp {
+    --rdp-cell-size: 60px;
+    --rdp-accent-color: var(--primary);
+    --rdp-background-color: var(--whiteHover);
+    --rdp-accent-color-dark: var(--primary);
+    --rdp-background-color-dark: #180270;
+    --rdp-outline: 2px solid var(--rdp-accent-color);
+    /* Outline border for focused elements */
+    --rdp-outline-selected: 3px solid var(--rdp-accent-color);
+    /* Outline border for focused _and_ selected elements */
+
+    margin: 1em;
+}
+
+.rdp-caption {
+    font-size: var(--regular);
+}
+
+.rdp-months {
+    justify-content: center;
+}
+
+.rdp-head {
+    font-size: var(--regular);
+}
+
+.rdp-tbody {
+    font-size: var(--regular);
+}
+
+.rdp-tfoot>tr>td>p {
+    text-align: center;
+    font-size: var(--regular);
+    margin: 20px;
+}

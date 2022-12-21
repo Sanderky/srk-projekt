@@ -59,7 +59,7 @@ const SpecialistsList = () => {
         } else if (!loading && !error && doctors?.length) {
             return doctors.map((doctor, i) => {
                 // @ts-ignore
-                return <SpecialistBox name={`${doctor?.firstname} ${doctor?.lastname}`} description={`${doctor?.specialization}`} key={i} />
+                return <SpecialistBox name={`${doctor?.firstname} ${doctor?.lastname}`} description={doctor?.specialization} key={doctor?._id} />
             })
         } else return <p className={styles.specialistNotDataText}>Brak wyników.</p>
     }
@@ -79,115 +79,113 @@ export const SpecialistSelection = () => {
                 <SearchBar style={{ marginBottom: "20px" }} />
                 <SpecialistsList />
             </div>
-
-
         </div>
     );
 }
 
-interface HourBoxProps {
-    hour: string;
-}
+// interface HourBoxProps {
+//     hour: string;
+// }
 
-const HourBox = ({ hour }: HourBoxProps) => {
-    return (
-        <button className={styles.hourBox}>{hour}</button>
-    );
-}
+// const HourBox = ({ hour }: HourBoxProps) => {
+//     return (
+//         <button className={styles.hourBox}>{hour}</button>
+//     );
+// }
 
-interface DayBoxProps {
-    day: number;
-    active: boolean;
-    selected: boolean;
-}
+// interface DayBoxProps {
+//     day: number;
+//     active: boolean;
+//     selected: boolean;
+// }
 
-const DayBox = ({ day, active, selected }: DayBoxProps) => {
+// const DayBox = ({ day, active, selected }: DayBoxProps) => {
 
-    const addZero = (val: number) => {
-        if (val < 10) {
-            return `0${val}`;
-        } else {
-            return `${val}`;
-        }
-    }
+//     const addZero = (val: number) => {
+//         if (val < 10) {
+//             return `0${val}`;
+//         } else {
+//             return `${val}`;
+//         }
+//     }
 
-    return <div className={active ? selected ? styles.daySelected : styles.dayActive : styles.dayInactive}>{addZero(day)}</div>;
+//     return <div className={active ? selected ? styles.daySelected : styles.dayActive : styles.dayInactive}>{addZero(day)}</div>;
 
-}
+// }
 
-const CalendarMonth = () => {
-    const [month, setMonth] = useState(8);
-    const [year, setYear] = useState(2022);
-    const weekdays = ["po", "wt", "śr", "cz", "pt", "so", "nd"];
-    const renderWeekdays = weekdays.map(day => <div>{day}</div>);
-    const renderMonthDays = () => {
-        const days = 31;
-        const daysArr: JSX.Element[] = [];
+// const CalendarMonth = () => {
+//     const [month, setMonth] = useState(8);
+//     const [year, setYear] = useState(2022);
+//     const weekdays = ["po", "wt", "śr", "cz", "pt", "so", "nd"];
+//     const renderWeekdays = weekdays.map(day => <div>{day}</div>);
+//     const renderMonthDays = () => {
+//         const days = 31;
+//         const daysArr: JSX.Element[] = [];
 
-        for (let i = 1; i <= days; i++) {
-            daysArr.push(<DayBox selected={false} active={true} day={i} />)
-        }
+//         for (let i = 1; i <= days; i++) {
+//             daysArr.push(<DayBox selected={false} active={true} day={i} />)
+//         }
 
-        return (
-            <div className={styles.calendarMonthDays}>
-                {daysArr}
-            </div>
-        );
-    }
+//         return (
+//             <div className={styles.calendarMonthDays}>
+//                 {daysArr}
+//             </div>
+//         );
+//     }
 
-    return (
-        <div>
-            <div>
-                <div className={styles.selectWrapper}>
-                    <select className={styles.select}>
-                        <option value="">Styczeń</option>
-                        <option value="">Luty</option>
-                        <option value="">Marzec</option>
-                        <option value="">Kwiecień</option>
-                    </select>
-                    <select className={styles.select} style={{ backgroundPositionX: "55px", paddingRight: "25px" }} >
-                        <option value="">2022</option>
-                        <option value="">2023</option>
-                        <option value="">2024</option>
-                    </select>
-                </div>
+//     return (
+//         <div>
+//             <div>
+//                 <div className={styles.selectWrapper}>
+//                     <select className={styles.select}>
+//                         <option value="">Styczeń</option>
+//                         <option value="">Luty</option>
+//                         <option value="">Marzec</option>
+//                         <option value="">Kwiecień</option>
+//                     </select>
+//                     <select className={styles.select} style={{ backgroundPositionX: "55px", paddingRight: "25px" }} >
+//                         <option value="">2022</option>
+//                         <option value="">2023</option>
+//                         <option value="">2024</option>
+//                     </select>
+//                 </div>
 
-            </div>
-            <div>
-                <div className={styles.calendarMonthWeekdays}>
-                    {renderWeekdays}
-                </div>
-                <div>
-                    {renderMonthDays()}
-                </div>
-            </div>
-        </div>
+//             </div>
+//             <div>
+//                 <div className={styles.calendarMonthWeekdays}>
+//                     {renderWeekdays}
+//                 </div>
+//                 <div>
+//                     {renderMonthDays()}
+//                 </div>
+//             </div>
+//         </div>
 
-    );
-}
+//     );
+// }
 
-const Calendar = () => {
-    const hours = ["10:00", "15:30"];
-    const renderHours = hours.map(hour => <HourBox hour={hour} />);
+// const Calendar = () => {
+//     const hours = ["10:00", "15:30"];
+//     const renderHours = hours.map(hour => <HourBox hour={hour} />);
 
 
-    return (
-        <div className={styles.calendar}>
-            <div className={styles.calendarDays}>
-                <div className={styles.calendarDaysHeader}>
-                    18-08-2022
-                </div>
-                <div className={styles.calendarDaysBody}>
-                    <CalendarMonth />
-                </div>
-            </div>
-            <div className={styles.calendarHours}>
-                {renderHours}
-            </div>
-        </div>
-    );
-}
+//     return (
+//         <div className={styles.calendar}>
+//             <div className={styles.calendarDays}>
+//                 <div className={styles.calendarDaysHeader}>
+//                     18-08-2022
+//                 </div>
+//                 <div className={styles.calendarDaysBody}>
+//                     <CalendarMonth />
+//                 </div>
+//             </div>
+//             <div className={styles.calendarHours}>
+//                 {renderHours}
+//             </div>
+//         </div>
+//     );
+// }
 
-export const VisitDate = () => {
-    return <Calendar />;
-}
+// export const VisitDate = () => {
+//     return <Calendar />;
+// }

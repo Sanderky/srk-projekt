@@ -6,7 +6,8 @@ import LoadingIcon from "../../Assets/Images/loading.png";
 import styles from "./Registration.module.css";
 import { useEffect, useState, useRef } from "react";
 import React from "react";
-import { SpecialistSelection, VisitDate } from "./Forms";
+import { SpecialistSelection } from "./Forms";
+import DatePicker from "./DatePicker"
 
 const HelloScreen = () => {
     const scrollDown = () => {
@@ -172,13 +173,15 @@ const Summary = ({ code }: SummaryProps) => {
 }
 
 const Forms = () => {
+    const [selectedDate, setSelectedDate] = React.useState<Date>();
+
     return (
         <div className={styles.expandableWrapper}>
             <ExpandableView expandedContentHeight={500} expanded={true} number={1} title={"Wybierz specjalistę"} status={ExpandableStatus.Active} style={{ marginBottom: "30px" }}>
                 <SpecialistSelection />
             </ExpandableView>
             <ExpandableView expandedContentHeight={600} expanded={false} number={2} title={"Wybierz termin wizyty"} status={ExpandableStatus.Active} style={{ marginBottom: "30px" }}>
-                <VisitDate />
+                <DatePicker selected={selectedDate} setSelected={setSelectedDate} />
             </ExpandableView>
             <ExpandableView expandedContentHeight={50} expanded={false} number={3} title={"Formularz rejestracyjny"} status={ExpandableStatus.Blocked}>
                 <div>Test</div>
