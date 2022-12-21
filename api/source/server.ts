@@ -17,7 +17,7 @@ import ticketRoutes from '@/routes/Ticket';
 import session from 'express-session';
 import MongoStore from 'connect-mongo';
 import passport from 'passport';
-
+import User from './models/User';
 const router = express();
 
 mongoose.set('strictQuery', true);
@@ -59,7 +59,7 @@ const startServer = () => {
 			saveUninitialized: true,
 			store: sessionStore,
 			cookie: {
-				maxAge: 1000 * 60 * 60 * 24 // 1 Day
+				maxAge: 1000 * 60 * 60 * 24 //24h 
 			}
 		})
 	);
@@ -67,7 +67,11 @@ const startServer = () => {
 	router.use(passport.initialize());
 	router.use(passport.session());
 
-	require('@/middleware/Passport');
+	//Creating strategy for authentication with PassportJs
+	passport.use(User.createStrategy());
+	passport.serializeUser(User.serializeUser());
+	passport.deserializeUser(User.deserializeUser());
+	
 	// Routes
 	router.use('/doctor', doctorRoutes);
 	router.use('/days', daysRoutes);
