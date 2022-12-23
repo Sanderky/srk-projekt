@@ -49,11 +49,17 @@
     flex-direction: row;
     padding: 10px;
     transition: 0.1s;
+    border: none;
 }
 
 .specialistBox:hover {
     background-color: var(--whiteHover);
     cursor: pointer;
+}
+
+.specialistBox:active {
+    background-color: var(--accentDark);
+
 }
 
 .specialistBoxName {
@@ -72,6 +78,10 @@
     justify-content: flex-start;
     align-items: center;
     padding: 10px;
+}
+
+.ID {
+    display: none;
 }
 
 .specialistSelection {

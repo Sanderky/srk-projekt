@@ -1,12 +1,9 @@
-import React from 'react';
-
 import { format } from 'date-fns';
-import { DayPicker, Row, RowProps, DayOfWeek, ClassNames, SelectSingleEventHandler } from 'react-day-picker';
+import { DayPicker, Row, RowProps, DayOfWeek, SelectSingleEventHandler } from 'react-day-picker';
 import { differenceInCalendarDays } from 'date-fns';
 import pl from 'date-fns/locale/pl';
 import 'react-day-picker/dist/style.css';
 import './DatePicker.css';
-import { formatWithOptions } from 'util';
 
 
 function isPastDate(date: Date) {
@@ -42,7 +39,7 @@ export default function DatePicker(props: { selected: Date | undefined; setSelec
             onSelect={props.setSelected}
             footer={footer}
             hidden={isPastDate}
-            showOutsideDays
+            showOutsideDays={true}
             locale={pl}
             disabled={dayOfWeekMatcher}
             fromMonth={currentMonth}

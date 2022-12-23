@@ -1,7 +1,7 @@
 .rdp {
     --rdp-cell-size: 60px;
-    --rdp-accent-color: var(--primary);
-    --rdp-background-color: var(--whiteHover);
+    --rdp-accent-color: var(--dark);
+    --rdp-background-color: var(--accentDark);
     --rdp-accent-color-dark: var(--primary);
     --rdp-background-color-dark: #180270;
     --rdp-outline: 2px solid var(--rdp-accent-color);
@@ -32,4 +32,12 @@
     text-align: center;
     font-size: var(--regular);
     margin: 20px;
+}
+
+.rdp-button:hover {
+    box-shadow: 0 0 20px #1327353d;
+}
+
+.rdp-day_disabled:hover {
+    box-shadow: none;
 }

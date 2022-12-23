@@ -170,7 +170,7 @@ const updateDoctorDayArray = () => {
 //====================================================================
 // Get dayId by given doctorId and date
 //====================================================================
-const dayIdByDate = async (doctorId: mongoose.Types.ObjectId, dayDate: Date) => {
+const dayIdByDate = async (doctorId: mongoose.Types.ObjectId, dayDate: Date | string) => {
 	const dayNonUTC = new Date(dayDate);
 	const givenDay = new Date(Date.UTC(dayNonUTC.getUTCFullYear(), dayNonUTC.getUTCMonth(), dayNonUTC.getUTCDate(), 0, 0, 0, 0));
 	return await Days.findOne({ doctorId: doctorId }).then((daysObj: any) => {
@@ -179,10 +179,10 @@ const dayIdByDate = async (doctorId: mongoose.Types.ObjectId, dayDate: Date) => 
 			if (found) {
 				return found._id.toString();
 			} else {
-				throw new Error('Object with specified date cannot be found in days array of days object.');
+				new Error('Object with specified date cannot be found in days array of days object.');
 			}
 		} else {
-			throw new Error('Doctor with specified ID does not exist.');
+			new Error('Doctor with specified ID does not exist.');
 		}
 	});
 };

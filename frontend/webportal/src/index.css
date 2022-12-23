@@ -74,6 +74,9 @@
     --error: #eb5d47;
     --errorHover: #d15441;
     --success: #56C878;
+    --available: #56C878;
+    --availableHover: #4bac68;
+    --availableActive: #459c5f;
     --warning: #F6AE2D;
     --accent: #F5F7FA;
     --accentDark: #E1E5EB;

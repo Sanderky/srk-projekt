@@ -6,8 +6,9 @@ import LoadingIcon from "../../Assets/Images/loading.png";
 import styles from "./Registration.module.css";
 import { useEffect, useState, useRef } from "react";
 import React from "react";
-import { SpecialistSelection } from "./Forms";
-import DatePicker from "./DatePicker"
+import SpecialistSelection from "./Specialist";
+import DatePicker from "./DatePicker";
+import TimeSlots from "./TimeSlots"
 
 const HelloScreen = () => {
     const scrollDown = () => {
@@ -72,13 +73,8 @@ enum ExpandableStatus {
 const ExpandableView = ({ children, style, expandedContentHeight, expanded, title, status, subtitle, number }: ExpandableViewProps) => {
     const [expandedView, setExpand] = useState(expanded ?? false);
 
-    const toggleExpand = () => {
-        if (expandedView) {
-            setExpand(false);
-        }
-        else {
-            setExpand(true);
-        }
+    function toggleExpand() {
+        setExpand(prevState => !prevState)
     }
 
     const colorPicker = () => {
@@ -173,17 +169,22 @@ const Summary = ({ code }: SummaryProps) => {
 }
 
 const Forms = () => {
+    const [selectedDoctorId, setSelectedDoctorId] = React.useState<string>();
     const [selectedDate, setSelectedDate] = React.useState<Date>();
+    const [selectedTime, setSelectedTime] = React.useState<string>();
 
     return (
         <div className={styles.expandableWrapper}>
-            <ExpandableView expandedContentHeight={500} expanded={true} number={1} title={"Wybierz specjalistę"} status={ExpandableStatus.Active} style={{ marginBottom: "30px" }}>
-                <SpecialistSelection />
+            <ExpandableView expandedContentHeight={500} expanded={selectedDoctorId ? false : true} number={1} title={"Wybierz specjalistę"} status={selectedDoctorId ? ExpandableStatus.Done : ExpandableStatus.Active} style={{ marginBottom: "30px" }}>
+                <SpecialistSelection selected={selectedDoctorId} setSelected={setSelectedDoctorId} />
             </ExpandableView>
-            <ExpandableView expandedContentHeight={600} expanded={false} number={2} title={"Wybierz termin wizyty"} status={ExpandableStatus.Active} style={{ marginBottom: "30px" }}>
+            <ExpandableView expandedContentHeight={550} expanded={false} number={2} title={"Wybierz termin wizyty"} status={selectedDoctorId ? ExpandableStatus.Active : ExpandableStatus.Blocked} style={{ marginBottom: "30px" }}>
                 <DatePicker selected={selectedDate} setSelected={setSelectedDate} />
             </ExpandableView>
-            <ExpandableView expandedContentHeight={50} expanded={false} number={3} title={"Formularz rejestracyjny"} status={ExpandableStatus.Blocked}>
+            <ExpandableView expandedContentHeight={300} expanded={false} number={3} title={"Wybierz godzinę wizyty"} status={selectedDate ? ExpandableStatus.Active : ExpandableStatus.Blocked} style={{ marginBottom: "30px" }}>
+                <TimeSlots doctor={selectedDoctorId} date={selectedDate?.toISOString()} selected={selectedTime} setSelected={setSelectedTime} />
+            </ExpandableView>
+            <ExpandableView expandedContentHeight={50} expanded={false} number={4} title={"Formularz rejestracyjny"} status={selectedTime ? ExpandableStatus.Active : ExpandableStatus.Blocked}>
                 <div>Test</div>
             </ExpandableView>
         </div>

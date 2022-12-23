@@ -1,8 +1,9 @@
-import styles from "./Forms.module.css";
+import styles from "./Specialist.module.css";
 import searchIcon from "../../Assets/Images/search.png";
-import { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import axios from "../../APIs/Doctor";
-import useAxiosFunction, { AxiosConfig } from '../../Hooks/useAxiosFunction'
+import useAxiosFunction, { AxiosConfig } from '../../Hooks/useAxiosFunction';
+
 
 interface SearchBarProps {
     style?: React.CSSProperties;
@@ -20,18 +21,28 @@ const SearchBar = ({ style }: SearchBarProps) => {
 interface SpecialistBoxProps {
     name: string;
     description: string;
+    selected: string;
+    id: string;
+    setSelected: (doctorId: string) => void;
 }
 
-const SpecialistBox = ({ name, description }: SpecialistBoxProps) => {
+const SpecialistBox = ({ name, description, selected, id, setSelected }: SpecialistBoxProps) => {
+
+    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+        const doctorButton: HTMLButtonElement = event.currentTarget;
+        setSelected(doctorButton.name);
+    }
+
     return (
-        <div className={styles.specialistBox}>
+        <button type='button' className={styles.specialistBox} onClick={handleClick} name={id}>
             <p className={styles.specialistBoxName}>{name}</p>
             <p className={styles.specialistBoxInfo}>{description}</p>
-        </div>
+        </button>
     );
 }
 
-const SpecialistsList = () => {
+const SpecialistsList = (props: { selected: string | undefined; setSelected: any; }) => {
     // @ts-ignore
     const [doctorsObj, error, loading, axiosFetch]: [{}, unknown, boolean, (configObj: AxiosConfig) => Promise<void>] = useAxiosFunction();
 
@@ -59,7 +70,7 @@ const SpecialistsList = () => {
         } else if (!loading && !error && doctors?.length) {
             return doctors.map((doctor, i) => {
                 // @ts-ignore
-                return <SpecialistBox name={`${doctor?.firstname} ${doctor?.lastname}`} description={doctor?.specialization} key={doctor?._id} />
+                return <SpecialistBox name={`${doctor?.firstname} ${doctor?.lastname}`} description={doctor?.specialization} key={i} id={doctor?._id} selected={props.selected} setSelected={props.setSelected} />
             })
         } else return <p className={styles.specialistNotDataText}>Brak wyników.</p>
     }
@@ -72,12 +83,12 @@ const SpecialistsList = () => {
     );
 }
 
-export const SpecialistSelection = () => {
+export default function SpecialistSelection(props: { selected: string | undefined; setSelected: any; }) {
     return (
         <div className={styles.specialistSelection}>
             <div className={styles.specialistSelectionWrapper}>
                 <SearchBar style={{ marginBottom: "20px" }} />
-                <SpecialistsList />
+                <SpecialistsList selected={props.selected} setSelected={props.setSelected} />
             </div>
         </div>
     );

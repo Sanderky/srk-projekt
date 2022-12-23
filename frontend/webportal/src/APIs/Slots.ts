@@ -1,5 +1,5 @@
 import axios from 'axios'
-const BASE_URL = 'http://localhost:3000/doctor';
+const BASE_URL = 'http://localhost:3000/slots';
 
 export default axios.create({
     baseURL: BASE_URL,
