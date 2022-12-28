@@ -45,33 +45,6 @@ const startServer = () => {
 	router.use(logTraffic);
 	router.use(rules);
 
-	//Creating new session Store
-	const sessionStore = new MongoStore({
-		mongoUrl: config.mongo.url,
-		collectionName: 'sessions'
-	});
-
-	//Implementing session Middleware
-	router.use(
-		session({
-			secret: 'someSecret',
-			resave: false,
-			saveUninitialized: true,
-			store: sessionStore,
-			cookie: {
-				maxAge: 1000 * 60 * 60 * 24 //24h 
-			}
-		})
-	);
-
-	router.use(passport.initialize());
-	router.use(passport.session());
-
-	//Creating strategy for authentication with PassportJs
-	passport.use(User.createStrategy());
-	passport.serializeUser(User.serializeUser());
-	passport.deserializeUser(User.deserializeUser());
-	
 	// Routes
 	router.use('/doctor', doctorRoutes);
 	router.use('/days', daysRoutes);

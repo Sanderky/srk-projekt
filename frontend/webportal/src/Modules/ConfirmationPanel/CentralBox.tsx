@@ -41,8 +41,13 @@ class CentralBox extends React.Component<any, any> {
         const reservationPayload = { reservationCode: event.target.form[0].value };
         const reservationParams = new URLSearchParams(reservationPayload)
         let reservation;
+        const token:any = localStorage.getItem('token');
         try {
-            reservation = await axios.get(`${BASE_URL}/reservation/get?${reservationParams}`);
+            reservation = await axios.get(`${BASE_URL}/reservation/get?${reservationParams}`,{
+                headers: {
+                    Authorization: token,
+                },
+            });
         } catch (error) {
             console.log(error)
             this.setState({ panelStatus: "wrongCode" });

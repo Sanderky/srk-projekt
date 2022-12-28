@@ -1,19 +1,21 @@
-import express from "express";
+import express, { application } from "express";
 import controller from "@/controllers/User";
 import passport from "passport";
-
+import { isAuthorized } from "@/middleware/Authorize";
 const router = express.Router();
 
-router.post('/signup', controller.createUser);
-router.post('/login',passport.authenticate('local',{failureMessage:true}),controller.loginUser)
-router.post('/logout', (req, res, next) => {
-    req.logout((err) => {
-        if (err) {
-            return next(err);
-        }
-        res.redirect('/logoutRoute');
-    });
+require('@/library/Passport')
 
+router.post('/signup', controller.createUser);
+router.post('/login',controller.loginUser);
+router.get('/protected',passport.authenticate('jwt',{session:false}),(req:any,res:any) => {
+         res.status(200).send({
+        success:true,
+        user:{
+            username: req.user.username,
+            roles: req.user.roles
+        }
+    })
 })
 
 export = router;

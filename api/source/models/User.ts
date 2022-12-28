@@ -8,11 +8,14 @@ const UserScheme = new mongoose.Schema({
 		unique: true,
 		lowercase: true
 	},
+	password: {
+		type: String,
+		required: true,
+	},
 	roles: {
 		type: [],
 		required: true
 	}
 });
 
-UserScheme.plugin(passportLocalMongoose);
 export default mongoose.model('User', UserScheme);

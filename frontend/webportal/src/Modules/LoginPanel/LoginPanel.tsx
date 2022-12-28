@@ -1,50 +1,51 @@
 import { useState, useEffect } from "react";
-import styles from './Dashboard.module.css';
+import styles from './LoginPanel.module.css';
 import axios from 'axios'
+import { redirect, useNavigate, useParams } from "react-router-dom";
 
-const Login = () => {
+const LoginPanel = () => {
     const [error, setError] = useState("");
-
-    // useEffect(() => {
-
-    // }, [])
-
+    const [username,setUsername] = useState('');
+    const [password,setPassword] = useState('');
+    let navigate = useNavigate()
+    let {directTo}:any = useParams()
     const renderErrorMsg = () => {
         return error ? <div className={styles.errorMsg}>{error}</div> : <></>;
     }
-    
     const handleSubmit = (e: any) => {
         e.preventDefault();
-        console.log(e)
         const configuration = {
             method: "post",
-            url: "http://localhost:4000/user/login",
+            url: "http://localhost:3000/user/login",
             data: {
-                username:e.target.form[0].value,
-                password:e.target.form[1].value,
+                username:username,
+                password:password,
             },
         }
         axios(configuration)
-            .then((result) => {console.log(result)})//TODO Gdzie co jak dalej
+            .then((result) => {
+            console.log(result)
+            localStorage.setItem('token',result.data.token)
+            console.log(directTo)
+            navigate("/"+directTo)
+            })
             .catch((error) => {console.log(error)});
     }
 
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [login, setRegister] = useState(false);
-    
     return (
         <div>
             <div className={`${styles.logo} ${styles.disableSelecting}`}>SRK</div>
             <div className={`${styles.header} ${styles.disableSelecting}`}>Logowanie</div>
             <form className={styles.loginForm} onSubmit={(e) => handleSubmit(e)}>
                 <div>
-                    <div className={`${styles.label} ${styles.disableSelecting} ${error ? styles.error : ""}`}>Email</div>
-                    <input className={`${styles.input} ${error ? styles.error : ""}`} type={"text"} name={"username"}></input>
+                    <div className={`${styles.label} ${styles.disableSelecting} ${error ? styles.error : ""}`}>Username</div>
+                    <input className={`${styles.input} ${error ? styles.error : ""}`} type={"text"} name={"username"}
+                      onChange={event => setUsername(event.target.value)}></input>
                 </div>
                 <div>
                     <div className={`${styles.label} ${styles.disableSelecting} ${error ? styles.error : ""}`}>Hasło</div>
-                    <input className={`${styles.input} ${error ? styles.error : ""}`} type={"password"} name={"password"}></input>
+                    <input className={`${styles.input} ${error ? styles.error : ""}`} type={"password"} name={"password"}
+                    onChange={event => setPassword(event.target.value)}></input>
                 </div> 
                 {renderErrorMsg()}              
                 <button className={styles.submitButton} type={"submit"} onClick = {(e) => { handleSubmit(e)}}>Zaloguj</button>
@@ -55,12 +56,6 @@ const Login = () => {
     
 }
 
-const Dashboard = () => {
-    return (
-        <div className={styles.main}>
-            <Login/>
-        </div>
-    ); 
-}
 
-export default Dashboard;
+
+export default LoginPanel;

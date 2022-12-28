@@ -27,8 +27,12 @@ const QueueDisplay = () => {
         if (!listening) {
             const events = new EventSource('http://localhost:3000/ticket/events');
             events.onmessage = (event) => {
-                console.log("Dostałem message")
+                const token:any = localStorage.getItem('token');
+                console.log("token")
                 const getQueConfig = {
+                    headers: {
+                        Authorization: token,
+                    },
                     method: "GET",
                     url: "http://localhost:3000/que/get",
                 }
