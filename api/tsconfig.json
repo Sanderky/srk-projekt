@@ -14,7 +14,8 @@
 			"@/library/*": ["library/*"],
 			"@/middleware/*": ["middleware/*"],
 			"@/models/*": ["models/*"],
-			"@/routes/*": ["routes/*"]
+			"@/routes/*": ["routes/*"],
+			"@/services/*": ["services/*"]
 		}
 	}
 }

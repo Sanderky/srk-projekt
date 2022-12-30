@@ -62,16 +62,27 @@ function DataSummary({doctor, date, time, setDoctorId, setDoctor, setDate, setTi
 function EmailForm({doctorId, date, time, createReservation}: ReservationDataProps) {
     const email = useRef<HTMLInputElement>(null);
     const confirmEmail = useRef<HTMLInputElement>(null);
-    const [showErrorMessage, setShowErrorMessage] = useState(false);
-    const [isConfirmEmailDirty, setIsConfirmEmailDirty] = useState(false);
+    const [showErrorMessageNotMatching, setShowErrorMessageNotMatching] = useState<boolean>(false);
+    const [showErrorMessageNotValid, setShowErrorMessageNotValid] = useState<boolean>(false);
+    const [isConfirmEmailDirty, setIsConfirmEmailDirty] = useState<boolean>(false);
+    const [isEmailDirty, setIsEmailDirty] = useState<boolean>(false);
     
-    const checkEmails = () => {
+    const ifEmailValid = () => {
+        setIsEmailDirty(true);
+        const regexExp: RegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+        const isValid: boolean = regexExp.test(email.current!.value)
+        if (isEmailDirty) {
+            isValid ? setShowErrorMessageNotValid(false) : setShowErrorMessageNotValid(true);
+        }
+    }
+
+    const checkEmailsMatch = () => {
         setIsConfirmEmailDirty(true);
         if (isConfirmEmailDirty) {
             if (email.current?.value === confirmEmail.current?.value) {
-                setShowErrorMessage(false);
+                setShowErrorMessageNotMatching(false);
             } else {
-                setShowErrorMessage(true);
+                setShowErrorMessageNotMatching(true);
             }
         }
     }
@@ -79,16 +90,24 @@ function EmailForm({doctorId, date, time, createReservation}: ReservationDataPro
     useEffect(() => {
         if (isConfirmEmailDirty) {
             if (email.current?.value === confirmEmail.current?.value) {
-                setShowErrorMessage(false);
+                setShowErrorMessageNotMatching(false);
             } else {
-                setShowErrorMessage(true);
+                setShowErrorMessageNotMatching(true);
             }
         }
     }, [isConfirmEmailDirty])
 
+    useEffect(() => {
+        const regexExp: RegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
+        const isValid: boolean = regexExp.test(email.current!.value)
+        if (isEmailDirty) {
+            isValid ? setShowErrorMessageNotValid(true) : setShowErrorMessageNotValid(false);
+        }
+    }, [isEmailDirty])
+
     function ifButtonActive() {
         if (email.current?.value !== '' && confirmEmail.current?.value !== '') {
-            if (showErrorMessage && isConfirmEmailDirty) {
+            if (showErrorMessageNotMatching && isConfirmEmailDirty) {
                 return false;
             } else return true;
         } else {
@@ -96,31 +115,39 @@ function EmailForm({doctorId, date, time, createReservation}: ReservationDataPro
         }
     }
 
-    function checkEmailMatch() {
-        if (showErrorMessage && isConfirmEmailDirty) {
+    function checkEmails() {
+        if (showErrorMessageNotMatching && isConfirmEmailDirty) {
                 return true;
-            } else return false;
+        } else return false;
+    }
+
+    function checkEmailValidity() {
+        if (showErrorMessageNotValid && isEmailDirty) {
+                return true;
+        } else return false;
     }
 
     return (
         <form className={styles.emailForm}>
             <div className={styles.formPart}>
                 <label htmlFor="email">Adres email</label>
-                <input  className={styles.emailInput} 
+                <input  className={checkEmailValidity() ? `${styles.wrongEmailInput} ${styles.emailInput}` : styles.emailInput} 
                         type="text" 
                         id="email" 
                         name="email" 
-                        ref={email}/>
+                        ref={email}
+                        onChange={ifEmailValid}/>
             </div>
+            {checkEmailValidity() ? <div className={styles.emailError}>Wprowadź prawidłowy adres email.</div> : ''}
             <div className={styles.formPart}>
                 <label htmlFor="confirmEmail">Potwierdź adres email</label>
-                <input  className={checkEmailMatch() ? `${styles.wrongEmailInput} ${styles.emailInput}` : styles.emailInput} 
+                <input  className={checkEmails() ? `${styles.wrongEmailInput} ${styles.emailInput}` : styles.emailInput} 
                         type="text" id="confirmEmail" 
                         name="confirmEmail" 
                         ref={confirmEmail} 
-                        onChange={checkEmails}/>
+                        onChange={checkEmailsMatch}/>
             </div>
-            {checkEmailMatch() ? <div className={styles.emailError}>Adresy się nie pokrywają!</div> : ''}
+            {checkEmails() ? <div className={styles.emailError}>Adresy się nie pokrywają!</div> : ''}
             <button className={ifButtonActive() ? styles.createReservationButton : styles.createReservationButtonInactive} 
                     type="button" onClick={event => createReservation(email.current?.value, doctorId, date, time)} 
                     disabled={ifButtonActive() ? false : true}>
@@ -137,7 +164,8 @@ export default function ReservationConfirmation({ doctorId, date, time, setDocto
 
     const createReservation = async (email: string | undefined, doctorId: string | undefined, date: Date | undefined, time: string | undefined ) => {
         setLoading(true)
-        const dateUTC = new Date(Date.UTC(date!.getUTCFullYear(), date!.getUTCMonth(), date!.getUTCDate() + 1, 0, 0, 0, 0)).toISOString();
+        const dateUTCNonString = new Date(Date.UTC(date!.getUTCFullYear(), date!.getUTCMonth(), date!.getUTCDate() + 1, 0, 0, 0, 0));
+        const dateUTC = dateUTCNonString.toISOString()
         const reservationPayload = {
             email: email,
             doctorId: doctorId,
@@ -145,7 +173,15 @@ export default function ReservationConfirmation({ doctorId, date, time, setDocto
             time: time,
         }
         const reservationData = await axios.post(`${BASE_URL}/reservation/create/`, reservationPayload);
-        setCode(reservationData.data.reservation.reservationCode);
+        const reservationCode = reservationData.data.reservation.reservationCode
+        setCode(reservationCode);
+        
+        const emailPayload = {
+            email: email,
+            date: dateUTCNonString.toLocaleDateString(),
+            code: reservationCode
+        }
+        await axios.post(`${BASE_URL}/email/send-confirmation`, emailPayload); 
         setSummary(true);
         setLoading(false);
     }

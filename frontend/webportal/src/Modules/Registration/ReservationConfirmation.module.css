@@ -94,6 +94,8 @@
     padding-left: 1rem;
     letter-spacing: var(--spreadSpacing);
     font-weight: bold;
+    margin-top: -1rem;
+    margin-bottom: 1.5rem;
 }
 
 .createReservationButton {

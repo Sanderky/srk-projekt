@@ -14,10 +14,7 @@ import daysRoutes from '@/routes/Days';
 import slotsRoutes from '@/routes/Slots';
 import queRoutes from '@/routes/Que';
 import ticketRoutes from '@/routes/Ticket';
-import session from 'express-session';
-import MongoStore from 'connect-mongo';
-import passport from 'passport';
-import User from './models/User';
+import emailRoutes from '@/routes/Email';
 const router = express();
 
 mongoose.set('strictQuery', true);
@@ -53,6 +50,7 @@ const startServer = () => {
 	router.use('/que', queRoutes);
 	router.use('/ticket', ticketRoutes);
 	router.use('/user', userRoutes);
+	router.use('/email', emailRoutes);
 
 	// Healthcheck Route
 	router.get('/healthcheck', (req, res, next) => {
