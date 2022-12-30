@@ -123,7 +123,7 @@ class CentralBox extends React.Component<any, any> {
                     <input type="text" name="reservationCode" placeholder="Unikatowy kod rezerwacji" className={styles.input} maxLength={8} />
                     <button type="submit" onClick={event => this.confirmReservation(event)} className={styles.buttonSend}>Zatwierdź</button>
                 </form>
-                <img src={spinnerImg} alt="" className={this.state.loading ? styles.spinnerActive : styles.spinnerDisabled} />
+                <img src={spinnerImg} alt="ładowanie..." className={this.state.loading ? styles.spinnerActive : styles.spinnerDisabled} />
             </div>
         );
     }
@@ -160,7 +160,7 @@ class CentralBox extends React.Component<any, any> {
                     <button type="submit" className={`${styles.buttonSend} ${styles.buttonError}`} onClick={event => this.confirmReservation(event)}>Zatwierdź</button>
                     <button type="submit" onClick={() => { this.backToLogin() }} className={styles.buttonNew}>Powrót</button>
                 </form>
-                <img src={spinnerImg} alt="" className={this.state.loading ? styles.spinnerActive : styles.spinnerDisabled} />
+                <img src={spinnerImg} alt="ładowanie..." className={this.state.loading ? styles.spinnerActive : styles.spinnerDisabled} />
             </div>
         );
     }

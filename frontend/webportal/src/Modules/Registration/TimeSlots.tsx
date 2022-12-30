@@ -7,20 +7,20 @@ interface SingleSlotProps {
     time: string;
     available: boolean;
     id: string;
-    setSelected: (doctorId: string) => void;
+    setSelected: (doctor: string) => void;
 }
 
 const SingleSlot = ({ time, available, id, setSelected }: SingleSlotProps) => {
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
-        const doctorButton: HTMLButtonElement = event.currentTarget;
+        const slotButton: HTMLButtonElement = event.currentTarget;
         if (available) {
-            setSelected(doctorButton.name);
+            setSelected(time);
         }
     }
 
     return (
-        <button type='button' className={`${styles.slotBox} ${available ? styles.slotAvail : styles.slotNotAvail}`} onClick={handleClick} name={id}>
+        <button type='button' className={`${styles.slotBox} ${available ? styles.slotAvail : styles.slotNotAvail}`} onClick={handleClick} name={time}>
             {time}
         </button>
     );
@@ -30,7 +30,7 @@ interface TimeSlotsProps {
     doctor: string | undefined;
     date: string | undefined;
     selected: string | undefined;
-    setSelected: any
+    setSelected: (doctor: string | undefined) => void;
 }
 
 export default function TimeSlots({ doctor, date, selected, setSelected }: TimeSlotsProps) {
@@ -68,12 +68,14 @@ export default function TimeSlots({ doctor, date, selected, setSelected }: TimeS
         if (loading) {
             return <p className={styles.specialistNotDataText}>Ładowanie...</p>
         } else if (!loading && error) {
-            console.log(error)
-            return <p className={styles.specialistNotDataText}>Wystąpił błąd.</p>
+            return <p className={styles.specialistNotDataText}>Wystąpił błąd. Proszę odświeżyć stronę.</p>
         } else if (!loading && !error && slots?.length) {
             return slots.map((slot, i) => {
-                // @ts-ignore
-                return <SingleSlot time={slot?.start} available={slot?.availability} key={i} id={slot?._id} selected={selected} setSelected={setSelected} />
+                return <SingleSlot                          // @ts-ignore
+                            time={slot?.start}              // @ts-ignore
+                            available={slot?.availability}  // @ts-ignore
+                            key={i} id={slot?._id} 
+                            setSelected={setSelected} />
             })
         } else return <p className={styles.specialistNotDataText}>Brak wyników.</p>
     }

@@ -1,18 +1,20 @@
 .slotList {
-    display: inline-flex;
-    padding-top: 30px;
+    display: flex;
     height: 100%;
     gap: 20px;
     flex-wrap: wrap;
     align-items: center;
     justify-content: center;
+    padding-top: 30px;
+    max-width: 720px;
+    margin: auto;
 }
 
 .slotBox {
     height: 60px;
     padding: 10px;
     border: none;
-    font-size: var(--regular);
+    font-size: var(--normal);
     width: calc(100% / 6);
     font-weight: bold;
     transition: 0.2s;
@@ -36,5 +38,7 @@
 
 .slotNotAvail {
     background-color: var(--accentDark);
+    /* border: 1px solid var(--subText); */
     color: var(--subText);
+    cursor: default;
 }

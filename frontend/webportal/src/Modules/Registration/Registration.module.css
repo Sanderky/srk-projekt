@@ -25,6 +25,7 @@
     background-color: var(--primary);
     align-items: center;
     justify-content: space-between;
+    z-index: 2;
 }
 
 .stickyHeader {
@@ -35,14 +36,14 @@
 .helloHeader {
     font-weight: var(--semiBold);
     color: var(--white);
-    letter-spacing: var(--normal);
+    letter-spacing: var(--normalSpacing);
     font-size: var(--header1);
 }
 
 .subHelloHeader {
     font-weight: var(--semiBold);
     color: var(--white);
-    letter-spacing: var(--normal);
+    letter-spacing: var(--normalSpacing);
     font-size: var(--header2);
     margin-top: 40px;
     margin-bottom: 40px;
@@ -51,7 +52,7 @@
 .goNextBtn {
     font-weight: var(--semiBold);
     color: var(--accent);
-    letter-spacing: var(--normal);
+    letter-spacing: var(--normalSpacing);
     font-size: var(--titleSmall);
     text-decoration: none;
     background-color: var(--dark);
@@ -79,14 +80,14 @@
 .helloInfo {
     font-weight: var(--semiBold);
     color: var(--white);
-    letter-spacing: var(--normal);
+    letter-spacing: var(--normalSpacing);
     font-size: var(--titleSmall);
 }
 
 .headerInfo {
     font-weight: var(--semiBold);
     color: var(--white);
-    letter-spacing: var(--normal);
+    letter-spacing: var(--normalSpacing);
     font-size: var(--titleBig);
 }
 
@@ -121,22 +122,22 @@
 .expandNumber {
     margin-right: 30px;
     font-weight: var(--semiBold);
-    letter-spacing: var(--normal);
+    letter-spacing: var(--normalSpacing);
     font-size: var(--titleBig);
 }
 
 .expandTitle {
     font-weight: var(--semiBold);
-    letter-spacing: var(--normal);
+    letter-spacing: var(--normalSpacing);
     font-size: var(--titleSmall);
 }
 
 .expandSubtitle {
-    font-weight: var(--semiBold);
-    letter-spacing: var(--normal);
-    font-size: var(--titleSmall);
-    color: var(--subText);
-    margin-top: 20px;
+    font-weight: bold;
+    font-size: var(--big);
+    /* color: var(--white); */
+    color: var(--text);
+    margin-top: 10px;
 }
 
 .expandTitles {
@@ -148,8 +149,8 @@
 .footer {
     background-color: var(--dark);
     text-align: center;
-    font-weight: var(--regularWeight);
-    letter-spacing: var(--normal);
+    font-weight: var(--normalWeight);
+    letter-spacing: var(--normalSpacing);
     font-size: var(--small);
     color: var(--subText);
     padding: 15px 0;
@@ -178,33 +179,6 @@
     margin: 30px 0;
 }
 
-.loadingIcon {
-    width: 50px;
-    height: 50px;
-    position: relative;
-    z-index: -1;
-}
-
-@keyframes rotating {
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(360deg);
-    }
-}
-
-.rotating {
-    animation: rotating 2s linear infinite;
-}
-
-.loadingWrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
 .summary {
     width: 850px;
     display: flex;
@@ -213,49 +187,56 @@
 }
 
 .summary_code {
-    font-weight: var(--bold);
-    letter-spacing: var(--spread);
+    font-weight: bolder;
+    letter-spacing: var(--spreadSpacing);
     font-size: var(--header2);
-    color: var(--subText);
+    color: var(--success);
     margin: 30px 0;
 }
 
 .summary_text {
     font-weight: var(--semiBold);
-    letter-spacing: var(--normal);
     font-size: var(--big);
-    color: var(--text);
+    color: var(--dark);
+    text-align: center;
 }
 
 .summary_attention {
     font-weight: var(--bold);
-    letter-spacing: var(--normal);
+    letter-spacing: var(--normalSpacing);
     font-size: var(--big);
-    color: var(--subText);
+    color: var(--warning);
     margin-top: 30px;
 }
 
 .summary_title {
     font-weight: var(--semiBold);
-    letter-spacing: var(--normal);
+    letter-spacing: var(--normalSpacing);
     font-size: var(--titleBig);
     color: var(--text);
 }
 
 .summary_btn {
-    border-width: 0;
-    background-color: transparent;
     font-weight: var(--semiBold);
-    letter-spacing: var(--normal);
     font-size: var(--big);
-    color: var(--subText);
-    margin-top: 20px;
+    text-decoration: none;
+    color: var(--accent);
+    background-color: var(--primary);
+    border: 2px solid var(--primary);
     cursor: pointer;
+    border-radius: var(--radiusSmall);
+    padding: 1rem 2rem;
+    margin: 2rem auto;
+    transition: 0.3s;
+    box-shadow: 0 0 30px #64acc469;
+    display: flex;
+    align-items: center;
 }
 
 .summary_btn:hover {
-    /* font-size: calc(var(--big) + 5px); */
-    color: var(--dark);
+    background-color: var(--primaryHover);
+    border: 2px solid var(--primaryHover);
+    box-shadow: 0 0 30px #50a1bcc7;
 }
 
 .summary_newInfo {

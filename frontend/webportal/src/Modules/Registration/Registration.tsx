@@ -8,7 +8,8 @@ import { useEffect, useState, useRef } from "react";
 import React from "react";
 import SpecialistSelection from "./Specialist";
 import DatePicker from "./DatePicker";
-import TimeSlots from "./TimeSlots"
+import TimeSlots from "./TimeSlots";
+import ReservationConfirmation from "./ReservationConfirmation";
 
 const HelloScreen = () => {
     const scrollDown = () => {
@@ -64,6 +65,11 @@ interface ExpandableViewProps {
     style?: React.CSSProperties;
 }
 
+interface SummaryStateProps {
+    setCode: (code: string) => void;
+    setSummary: (summary: boolean) => void;
+}
+
 enum ExpandableStatus {
     Active = "active",
     Blocked = "blocked",
@@ -96,13 +102,6 @@ const ExpandableView = ({ children, style, expandedContentHeight, expanded, titl
         return <img src={icon} style={{ transform: expandedView ? "rotateZ(0deg)" : "rotateZ(-180deg)", transition: "0.5s" }} />
     }
 
-    const renderSubtitle = () => {
-        if (subtitle) {
-            return <div className={styles.expandSubtitle}>{subtitle}</div>
-        }
-        return null;
-    }
-
     return (
         <div style={{ ...style }}>
             <div
@@ -119,7 +118,7 @@ const ExpandableView = ({ children, style, expandedContentHeight, expanded, titl
                     <div className={styles.expandNumber} style={{ justifyContent: subtitle ? "flex-start" : "center" }}>{number.toString()}</div>
                     <div className={styles.expandTitles}>
                         <div className={styles.expandTitle}>{title}</div>
-                        {renderSubtitle()}
+                        {subtitle ? <div className={styles.expandSubtitle}>{subtitle}</div> : null}
                     </div>
                 </div>
                 {renderIcon()}
@@ -140,11 +139,16 @@ const Footer = () => {
 
 interface SummaryProps {
     code: string;
+    setSummary: (summary: boolean) => void;
 }
 
-const Summary = ({ code }: SummaryProps) => {
+const Summary = ({ code, setSummary }: SummaryProps) => {
     const renderSeparator = () => {
         return <div className={styles.separator}></div>;
+    }
+
+    const newReservation = () => {
+        setSummary(false);
     }
 
     return (
@@ -156,36 +160,89 @@ const Summary = ({ code }: SummaryProps) => {
             <div className={styles.summary_text}>Zachowaj go, będzie Ci potrzebny aby potwierdzić swoją obecność w placówce.</div>
             {renderSeparator()}
             <div className={styles.summary_text}>Potwierdzenie rejestracji wraz z kodem zostało również przesłane na Twój adres email.</div>
-            <div>
-                <div className={styles.summary_attention}>Uwaga!</div>
-                <div className={styles.summary_text}>
-                    Proszę przybyć do placówki w dzień swojej wizyty nie wcześniej niż 30 minut przed godziną wizyty. Na miejscu konieczne jest wprowadzenie swojego kodu w terminalu.
-                </div>
-            </div>
             <div className={`${styles.summary_text} ${styles.summary_newInfo}`}>Chcesz umówić kolejną wizytę?</div>
-            <button className={styles.summary_btn}>Nowa wizyta</button>
+            <button className={styles.summary_btn} onClick={(e) => { newReservation()}}>Nowa wizyta</button>
         </div>
     );
 }
 
-const Forms = () => {
-    const [selectedDoctorId, setSelectedDoctorId] = React.useState<string>();
-    const [selectedDate, setSelectedDate] = React.useState<Date>();
-    const [selectedTime, setSelectedTime] = React.useState<string>();
+const Forms = ({setCode, setSummary}: SummaryStateProps) => {
+    const [selectedDoctorId, setSelectedDoctorId] = useState<string>();
+    const [selectedDoctor, setSelectedDoctor] = useState<string>();
+    const [selectedDate, setSelectedDate] = useState<Date>();
+    const [selectedTime, setSelectedTime] = useState<string>();
+    
+    function checkDate() {
+        if (!selectedDoctorId) {
+            return ExpandableStatus.Blocked
+        }
+        else if (selectedDoctorId && !selectedDate) {
+            return ExpandableStatus.Active
+        } else if (selectedDoctorId && selectedDate){
+            return ExpandableStatus.Done
+        } else return ExpandableStatus.Blocked
+    }
+
+    function checkTime() {
+        if (!selectedDoctorId && !selectedDate) {
+            return ExpandableStatus.Blocked
+        }
+        else if (selectedDoctorId && selectedDate && !selectedTime) {
+            return ExpandableStatus.Active
+        } else if (selectedDoctorId && selectedDate && selectedTime){
+            return ExpandableStatus.Done
+        } else return ExpandableStatus.Blocked
+    }
+
+    function checkAll() {
+        if (!selectedDoctorId && !selectedDate && !selectedTime) {
+            return ExpandableStatus.Blocked
+        }
+        else if (selectedDoctorId && selectedDate && selectedTime) {
+            return ExpandableStatus.Active
+        } else if (selectedDoctorId && selectedDate && selectedTime){
+            return ExpandableStatus.Done
+        } else return ExpandableStatus.Blocked
+    }
 
     return (
         <div className={styles.expandableWrapper}>
-            <ExpandableView expandedContentHeight={500} expanded={selectedDoctorId ? false : true} number={1} title={"Wybierz specjalistę"} status={selectedDoctorId ? ExpandableStatus.Done : ExpandableStatus.Active} style={{ marginBottom: "30px" }}>
-                <SpecialistSelection selected={selectedDoctorId} setSelected={setSelectedDoctorId} />
+            <ExpandableView expandedContentHeight={500} expanded={true} number={1} title={"Wybierz specjalistę"} subtitle={selectedDoctor} status={selectedDoctorId ? ExpandableStatus.Done : ExpandableStatus.Active} style={{ marginBottom: "30px" }}>
+                <SpecialistSelection 
+                    selected={selectedDoctorId} 
+                    setSelectedId={setSelectedDoctorId} 
+                    setSelected={setSelectedDoctor}/>
             </ExpandableView>
-            <ExpandableView expandedContentHeight={550} expanded={false} number={2} title={"Wybierz termin wizyty"} status={selectedDoctorId ? ExpandableStatus.Active : ExpandableStatus.Blocked} style={{ marginBottom: "30px" }}>
-                <DatePicker selected={selectedDate} setSelected={setSelectedDate} />
+            <ExpandableView expandedContentHeight={600} expanded={false} number={2} title={"Wybierz termin wizyty"} subtitle={selectedDate?.toLocaleDateString()} status={checkDate()} style={{ marginBottom: "30px" }}>
+                { selectedDoctorId ? 
+                    <DatePicker 
+                        selected={selectedDate} 
+                        setSelected={setSelectedDate} /> 
+                    : <div>Wybierz lekarza.</div>}
             </ExpandableView>
-            <ExpandableView expandedContentHeight={300} expanded={false} number={3} title={"Wybierz godzinę wizyty"} status={selectedDate ? ExpandableStatus.Active : ExpandableStatus.Blocked} style={{ marginBottom: "30px" }}>
-                <TimeSlots doctor={selectedDoctorId} date={selectedDate?.toISOString()} selected={selectedTime} setSelected={setSelectedTime} />
+            <ExpandableView expandedContentHeight={300} expanded={false} number={3} title={"Wybierz godzinę wizyty"} subtitle={selectedTime} status={checkTime()} style={{ marginBottom: "30px" }}>
+                {selectedDate && selectedDoctorId ? 
+                    <TimeSlots 
+                        doctor={selectedDoctorId} 
+                        date={selectedDate?.toISOString()} 
+                        selected={selectedTime} 
+                        setSelected={setSelectedTime}/> 
+                    : <div>Wybierz datę i lekarza.</div>}
             </ExpandableView>
-            <ExpandableView expandedContentHeight={50} expanded={false} number={4} title={"Formularz rejestracyjny"} status={selectedTime ? ExpandableStatus.Active : ExpandableStatus.Blocked}>
-                <div>Test</div>
+            <ExpandableView expandedContentHeight={550} expanded={false} number={4} title={"Formularz rejestracyjny"} status={checkAll()} style={{ marginBottom: "30px" }}>
+                {selectedDate && selectedDoctorId && selectedTime ? 
+                    <ReservationConfirmation 
+                        doctor={selectedDoctor} 
+                        doctorId={selectedDoctorId} 
+                        date={selectedDate} 
+                        time={selectedTime} 
+                        setDoctor={setSelectedDoctor}
+                        setDoctorId={setSelectedDoctorId} 
+                        setDate={setSelectedDate} 
+                        setTime={setSelectedTime} 
+                        setCode={setCode} 
+                        setSummary={setSummary}/> 
+                    : <div>Wybierz datę, lekarza i czas wizyty.</div>}
             </ExpandableView>
         </div>
     );
@@ -202,20 +259,18 @@ const Loading = () => {
 const Registration = () => {
     useEffect(() => { document.title = "SRK - Rejestracja" }, [])
 
-    const [loading, setLoading] = useState(false);
     const [summary, setSummary] = useState(false);
-    const [code, setCode] = useState("");
+    const [code, setCode] = useState<string>('');
 
 
     return (
         <div>
             <HelloScreen />
             <div className={styles.landingPage}>
-
                 <Header />
 
-                <div className={styles.landingPageContent} style={{ justifyContent: loading ? "center" : "flex-start" }}>
-                    {summary ? (loading ? <Loading /> : <Summary code={code} />) : <Forms />}
+                <div className={styles.landingPageContent} style={{ justifyContent: "flex-start" }}>
+                    {summary ? <Summary code={code} setSummary={setSummary} /> : <Forms setCode={setCode} setSummary={setSummary}/>}
                 </div>
 
                 <Footer />

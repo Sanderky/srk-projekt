@@ -9,11 +9,11 @@
     --rdp-outline-selected: 3px solid var(--rdp-accent-color);
     /* Outline border for focused _and_ selected elements */
 
-    margin: 1em;
+    padding: 2rem;
 }
 
 .rdp-caption {
-    font-size: var(--regular);
+    font-size: var(--normal);
 }
 
 .rdp-months {
@@ -21,16 +21,16 @@
 }
 
 .rdp-head {
-    font-size: var(--regular);
+    font-size: var(--normal);
 }
 
 .rdp-tbody {
-    font-size: var(--regular);
+    font-size: var(--normal);
 }
 
 .rdp-tfoot>tr>td>p {
     text-align: center;
-    font-size: var(--regular);
+    font-size: var(--normal);
     margin: 20px;
 }
 

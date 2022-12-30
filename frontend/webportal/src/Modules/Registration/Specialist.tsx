@@ -21,17 +21,19 @@ const SearchBar = ({ style }: SearchBarProps) => {
 interface SpecialistBoxProps {
     name: string;
     description: string;
-    selected: string;
+    selected: string | undefined;
     id: string;
-    setSelected: (doctorId: string) => void;
+    setSelectedId: (doctorId: string) => void;
+    setSelected: (doctor: string) => void;
 }
 
-const SpecialistBox = ({ name, description, selected, id, setSelected }: SpecialistBoxProps) => {
+const SpecialistBox = ({ name, description, selected, id, setSelected, setSelectedId }: SpecialistBoxProps) => {
 
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
         const doctorButton: HTMLButtonElement = event.currentTarget;
-        setSelected(doctorButton.name);
+        setSelectedId(doctorButton.name);
+        setSelected(name);
     }
 
     return (
@@ -42,7 +44,7 @@ const SpecialistBox = ({ name, description, selected, id, setSelected }: Special
     );
 }
 
-const SpecialistsList = (props: { selected: string | undefined; setSelected: any; }) => {
+const SpecialistsList = (props: { selected: string | undefined; setSelected: any; setSelectedId: any;}) => {
     // @ts-ignore
     const [doctorsObj, error, loading, axiosFetch]: [{}, unknown, boolean, (configObj: AxiosConfig) => Promise<void>] = useAxiosFunction();
 
@@ -69,8 +71,13 @@ const SpecialistsList = (props: { selected: string | undefined; setSelected: any
             return <p className={styles.specialistNotDataText}>Wystąpił błąd.</p>
         } else if (!loading && !error && doctors?.length) {
             return doctors.map((doctor, i) => {
-                // @ts-ignore
-                return <SpecialistBox name={`${doctor?.firstname} ${doctor?.lastname}`} description={doctor?.specialization} key={i} id={doctor?._id} selected={props.selected} setSelected={props.setSelected} />
+                return <SpecialistBox                                           // @ts-ignore
+                            name={`${doctor?.firstname} ${doctor?.lastname}`}   // @ts-ignore
+                            description={doctor?.specialization}                // @ts-ignore
+                            key={i} id={doctor?._id} 
+                            selected={props.selected} 
+                            setSelected={props.setSelected} 
+                            setSelectedId={props.setSelectedId} />
             })
         } else return <p className={styles.specialistNotDataText}>Brak wyników.</p>
     }
@@ -83,120 +90,16 @@ const SpecialistsList = (props: { selected: string | undefined; setSelected: any
     );
 }
 
-export default function SpecialistSelection(props: { selected: string | undefined; setSelected: any; }) {
+export default function SpecialistSelection(props: { selected: string | undefined; setSelectedId: any; setSelected: any }) {
     return (
         <div className={styles.specialistSelection}>
             <div className={styles.specialistSelectionWrapper}>
                 <SearchBar style={{ marginBottom: "20px" }} />
-                <SpecialistsList selected={props.selected} setSelected={props.setSelected} />
+                <SpecialistsList 
+                    selected={props.selected} 
+                    setSelected={props.setSelected} 
+                    setSelectedId={props.setSelectedId}/>
             </div>
         </div>
     );
 }
-
-// interface HourBoxProps {
-//     hour: string;
-// }
-
-// const HourBox = ({ hour }: HourBoxProps) => {
-//     return (
-//         <button className={styles.hourBox}>{hour}</button>
-//     );
-// }
-
-// interface DayBoxProps {
-//     day: number;
-//     active: boolean;
-//     selected: boolean;
-// }
-
-// const DayBox = ({ day, active, selected }: DayBoxProps) => {
-
-//     const addZero = (val: number) => {
-//         if (val < 10) {
-//             return `0${val}`;
-//         } else {
-//             return `${val}`;
-//         }
-//     }
-
-//     return <div className={active ? selected ? styles.daySelected : styles.dayActive : styles.dayInactive}>{addZero(day)}</div>;
-
-// }
-
-// const CalendarMonth = () => {
-//     const [month, setMonth] = useState(8);
-//     const [year, setYear] = useState(2022);
-//     const weekdays = ["po", "wt", "śr", "cz", "pt", "so", "nd"];
-//     const renderWeekdays = weekdays.map(day => <div>{day}</div>);
-//     const renderMonthDays = () => {
-//         const days = 31;
-//         const daysArr: JSX.Element[] = [];
-
-//         for (let i = 1; i <= days; i++) {
-//             daysArr.push(<DayBox selected={false} active={true} day={i} />)
-//         }
-
-//         return (
-//             <div className={styles.calendarMonthDays}>
-//                 {daysArr}
-//             </div>
-//         );
-//     }
-
-//     return (
-//         <div>
-//             <div>
-//                 <div className={styles.selectWrapper}>
-//                     <select className={styles.select}>
-//                         <option value="">Styczeń</option>
-//                         <option value="">Luty</option>
-//                         <option value="">Marzec</option>
-//                         <option value="">Kwiecień</option>
-//                     </select>
-//                     <select className={styles.select} style={{ backgroundPositionX: "55px", paddingRight: "25px" }} >
-//                         <option value="">2022</option>
-//                         <option value="">2023</option>
-//                         <option value="">2024</option>
-//                     </select>
-//                 </div>
-
-//             </div>
-//             <div>
-//                 <div className={styles.calendarMonthWeekdays}>
-//                     {renderWeekdays}
-//                 </div>
-//                 <div>
-//                     {renderMonthDays()}
-//                 </div>
-//             </div>
-//         </div>
-
-//     );
-// }
-
-// const Calendar = () => {
-//     const hours = ["10:00", "15:30"];
-//     const renderHours = hours.map(hour => <HourBox hour={hour} />);
-
-
-//     return (
-//         <div className={styles.calendar}>
-//             <div className={styles.calendarDays}>
-//                 <div className={styles.calendarDaysHeader}>
-//                     18-08-2022
-//                 </div>
-//                 <div className={styles.calendarDaysBody}>
-//                     <CalendarMonth />
-//                 </div>
-//             </div>
-//             <div className={styles.calendarHours}>
-//                 {renderHours}
-//             </div>
-//         </div>
-//     );
-// }
-
-// export const VisitDate = () => {
-//     return <Calendar />;
-// }

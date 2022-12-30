@@ -6,7 +6,7 @@
     padding: 15px 30px;
     font-weight: var(--semiBold);
     color: var(--subText);
-    letter-spacing: var(--normal);
+    letter-spacing: var(--normalSpacing);
     font-size: var(--titleSmall);
 }
 
@@ -36,15 +36,15 @@
 
 .specialistNotDataText {
     padding: 10px;
-    font-size: var(--regular);
+    font-size: var(--normal);
 }
 
 .specialistBox {
     background-color: var(--accent);
     font-weight: var(--semiBold);
     color: var(--text);
-    letter-spacing: var(--normal);
-    font-size: var(--regular);
+    letter-spacing: var(--normalSpacing);
+    font-size: var(--normal);
     display: flex;
     flex-direction: row;
     padding: 10px;
@@ -88,8 +88,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding-top: 30px;
+    padding: 2rem;
     height: 100%;
+    max-width: 720px;
+    margin: auto;
 }
 
 .specialistSelectionWrapper {
@@ -116,7 +118,7 @@
     background-color: var(--text);
     font-weight: var(--semiBold);
     color: var(--white);
-    letter-spacing: var(--normal);
+    letter-spacing: var(--normalSpacing);
     font-size: var(--big);
     margin: 10px;
     border-width: 0;
@@ -141,7 +143,7 @@
     background-color: var(--dark);
     font-weight: var(--semiBold);
     color: var(--white);
-    letter-spacing: var(--normal);
+    letter-spacing: var(--normalSpacing);
     font-size: var(--big);
 
 }
@@ -155,7 +157,7 @@
     border-bottom: 1px solid var(--accentDark);
     font-weight: var(--semiBold);
     color: var(--subText);
-    letter-spacing: var(--normal);
+    letter-spacing: var(--normalSpacing);
     font-size: var(--big);
     padding: 10px 0;
 }
@@ -171,7 +173,7 @@
 .dayActive {
     font-weight: var(--semiBold);
     color: #000;
-    /* letter-spacing: var(--normal); */
+    /* letter-spacing: var(--normalSpacing); */
     font-size: var(--big);
     cursor: pointer;
     padding: 4px;
@@ -192,7 +194,7 @@
 .dayInactive {
     font-weight: var(--semiBold);
     color: var(--accentDark);
-    /* letter-spacing: var(--normal); */
+    /* letter-spacing: var(--normalSpacing); */
     font-size: var(--big);
     padding: 4px;
     /* height: 35px;
@@ -207,7 +209,7 @@
     font-weight: var(--semiBold);
     background-color: var(--dark);
     color: var(--white);
-    letter-spacing: var(--normal);
+    letter-spacing: var(--normalSpacing);
     font-size: var(--big);
     cursor: pointer;
     padding: 3px;

@@ -85,8 +85,8 @@
 
     /* typography */
     /* size */
-    --small: 18px;
-    --regular: 22px;
+    --small: 1rem;
+    --normal: 1.2rem;
     --big: 24px;
     --titleSmall: 32px;
     --titleBig: 38px;
@@ -105,8 +105,8 @@
     --fontFace: 'Poppins', sans-serif;
 
     /* letterSpacing */
-    --normal: -0.02em;
-    --spread: 0.1em;
+    --normalSpacing: -0.02em;
+    --spreadSpacing: 0.1em;
 
     /* lineHeight */
     --lineHeight: 1.4em;

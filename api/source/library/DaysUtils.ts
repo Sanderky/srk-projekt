@@ -5,9 +5,7 @@ import Days, { ISingleDay } from '@/models/Days';
 import Slots, { ISingleSlot } from '@/models/Slots';
 import Log from '@/library/Logging';
 
-
-export { createDayArray, updateDoctorDayArray, dayIdByDate }
-
+export { createDayArray, updateDoctorDayArray, dayIdByDate };
 
 //====================================================================
 // Helper classes
@@ -16,11 +14,13 @@ class Slot implements ISingleSlot {
 	start: string;
 	end: string;
 	availability: boolean;
+	_id: mongoose.Types.ObjectId;
 
 	constructor(start: string, end: string) {
 		this.start = start;
 		this.end = end;
 		this.availability = true;
+		this._id = new mongoose.Types.ObjectId();
 	}
 }
 
@@ -28,7 +28,7 @@ class Day implements ISingleDay {
 	date: Date;
 	workday: boolean;
 	slots: mongoose.Types.ObjectId | null;
-	_id: mongoose.Types.ObjectId
+	_id: mongoose.Types.ObjectId;
 
 	validateHoliday() {
 		const dateDay = String(this.date.getDate()).padStart(2, '0');
@@ -104,15 +104,15 @@ const createDayArray = (doctorId: mongoose.Types.ObjectId, daysId: mongoose.Type
 			doctorId: doctorId,
 			dayId: dayId,
 			slots: slotsArray
-		}).save()
+		}).save();
 	}
 	new Days({
 		_id: daysId,
 		doctorId: doctorId,
 		doctorName: `${firstname} ${lastname}`,
 		days: daysArray
-	}).save()
-}
+	}).save();
+};
 
 //====================================================================
 // Shifting array of days in database
@@ -130,10 +130,9 @@ const updateDoctorDayArray = () => {
 					const deletedDay = daysObj.days.shift();
 					const deletedSlotsId = deletedDay?.slots;
 					if (deletedSlotsId !== null) {
-						await deleteSlotsForDay(deletedSlotsId?.toString()!)
-							.catch((error) => {
-								throw error;
-							});
+						await deleteSlotsForDay(deletedSlotsId?.toString()!).catch((error) => {
+							throw error;
+						});
 					} else {
 						continue;
 					}
@@ -147,7 +146,7 @@ const updateDoctorDayArray = () => {
 						doctorId: daysObj.doctorId,
 						dayId: dayId,
 						slots: slotsArray
-					}).save()
+					}).save();
 					const newDay = new Day(new Date(date.setDate(date.getDate() + dayCount)), slotsId, dayId);
 					daysObj.days.push(newDay);
 					aux++;
@@ -165,7 +164,7 @@ const updateDoctorDayArray = () => {
 			}
 		});
 	});
-}
+};
 
 //====================================================================
 // Get dayId by given doctorId and date
@@ -193,8 +192,7 @@ const dayIdByDate = async (doctorId: mongoose.Types.ObjectId, dayDate: Date | st
 const deleteSlotsForDay = async (slotsId: string) => {
 	if (!slotsId) {
 		throw Error(`Slots object with ID ${slotsId} does not exist.`);
-	}
-	else {
+	} else {
 		await Slots.findByIdAndDelete(slotsId);
 	}
-}
+};
