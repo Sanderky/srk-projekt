@@ -8,7 +8,7 @@ const GMAIL_USERNAME = process.env.GMAIL_USERNAME || '';
 const GMAIL_PASSWORD = process.env.GMAIL_PASSWORD || '';
 
 const sendConfirmationEmail = (req: Request, res: Response) => {
-	const { email, date, code } = req.body;
+	const { email, date, code, doctor, time } = req.body;
 
 	const transporter = nodemailer.createTransport({
 		service: 'gmail',
@@ -37,7 +37,9 @@ const sendConfirmationEmail = (req: Request, res: Response) => {
 		template: 'email',
 		context: {
 			code: `${code}`, //replace {{code}} with reservation code
-			date: `${date}` //replace {{date}} with reservation date
+			date: `${date}`, //replace {{date}} with reservation date
+			doctor: `${doctor}`,
+			time: `${time}`,
 		}
 	};
 

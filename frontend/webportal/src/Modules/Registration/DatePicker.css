@@ -31,11 +31,12 @@
 .rdp-tfoot>tr>td>p {
     text-align: center;
     font-size: var(--normal);
+    font-weight: bold;
     margin: 20px;
 }
 
 .rdp-button:hover {
-    box-shadow: 0 0 20px #1327353d;
+    box-shadow: 0 0 20px #1327352c;
 }
 
 .rdp-day_disabled:hover {

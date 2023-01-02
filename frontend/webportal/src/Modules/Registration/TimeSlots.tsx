@@ -13,7 +13,6 @@ interface SingleSlotProps {
 const SingleSlot = ({ time, available, id, setSelected }: SingleSlotProps) => {
     const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         event.preventDefault();
-        const slotButton: HTMLButtonElement = event.currentTarget;
         if (available) {
             setSelected(time);
         }
@@ -49,6 +48,7 @@ export default function TimeSlots({ doctor, date, selected, setSelected }: TimeS
     useEffect(() => {
         if (doctor && date) {
             getData();
+            setSelected(undefined);
         }
     }, [doctor, date])
 
@@ -72,10 +72,10 @@ export default function TimeSlots({ doctor, date, selected, setSelected }: TimeS
         } else if (!loading && !error && slots?.length) {
             return slots.map((slot, i) => {
                 return <SingleSlot                          // @ts-ignore
-                            time={slot?.start}              // @ts-ignore
-                            available={slot?.availability}  // @ts-ignore
-                            key={i} id={slot?._id} 
-                            setSelected={setSelected} />
+                    time={slot?.start}              // @ts-ignore
+                    available={slot?.availability}  // @ts-ignore
+                    key={i} id={slot?._id}
+                    setSelected={setSelected} />
             })
         } else return <p className={styles.specialistNotDataText}>Brak wyników.</p>
     }

@@ -12,7 +12,7 @@ interface SearchBarProps {
 const SearchBar = ({ style }: SearchBarProps) => {
     return (
         <div className={styles.searchWrapper} style={style}>
-            <img src={searchIcon} className={styles.searchIcon} />
+            <img src={searchIcon} className={styles.searchIcon} alt="Szukaj" />
             <input type={"text"} className={styles.search} placeholder={"Szukaj..."} />
         </div>
     );
@@ -44,7 +44,7 @@ const SpecialistBox = ({ name, description, selected, id, setSelected, setSelect
     );
 }
 
-const SpecialistsList = (props: { selected: string | undefined; setSelected: any; setSelectedId: any;}) => {
+const SpecialistsList = (props: { selected: string | undefined; setSelected: any; setSelectedId: any; }) => {
     // @ts-ignore
     const [doctorsObj, error, loading, axiosFetch]: [{}, unknown, boolean, (configObj: AxiosConfig) => Promise<void>] = useAxiosFunction();
 
@@ -72,12 +72,12 @@ const SpecialistsList = (props: { selected: string | undefined; setSelected: any
         } else if (!loading && !error && doctors?.length) {
             return doctors.map((doctor, i) => {
                 return <SpecialistBox                                           // @ts-ignore
-                            name={`${doctor?.firstname} ${doctor?.lastname}`}   // @ts-ignore
-                            description={doctor?.specialization}                // @ts-ignore
-                            key={i} id={doctor?._id} 
-                            selected={props.selected} 
-                            setSelected={props.setSelected} 
-                            setSelectedId={props.setSelectedId} />
+                    name={`${doctor?.firstname} ${doctor?.lastname}`}   // @ts-ignore
+                    description={doctor?.specialization}                // @ts-ignore
+                    key={i} id={doctor?._id}
+                    selected={props.selected}
+                    setSelected={props.setSelected}
+                    setSelectedId={props.setSelectedId} />
             })
         } else return <p className={styles.specialistNotDataText}>Brak wyników.</p>
     }
@@ -95,10 +95,10 @@ export default function SpecialistSelection(props: { selected: string | undefine
         <div className={styles.specialistSelection}>
             <div className={styles.specialistSelectionWrapper}>
                 <SearchBar style={{ marginBottom: "20px" }} />
-                <SpecialistsList 
-                    selected={props.selected} 
-                    setSelected={props.setSelected} 
-                    setSelectedId={props.setSelectedId}/>
+                <SpecialistsList
+                    selected={props.selected}
+                    setSelected={props.setSelected}
+                    setSelectedId={props.setSelectedId} />
             </div>
         </div>
     );

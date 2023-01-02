@@ -98,7 +98,11 @@ const createDayArray = (doctorId: mongoose.Types.ObjectId, daysId: mongoose.Type
 		const slotsId = new mongoose.Types.ObjectId();
 		const newDay = new Day(date, slotsId, dayId);
 		daysArray.push(newDay);
-		date.setDate(date.getDate() + 1);
+		date.setUTCDate(date.getDate() + 1);
+		date.setUTCHours(0);
+		date.setUTCMinutes(0);
+		date.setUTCSeconds(0);
+		date.setUTCMilliseconds(0);
 		new Slots({
 			_id: slotsId,
 			doctorId: doctorId,

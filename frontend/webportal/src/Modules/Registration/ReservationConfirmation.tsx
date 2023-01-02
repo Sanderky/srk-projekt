@@ -15,11 +15,11 @@ interface ReservationDataProps {
     doctorId: string | undefined;
     date: Date | undefined;
     time: string | undefined;
-    createReservation: (    email:string | undefined, 
-                            doctorId: string | undefined,
-                            date: Date | undefined,
-                            time: string | undefined
-                    ) => void
+    createReservation: (email: string | undefined,
+        doctorId: string | undefined,
+        date: Date | undefined,
+        time: string | undefined
+    ) => void
 }
 
 interface DataSummaryProps {
@@ -36,7 +36,8 @@ interface DataSummaryProps {
 }
 
 //Components:
-function DataSummary({doctor, date, time, setDoctorId, setDoctor, setDate, setTime}: DataSummaryProps) {
+function DataSummary({ doctor, date, time, setDoctorId, setDoctor, setDate, setTime }: DataSummaryProps) {
+
     const clearSelections = (event: any) => {
         setDoctorId(undefined);
         setDate(undefined);
@@ -59,14 +60,14 @@ function DataSummary({doctor, date, time, setDoctorId, setDoctor, setDate, setTi
 }
 
 // Form with email inputs and 
-function EmailForm({doctorId, date, time, createReservation}: ReservationDataProps) {
+function EmailForm({ doctorId, date, time, createReservation }: ReservationDataProps) {
     const email = useRef<HTMLInputElement>(null);
     const confirmEmail = useRef<HTMLInputElement>(null);
     const [showErrorMessageNotMatching, setShowErrorMessageNotMatching] = useState<boolean>(false);
     const [showErrorMessageNotValid, setShowErrorMessageNotValid] = useState<boolean>(false);
     const [isConfirmEmailDirty, setIsConfirmEmailDirty] = useState<boolean>(false);
     const [isEmailDirty, setIsEmailDirty] = useState<boolean>(false);
-    
+
     const ifEmailValid = () => {
         setIsEmailDirty(true);
         const regexExp: RegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
@@ -117,13 +118,13 @@ function EmailForm({doctorId, date, time, createReservation}: ReservationDataPro
 
     function checkEmails() {
         if (showErrorMessageNotMatching && isConfirmEmailDirty) {
-                return true;
+            return true;
         } else return false;
     }
 
     function checkEmailValidity() {
         if (showErrorMessageNotValid && isEmailDirty) {
-                return true;
+            return true;
         } else return false;
     }
 
@@ -131,38 +132,39 @@ function EmailForm({doctorId, date, time, createReservation}: ReservationDataPro
         <form className={styles.emailForm}>
             <div className={styles.formPart}>
                 <label htmlFor="email">Adres email</label>
-                <input  className={checkEmailValidity() ? `${styles.wrongEmailInput} ${styles.emailInput}` : styles.emailInput} 
-                        type="text" 
-                        id="email" 
-                        name="email" 
-                        ref={email}
-                        onChange={ifEmailValid}/>
+                <input className={checkEmailValidity() ? `${styles.wrongEmailInput} ${styles.emailInput}` : styles.emailInput}
+                    type="text"
+                    id="email"
+                    name="email"
+                    ref={email}
+                    onChange={ifEmailValid} />
             </div>
             {checkEmailValidity() ? <div className={styles.emailError}>Wprowadź prawidłowy adres email.</div> : ''}
             <div className={styles.formPart}>
                 <label htmlFor="confirmEmail">Potwierdź adres email</label>
-                <input  className={checkEmails() ? `${styles.wrongEmailInput} ${styles.emailInput}` : styles.emailInput} 
-                        type="text" id="confirmEmail" 
-                        name="confirmEmail" 
-                        ref={confirmEmail} 
-                        onChange={checkEmailsMatch}/>
+                <input className={checkEmails() ? `${styles.wrongEmailInput} ${styles.emailInput}` : styles.emailInput}
+                    type="text" id="confirmEmail"
+                    name="confirmEmail"
+                    ref={confirmEmail}
+                    onChange={checkEmailsMatch} />
             </div>
             {checkEmails() ? <div className={styles.emailError}>Adresy się nie pokrywają!</div> : ''}
-            <button className={ifButtonActive() ? styles.createReservationButton : styles.createReservationButtonInactive} 
-                    type="button" onClick={event => createReservation(email.current?.value, doctorId, date, time)} 
-                    disabled={ifButtonActive() ? false : true}>
+            <button className={ifButtonActive() ? styles.createReservationButton : styles.createReservationButtonInactive}
+                type="button" onClick={event => createReservation(email.current?.value, doctorId, date, time)}
+                disabled={ifButtonActive() ? false : true}>
                 <p>Umów wizytę</p>
-                <img className={styles.nextArrow} src={ifButtonActive() ? nextArrowActive : nextArrowInactive } alt=">" />
+                <img className={styles.nextArrow} src={ifButtonActive() ? nextArrowActive : nextArrowInactive} alt=">" />
             </button>
         </form>
     )
-}  
+}
 
-export default function ReservationConfirmation({ doctorId, date, time, setDoctor, setDoctorId, setDate, setTime, setCode, setSummary }: DataSummaryProps) {
+export default function ReservationConfirmation({ doctor, doctorId, date, time, setDoctor, setDoctorId, setDate, setTime, setCode, setSummary }: DataSummaryProps) {
     const BASE_URL = 'http://localhost:3000'
     const [loading, setLoading] = useState<boolean>(false);
+    const [error, setError] = useState<boolean>(false);
 
-    const createReservation = async (email: string | undefined, doctorId: string | undefined, date: Date | undefined, time: string | undefined ) => {
+    const createReservation = async (email: string | undefined, doctorId: string | undefined, date: Date | undefined, time: string | undefined) => {
         setLoading(true)
         const dateUTCNonString = new Date(Date.UTC(date!.getUTCFullYear(), date!.getUTCMonth(), date!.getUTCDate() + 1, 0, 0, 0, 0));
         const dateUTC = dateUTCNonString.toISOString()
@@ -172,18 +174,26 @@ export default function ReservationConfirmation({ doctorId, date, time, setDocto
             day: dateUTC,
             time: time,
         }
-        const reservationData = await axios.post(`${BASE_URL}/reservation/create/`, reservationPayload);
-        const reservationCode = reservationData.data.reservation.reservationCode
-        setCode(reservationCode);
-        
-        const emailPayload = {
-            email: email,
-            date: dateUTCNonString.toLocaleDateString(),
-            code: reservationCode
+        try {
+            const reservationData = await axios.post(`${BASE_URL}/reservation/create/`, reservationPayload);
+            const reservationCode = reservationData.data.reservation.reservationCode
+            setCode(reservationCode);
+
+            const emailPayload = {
+                email: email,
+                date: dateUTCNonString.toLocaleDateString(),
+                code: reservationCode,
+                doctor: doctor,
+                time: time
+            }
+            await axios.post(`${BASE_URL}/email/send-confirmation`, emailPayload);
+            setLoading(false);
+            setSummary(true);
+        } catch (error) {
+            console.log(error)
+            setLoading(false);
+            setError(true);
         }
-        await axios.post(`${BASE_URL}/email/send-confirmation`, emailPayload); 
-        setSummary(true);
-        setLoading(false);
     }
 
     // Fetch doctor do display in a summary view (displays full name and specialization)
@@ -220,24 +230,25 @@ export default function ReservationConfirmation({ doctorId, date, time, setDocto
 
     return (
         <div className={styles.reservationConfirmation}>
-            <DataSummary 
-                doctor={doctorToRender} 
-                doctorId={doctorId} 
-                date={date} 
-                time={time} 
-                setDoctor={setDoctor} 
-                setDoctorId={setDoctorId} 
-                setDate={setDate} 
+            <DataSummary
+                doctor={doctorToRender}
+                doctorId={doctorId}
+                date={date}
+                time={time}
+                setDoctor={setDoctor}
+                setDoctorId={setDoctorId}
+                setDate={setDate}
                 setTime={setTime}
-                setCode={setCode} 
+                setCode={setCode}
                 setSummary={setSummary} />
             <EmailForm
                 doctorId={doctorId}
                 date={date}
                 time={time}
                 email={undefined}
-                createReservation={createReservation}/>
+                createReservation={createReservation} />
             <img src={spinnerImg} alt="ładowanie..." className={loading ? styles.spinnerActive : styles.spinnerDisabled} />
+            {error ? <p className={styles.errorFetching}>Wystąpił błąd. Proszę odświeżyć stronę i spróbować ponownie.</p> : ''}
         </div>
     )
 }

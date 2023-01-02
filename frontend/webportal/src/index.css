@@ -70,7 +70,7 @@
     --white: #FFFFFF;
     --whiteHover: #ebebeb;
     --text: #5A5A75;
-    --subText: #8C8CA1;
+    --subText: #888E9A;
     --error: #eb5d47;
     --errorHover: #d15441;
     --success: #56C878;
@@ -80,8 +80,8 @@
     --warning: #F6AE2D;
     --accent: #F5F7FA;
     --accentDark: #E1E5EB;
-    --dark: #132735;
-    --darkHover: #0e1d27;
+    --dark: #24243F;
+    --darkHover: #1d1d33;
 
     /* typography */
     /* size */

@@ -2,7 +2,7 @@
 // SETTINGS FOR WORKDAYS
 //====================================================================
 
-const DAY_COUNT = 30;
+const DAY_COUNT = 90;
 const WORKDAY_START = 480; // in minutes from midnight, 480 -> 8:00
 const WORKDAY_END = 900; // in minutes from midnight, 900 -> 15:00
 const SLOT_DURATION = 30; // in minutes

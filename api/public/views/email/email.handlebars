@@ -9,11 +9,15 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
         body {
             font-family: 'Poppins', sans-serif;
         }
 
-        h1, h2, p, footer {
+        h1,
+        h2,
+        p,
+        footer {
             color: #132735;
         }
 
@@ -21,16 +25,16 @@
             margin: auto;
             padding-top: 45px;
             max-width: 740px;
-            background-color: #64acc4;
+            background-color: #56C878;
             border-radius: 24px;
         }
 
         .content {
-            background-color: #fff;
+            background-color: #FAFCFE;
             border-radius: 24px;
             padding: 30px 60px;
             text-align: center;
-            border: 2px solid #64acc4;
+            border: 2px solid #56C878;
         }
 
         p {
@@ -53,6 +57,11 @@
             <p>Proszę o przybycie do placówki w dniu wizyty i potwierdzenie tego faktu wprowadzając kod na ekranie przy
                 wejściu.
             </p>
+            <h2>Podsumowanie wizyty:</h2>
+            <p>Wybrany specjalista: <b>{{doctor}}</b></p>
+            <p>Wybrana data: <b>{{date}}</b></p>
+            <p>Wybrana goodzina: <b>{{time}}</b></p>
+            <br>
             <p><b>Do zobaczenia!</b></p>
             <footer>Wiadomość została wygenerowana automatycznie, prosimy na nią nie odpowiadać.</footer>
         </div>
