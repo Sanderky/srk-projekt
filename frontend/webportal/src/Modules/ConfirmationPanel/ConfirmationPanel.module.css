@@ -1,5 +1,6 @@
 .main {
     height: 100vh;
+    background-color: var(--accent);
 }
 
 .centralBoxWrapper {

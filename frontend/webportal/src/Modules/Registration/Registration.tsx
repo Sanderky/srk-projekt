@@ -91,7 +91,7 @@ const ExpandableView = ({ children, style, expandedContentHeight, expanded, titl
                 return "var(--accentDark)";
             }
             case ExpandableStatus.Done: {
-                return "var(--success)";
+                return "var(--green)";
             }
         }
     }
@@ -224,7 +224,7 @@ const Forms = ({ setCode, setSummary }: SummaryStateProps) => {
                         setSelected={setSelectedDate} />
                     : <div>Wybierz lekarza.</div>}
             </ExpandableView>
-            <ExpandableView expandedContentHeight={300} expanded={false} number={3} title={"Wybierz godzinę wizyty"} subtitle={selectedTime} status={checkTime()} style={{ marginBottom: "30px" }}>
+            <ExpandableView expandedContentHeight={350} expanded={false} number={3} title={"Wybierz godzinę wizyty"} subtitle={selectedTime} status={checkTime()} style={{ marginBottom: "30px" }}>
                 {selectedDate && selectedDoctorId ?
                     <TimeSlots
                         doctor={selectedDoctorId}
@@ -233,7 +233,7 @@ const Forms = ({ setCode, setSummary }: SummaryStateProps) => {
                         setSelected={setSelectedTime} />
                     : <div>Wybierz datę i lekarza.</div>}
             </ExpandableView>
-            <ExpandableView expandedContentHeight={580} expanded={false} number={4} title={"Formularz rejestracyjny"} status={checkAll()} style={{ marginBottom: "30px" }}>
+            <ExpandableView expandedContentHeight={720} expanded={false} number={4} title={"Formularz rejestracyjny"} status={checkAll()} style={{ marginBottom: "30px" }}>
                 {selectedDate && selectedDoctorId && selectedTime ?
                     <ReservationConfirmation
                         doctor={selectedDoctor}

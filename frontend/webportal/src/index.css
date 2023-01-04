@@ -1,20 +1,3 @@
-/* @font-face {
-    font-family: WorkSans;
-    src: url(./Assets/Fonts/WorkSans/WorkSans-SemiBold.woff2);
-    font-weight: bold;
-}
-
-@font-face {
-    font-family: WorkSans;
-    src: url(./Assets/Fonts/WorkSans/WorkSans-Bold.woff2);
-    font-weight: bolder;
-}
-
-@font-face {
-    font-family: WorkSans;
-    src: url(./Assets/Fonts/WorkSans/WorkSans-Regular.woff2);
-    font-weight: normal;
-} */
 @font-face {
     font-family: Poppins;
     src: url(./Assets/Fonts/Poppins/Poppins-SemiBold.ttf);
@@ -41,45 +24,25 @@
 
 :root {
     /* colors */
-    /* --primary: #51B1A6;
-    --primaryHover: #4ca89e;
-    --secondary: #5E5BD9;
-    --backgorundBlack: #24243F;
-    --backgroundDark: #E1E5EB;
-    --background: #FAFCFE;
-    --white: #FFFFFF;
-    --whiteHover: #ebebeb;
-    --text: #5A5A75;
-    --subText: #8C8CA1;
-    --error: #ED4B68;
-    --errorHover: #b93c53;
-    --success: #31D0AA;
-    --warning: #FFB802;
-    --accent: #F5F7FA;
-    --accentDark: #E1E5EB;
-    --dark: #24243F; */
-
-
-    /* colors */
     --primary: #64acc4;
     --primaryHover: #50a1bc;
-    --secondary: #4987b8;
-    --backgorundBlack: #080f10;
-    --backgroundDark: #E1E5EB;
+    --primaryShadow: 0 0 30px #64acc4a1;
     --background: #FAFCFE;
+    --backgroundDark: #E1E5EB;
+    --accent: #F5F7FA;
+    --accentDark: #E1E5EB;
     --white: #FFFFFF;
     --whiteHover: #ebebeb;
     --text: #5A5A75;
     --subText: #888E9A;
-    --error: #eb5d47;
-    --errorHover: #d15441;
-    --success: #56C878;
-    --available: #56C878;
-    --availableHover: #4bac68;
-    --availableActive: #459c5f;
-    --warning: #F6AE2D;
-    --accent: #F5F7FA;
-    --accentDark: #E1E5EB;
+    --red: #eb5d47;
+    --redHover: #d15441;
+    --redShadow: 0 0 30px #eb5d478a;
+    --green: #56C878;
+    --greenHover: #4caf6a;
+    --greenActive: #459c5f;
+    --greenShadow: 0 0 30px #56c8787e;
+    --yellow: #F6AE2D;
     --dark: #24243F;
     --darkHover: #1d1d33;
 
@@ -92,7 +55,6 @@
     --titleBig: 38px;
     --header2: 48px;
     --header1: 64px;
-
     --monsterText: 30px;
 
     /* fontWeight */

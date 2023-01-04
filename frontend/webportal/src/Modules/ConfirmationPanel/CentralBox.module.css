@@ -12,15 +12,15 @@
 }
 
 .successLabel {
-    background-color: var(--success);
+    background-color: var(--green);
 }
 
 .wrongCodeLabel {
-    background-color: var(--error);
+    background-color: var(--red);
 }
 
 .warningLabel {
-    background-color: var(--warning);
+    background-color: var(--yellow);
 }
 
 
@@ -87,12 +87,12 @@
 }
 
 .buttonError {
-    background-color: var(--error);
+    background-color: var(--red);
     transition: 0.2s;
 }
 
 .buttonError:hover {
-    background-color: var(--errorHover);
+    background-color: var(--redHover);
 }
 
 .buttonNew {

@@ -5,6 +5,10 @@
     display: flex;
     flex-direction: column;
     margin: auto;
+    margin-top: 30px;
+    background-color: var(--background);
+    border-radius: var(--radiusNormal);
+    box-shadow: 0px 20px 36px -8px rgba(14, 14, 44, 0.1), 0px 1px 1px rgba(0, 0, 0, 0.05);
 }
 
 .dataSummary {
@@ -30,20 +34,20 @@
     font-weight: bold;
     padding: 1.2rem 2rem;
     background-color: transparent;
-    color: var(--error);
-    border: 2px solid var(--error);
+    color: var(--red);
+    border: 2px solid var(--red);
     text-transform: uppercase;
     border-radius: var(--radiusSmall);
     transition: 0.2s;
     cursor: pointer;
-    box-shadow: 0 0 30px #eb5d472c;
+    box-shadow: 0 0 30px var(--redShadow);
 }
 
 .clearSelections:hover {
-    background-color: var(--error);
+    background-color: var(--red);
     color: var(--background);
-    border: 2px solid var(--error);
-    box-shadow: 0 0 30px #eb5d477d;
+    border: 2px solid var(--red);
+    box-shadow: var(--redShadow);
 }
 
 
@@ -77,20 +81,20 @@
 }
 
 .wrongEmailInput {
-    border: 1px solid var(--error);
+    border: 1px solid var(--red);
     box-shadow: 0 0 20px #eb5d4735;
-    color: var(--error);
+    color: var(--red);
 }
 
 .wrongEmailInput:focus {
-    border: 2px solid var(--error);
+    border: 2px solid var(--red);
     outline: none;
 }
 
 .emailError {
     width: 100%;
-    border-bottom: 1px solid var(--error);
-    color: var(--error);
+    border-bottom: 1px solid var(--red);
+    color: var(--red);
     padding-left: 1rem;
     letter-spacing: var(--spreadSpacing);
     font-weight: bold;
@@ -103,8 +107,8 @@
     font-size: var(--big);
     text-decoration: none;
     color: var(--accent);
-    background-color: var(--success);
-    border: 2px solid var(--success);
+    background-color: var(--green);
+    border: 2px solid var(--green);
     cursor: pointer;
     border-radius: var(--radiusSmall);
     padding: 1rem 1rem 1rem 2rem;
@@ -116,8 +120,8 @@
 }
 
 .createReservationButton:hover {
-    background-color: var(--availableHover);
-    border: 2px solid var(--availableHover);
+    background-color: var(--greenHover);
+    border: 2px solid var(--greenHover);
     box-shadow: 0 0 30px #56c878a4;
 }
 
@@ -164,4 +168,9 @@
 
 .spinnerDisabled {
     display: none;
+}
+
+.errorFetching {
+    margin: auto;
+    margin-bottom: 24px;
 }

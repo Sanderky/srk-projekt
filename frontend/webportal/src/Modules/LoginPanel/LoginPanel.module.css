@@ -71,8 +71,7 @@
     border-radius: var(--radiusSmall);
     padding: 1rem 2rem;
     margin: 2rem auto;
-    transition: 0.3s;
-    box-shadow: 0 0 30px #64acc469;
+    transition: 0.2s;
     display: flex;
     align-items: center;
 }
@@ -80,7 +79,7 @@
 .submitButton:hover {
     background-color: var(--primaryHover);
     border: 2px solid var(--primaryHover);
-    box-shadow: 0 0 30px #50a1bcc7;
+    box-shadow: var(--primaryShadow);
 }
 
 .loginForm {
@@ -90,12 +89,12 @@
 }
 
 .error {
-    color: var(--error);
-    border-color: var(--error);
+    color: var(--red);
+    border-color: var(--red);
 }
 
 .errorMsg {
-    color: var(--error);
+    color: var(--red);
     font-size: var(--normal);
     font-weight: var(--semiBold);
     margin-top: 24px;

@@ -1,5 +1,4 @@
 .search {
-    background: none;
     border-width: 0;
     flex: 1;
     border-radius: var(--radiusSmall);
@@ -8,6 +7,7 @@
     color: var(--subText);
     letter-spacing: var(--normalSpacing);
     font-size: var(--titleSmall);
+    background-color: transparent;
 }
 
 .search:focus {
@@ -20,15 +20,17 @@
 }
 
 .searchWrapper {
+    background-color: var(--background);
     display: flex;
     flex-direction: row;
-    width: 710px;
+    width: 100%;
     border-radius: var(--radiusSmall);
-    background-color: var(--accent);
     align-items: center;
+    box-shadow: 0px 20px 36px -8px rgba(14, 14, 44, 0.1), 0px 1px 1px rgba(0, 0, 0, 0.05);
 }
 
 .searchIcon {
+    flex: 1;
     width: 28px;
     height: 28px;
     margin-left: 30px;
@@ -40,7 +42,7 @@
 }
 
 .specialistBox {
-    background-color: var(--accent);
+    background-color: var(--background);
     font-weight: var(--semiBold);
     color: var(--text);
     letter-spacing: var(--normalSpacing);
@@ -92,6 +94,7 @@
     height: 100%;
     max-width: 720px;
     margin: auto;
+
 }
 
 .specialistSelectionWrapper {
@@ -107,113 +110,14 @@
     border-radius: var(--radiusSmall);
     -ms-overflow-style: thin;
     scrollbar-width: thin;
+    background-color: var(--background);
+    box-shadow: 0px 20px 36px -8px rgba(14, 14, 44, 0.1), 0px 1px 1px rgba(0, 0, 0, 0.05);
 }
 
 .specialistsList::-webkit-scrollbar {
     display: hidden;
 }
 
-.hourBox {
-    padding: 10px;
-    background-color: var(--text);
-    font-weight: var(--semiBold);
-    color: var(--white);
-    letter-spacing: var(--normalSpacing);
-    font-size: var(--big);
-    margin: 10px;
-    border-width: 0;
-    cursor: pointer;
-}
-
-.hourBox:hover {
-    background-color: var(--dark);
-}
-
-.calendarHours {
-    display: flex;
-    flex-flow: row wrap;
-}
-
-.calendar {
-    margin-top: 30px;
-}
-
-.calendarDaysHeader {
-    padding: 20px;
-    background-color: var(--dark);
-    font-weight: var(--semiBold);
-    color: var(--white);
-    letter-spacing: var(--normalSpacing);
-    font-size: var(--big);
-
-}
-
-.calendarMonthWeekdays {
-    display: flex;
-    flex: 1;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    border-bottom: 1px solid var(--accentDark);
-    font-weight: var(--semiBold);
-    color: var(--subText);
-    letter-spacing: var(--normalSpacing);
-    font-size: var(--big);
-    padding: 10px 0;
-}
-
-.calendarMonthDays {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    justify-items: center;
-    row-gap: 15px;
-    padding: 5px 0;
-}
-
-.dayActive {
-    font-weight: var(--semiBold);
-    color: #000;
-    /* letter-spacing: var(--normalSpacing); */
-    font-size: var(--big);
-    cursor: pointer;
-    padding: 4px;
-    /* height: 35px;
-    width: 35px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center; */
-}
-
-.dayActive:hover {
-    background-color: var(--dark);
-    color: var(--subText);
-
-}
-
-.dayInactive {
-    font-weight: var(--semiBold);
-    color: var(--accentDark);
-    /* letter-spacing: var(--normalSpacing); */
-    font-size: var(--big);
-    padding: 4px;
-    /* height: 35px;
-    width: 35px;
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center; */
-}
-
-.daySelected {
-    font-weight: var(--semiBold);
-    background-color: var(--dark);
-    color: var(--white);
-    letter-spacing: var(--normalSpacing);
-    font-size: var(--big);
-    cursor: pointer;
-    padding: 3px;
-}
 
 .select {
     appearance: none;
