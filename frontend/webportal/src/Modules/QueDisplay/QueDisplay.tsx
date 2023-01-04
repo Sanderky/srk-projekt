@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios"
 import Que from "./Que";
-import styles from "./QueueDisplay.module.css"
+import styles from "./QueDisplay.module.css"
 
 const Description = (): JSX.Element => {
     return (
@@ -19,7 +19,7 @@ const Description = (): JSX.Element => {
     )
 }
 
-const QueueDisplay = () => {
+const QueDisplay = () => {
     const [newQue, setNewQue] = useState([])
     const [listening, setListening] = useState(false);
 
@@ -27,7 +27,7 @@ const QueueDisplay = () => {
         if (!listening) {
             const events = new EventSource('http://localhost:3000/ticket/events');
             events.onmessage = (event) => {
-                const token:any = localStorage.getItem('token');
+                const token: any = localStorage.getItem('token');
                 console.log("token")
                 const getQueConfig = {
                     headers: {
@@ -69,4 +69,4 @@ const QueueDisplay = () => {
     )
 }
 
-export default QueueDisplay;
+export default QueDisplay;
