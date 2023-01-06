@@ -7,6 +7,12 @@ const ProtectedRoute = ({ redirectPath = '/login-panel', roleNeeded, directTo }:
     const [auth, setAuth] = useState(false);
     const [loading, setLoading] = useState(true);
     const [roles, setRoles] = useState<Array<String>>([]);
+
+    const styles = {
+        margin: '3rem',
+        fontWeight: 'bold',
+    }
+
     useEffect(() => {
         const token: any = localStorage.getItem('token');
         axios.get("http://localhost:3000/user/protected", {
@@ -26,7 +32,7 @@ const ProtectedRoute = ({ redirectPath = '/login-panel', roleNeeded, directTo }:
     }, [])
 
     if (loading) {
-        return <div>Is losading</div>
+        return <div style={styles}>Ładowanie...</div>
     }
     if (!auth || !roles.includes(roleNeeded)) {
         return <Navigate to={"login-panel" + directTo} />

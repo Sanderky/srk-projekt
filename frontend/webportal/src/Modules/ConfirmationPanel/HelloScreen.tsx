@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './HelloScreen.module.css';
-import { Clock } from "../../Components/Clock";
+import Clock from "../../Components/Clock";
 import logo from "../../Assets/Images/logo.png"
 
 interface HelloScreenProps {
@@ -19,8 +19,8 @@ const HelloScreen = (props: HelloScreenProps): JSX.Element => {
                 <div className={styles.separator}></div>
                 <div className={styles.info}>Potwierdź swoją rezerwację</div>
             </div>
-            <div className={styles.clickMe}>NACIŚNIJ ABY <br/> ROZPOCZĄĆ</div>
-            <Clock className={styles.clock}/>
+            <div className={styles.clickMe}>NACIŚNIJ ABY <br /> ROZPOCZĄĆ</div>
+            <Clock className={styles.clock} />
         </div>
     );
 }

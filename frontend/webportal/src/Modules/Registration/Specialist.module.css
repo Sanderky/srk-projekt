@@ -26,7 +26,7 @@
     width: 100%;
     border-radius: var(--radiusSmall);
     align-items: center;
-    box-shadow: 0px 20px 36px -8px rgba(14, 14, 44, 0.1), 0px 1px 1px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--defaultContainerShadow);
 }
 
 .searchIcon {
@@ -111,46 +111,9 @@
     -ms-overflow-style: thin;
     scrollbar-width: thin;
     background-color: var(--background);
-    box-shadow: 0px 20px 36px -8px rgba(14, 14, 44, 0.1), 0px 1px 1px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--defaultContainerShadow);
 }
 
 .specialistsList::-webkit-scrollbar {
     display: hidden;
-}
-
-
-.select {
-    appearance: none;
-    background-color: transparent;
-    border: none;
-    margin: 0;
-    cursor: pointer;
-    font-weight: var(--semiBold);
-    color: #000;
-    font-size: var(--big);
-    padding-right: 15px;
-    background: url("../../Assets/Images/dropdown_arrow.png") no-repeat right;
-    background-position-x: 90px;
-    background-position-y: 50%;
-    background-size: 40px;
-    padding-left: 5px;
-}
-
-.select:focus-visible {
-    appearance: none;
-    background-color: transparent;
-    border: none;
-    outline: none;
-    margin: 0;
-}
-
-.selectWrapper {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    padding: 10px 0;
-}
-
-.select:hover {
-    color: var(--subText);
 }

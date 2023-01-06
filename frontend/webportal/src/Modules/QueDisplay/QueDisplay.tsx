@@ -28,7 +28,6 @@ const QueDisplay = () => {
             const events = new EventSource('http://localhost:3000/ticket/events');
             events.onmessage = (event) => {
                 const token: any = localStorage.getItem('token');
-                console.log("token")
                 const getQueConfig = {
                     headers: {
                         Authorization: token,
@@ -39,7 +38,6 @@ const QueDisplay = () => {
                 axios(getQueConfig)
                     .then((res) => {
                         setNewQue(res.data.que)
-                        console.log(res.data.que);
                     })
                     .catch((err) => console.log(err))
             }

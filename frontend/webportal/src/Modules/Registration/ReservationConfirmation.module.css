@@ -8,7 +8,7 @@
     margin-top: 30px;
     background-color: var(--background);
     border-radius: var(--radiusNormal);
-    box-shadow: 0px 20px 36px -8px rgba(14, 14, 44, 0.1), 0px 1px 1px rgba(0, 0, 0, 0.05);
+    box-shadow: var(--defaultContainerShadow);
 }
 
 .dataSummary {
@@ -78,6 +78,11 @@
     font-weight: var(--bold);
     letter-spacing: var(--spread);
     color: var(--dark);
+    border: 2px solid var(--accentDark)
+}
+
+.emailInput:focus {
+    outline: 2px solid var(--dark)
 }
 
 .wrongEmailInput {

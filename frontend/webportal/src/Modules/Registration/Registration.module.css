@@ -253,3 +253,7 @@
 .summary_newInfo {
     margin-top: 50px;
 }
+
+.dropdownArrow {
+    width: 3rem;
+}
