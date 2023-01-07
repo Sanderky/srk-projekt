@@ -16,6 +16,7 @@ import queRoutes from '@/routes/Que';
 import ticketRoutes from '@/routes/Ticket';
 import roomRoutes from '@/routes/Room';
 import emailRoutes from '@/routes/Email';
+import cookieParser from 'cookie-parser';
 const router = express();
 
 mongoose.set('strictQuery', true);
@@ -38,7 +39,7 @@ const startServer = () => {
 	// Middleware
 	router.use(express.urlencoded({ extended: true }));
 	router.use(express.json());
-
+	router.use(cookieParser());
 	//Custom Middleware
 	router.use(logTraffic);
 	router.use(rules);

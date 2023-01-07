@@ -1,6 +1,6 @@
 import styles from './TakingPatientsView.module.css';
 import axios from 'axios';
-
+import useAxiosPrivate from '../../Hooks/useAxiosPrivate';
 const BASE_URL = 'http://localhost:3000';
 
 interface TakingPatientsProps {
@@ -13,20 +13,17 @@ interface TakingPatientsProps {
 }
 
 export default function TakingPatientsView({ setRoomNumber, setRoomSelected, setLoading, queId, setQueId, roomNumber }: TakingPatientsProps) {
+	const axiosPrivate = useAxiosPrivate();
 	const finishTakingPatients = async () => {
 		setLoading(true);
-		const token = localStorage.getItem('token');
-		const config = {
-			headers: { Authorization: token! }
-		};
 		try {
-			await axios.delete(`${BASE_URL}/que/delete/${queId}`, config);
+			await axiosPrivate.delete(`/que/delete/${queId}`);
 			setQueId(undefined);
 			const updateRoomPayload = {
 				available: true,
 				occupiedBy: null
 			};
-			await axios.patch(`${BASE_URL}/room/update?roomNumber=${roomNumber}`, updateRoomPayload, config);
+			await axiosPrivate.patch(`/room/update?roomNumber=${roomNumber}`, updateRoomPayload);
 			localStorage.removeItem('roomNumber');
 			localStorage.removeItem('roomSelected');
 			setRoomNumber(undefined);

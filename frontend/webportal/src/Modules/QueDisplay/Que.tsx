@@ -24,4 +24,4 @@ const Que = (props: any) => {
     )
 }
 
-export default Que;
+export default Que; 

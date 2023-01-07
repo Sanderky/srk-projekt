@@ -3,7 +3,8 @@ import styles from './RoomSelectionView.module.css';
 import axios from 'axios';
 import axiosRoom from '../../APIs/Room';
 import useAxiosFunction, { AxiosConfig } from '../../Hooks/useAxiosFunction';
-
+import useAxiosPrivate from '../../Hooks/useAxiosPrivate';
+import { axiosPrivate } from '../../APIs/Axios';
 const doctorId = '63b2258dbb4dc4efaf5b60b3';
 const BASE_URL = 'http://localhost:3000';
 
@@ -39,7 +40,7 @@ export default function RoomSelectionView({ roomNumber, setRoomNumber, setRoomSe
 				roomNumber: roomNumber
 			};
 			try {
-				const createdQue = await axios.post(`${BASE_URL}/que/create`, createQuePayload, config);
+				const createdQue = await axiosPrivate.post(`/que/create`, createQuePayload);
 				const createdQueId = createdQue.data.que._id;
 				setQueId(createdQueId);
 
@@ -47,7 +48,7 @@ export default function RoomSelectionView({ roomNumber, setRoomNumber, setRoomSe
 					available: false,
 					occupiedBy: doctorId
 				};
-				await axios.patch(`${BASE_URL}/room/update?roomNumber=${roomNumber}`, updateRoomPayload, config);
+				await axiosPrivate.patch(`/room/update?roomNumber=${roomNumber}`, updateRoomPayload);
 				setLoading(false);
 			} catch (error) {
 				console.log(error);

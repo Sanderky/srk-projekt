@@ -1,7 +1,5 @@
 import mongoose from 'mongoose';
-import bcrypt from 'bcrypt';
-import passportLocalMongoose from 'passport-local-mongoose';
-const UserScheme = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
 	username: {
 		type: String,
 		required: true,
@@ -15,7 +13,8 @@ const UserScheme = new mongoose.Schema({
 	roles: {
 		type: [],
 		required: true
-	}
+	},
+	refreshToken: String
 });
 
-export default mongoose.model('User', UserScheme);
+export default mongoose.model('User', UserSchema);

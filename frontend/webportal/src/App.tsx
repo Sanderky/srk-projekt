@@ -1,35 +1,27 @@
-import React from 'react';
 import ConfirmationPanel from './Modules/ConfirmationPanel/ConfirmationPanel';
 import DoctorPanel from './Modules/DoctorPanel/DoctorPanel';
 import LoginPanel from './Modules/LoginPanel/LoginPanel';
 import Registration from './Modules/Registration/Registration';
 import QueDisplay from './Modules/QueDisplay/QueDisplay';
-
-import { BrowserRouter, Routes, Route } from "react-router-dom";
-import ProtectedRoute from './Modules/LoginPanel/ProtectedRoute';
+import PersistLogin from './Components/PersistLogin';
+import { Routes, Route } from 'react-router-dom';
+import RequireAuth from './Components/RequireAuth';
 function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login-panel/:directTo" element={<LoginPanel />} />
-
-        <Route path="/" element={<Registration />} />
-
-        <Route element={<ProtectedRoute redirectPath="/login-panel" directTo="/que-display" roleNeeded="doctor" />}>
-          <Route path="/que-display" element={<QueDisplay />} />
-        </Route>
-
-        <Route element={<ProtectedRoute redirectPath="/login-panel" directTo="/confirmation-panel" roleNeeded="doctor" />}>
-          <Route path="/confirmation-panel" element={<ConfirmationPanel />} />
-        </Route>
-
-        <Route element={<ProtectedRoute redirectPath="/login-panel" directTo="/doctor-panel" roleNeeded="doctor" />}>
-          <Route path="/doctor-panel" element={<DoctorPanel />} />
-        </Route>
-
-      </Routes>
-    </BrowserRouter>
-  );
+	return (
+		<Routes>
+			{/* Not protected */}
+			<Route path="/" element={<Registration />} />
+			<Route path="loginPanel" element={<LoginPanel />} />
+			{/* Protected */}
+			<Route element={<PersistLogin />}>
+				<Route element={<RequireAuth allowedRoles={['doctor']} />}>
+					<Route path="/queueDisplay" element={<QueDisplay />} />
+					<Route path="/confirmationPanel" element={<ConfirmationPanel />} />
+					<Route path="doctor-panel" element={<DoctorPanel />}></Route>
+				</Route>
+			</Route>
+		</Routes>
+	);
 }
 
 export default App;

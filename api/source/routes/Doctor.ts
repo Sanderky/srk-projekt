@@ -1,18 +1,17 @@
-import express from 'express';
+import express, { application } from 'express';
 import controller from '@/controllers/Doctor';
-import {isAuthorized} from "@/middleware/Authorize";
+import { isAuthorized } from '@/middleware/Authorize';
 import passport from 'passport';
+import userController from '@/controllers/User';
 const router = express.Router();
-
 
 //Sciezki niezabepieczone
 router.get('/get/:doctorId', controller.readDoctor);
 router.get('/get/', controller.readAllDoctors);
 
-router.use(passport.authenticate('jwt',{session:false}))
-router.use(isAuthorized("doctor"))
-
 //Sciezki zabezpieczone
+router.use(userController.verifyJWT);
+router.use(userController.verifyRoles('doctor'));
 router.post('/create', controller.createDoctor);
 router.patch('/update/:doctorId', controller.updateDoctor);
 router.delete('/delete/:doctorId', controller.deleteDoctor);

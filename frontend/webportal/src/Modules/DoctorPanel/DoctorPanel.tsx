@@ -7,7 +7,7 @@ import Clock from '../../Components/Clock';
 import axios from 'axios';
 import RoomSelectionView from './RoomSelectionView';
 import TakingPatientsView from './TakingPatientsView';
-
+import useAxiosPrivate from '../../Hooks/useAxiosPrivate';
 const doctorId = '63b2258dbb4dc4efaf5b60b3';
 const BASE_URL = 'http://localhost:3000';
 
@@ -24,6 +24,7 @@ function Header({ setRoomNumber, roomSelected, setRoomSelected }: HeaderProps) {
 		localStorage.clear();
 		window.location.reload();
 	};
+
 
 	return (
 		<header>
@@ -61,9 +62,9 @@ function ContainerHeader({ roomNumber, roomSelected }: ContainerHeaderProps) {
 		}
 	};
 	const [doctorName, setDoctorName] = useState<string>('-');
-
+	const axiosPrivate = useAxiosPrivate();
 	const getDoctorName = async () => {
-		const fetchedDoctor = await axios.get(`${BASE_URL}/doctor/get/${doctorId}`);
+		const fetchedDoctor = await axiosPrivate.get(`/doctor/get/${doctorId}`);
 		setDoctorName(`${fetchedDoctor.data.doctor.firstname} ${fetchedDoctor.data.doctor.lastname}`);
 	};
 
