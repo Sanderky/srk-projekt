@@ -41,13 +41,12 @@ class CentralBox extends React.Component<any, any> {
         const reservationPayload = { reservationCode: event.target.form[0].value };
         const reservationParams = new URLSearchParams(reservationPayload)
         let reservation;
-        const token:any = localStorage.getItem('token');
+        const token = localStorage.getItem('token');
+        const config = {
+            headers: { Authorization: token! }
+        }
         try {
-            reservation = await axios.get(`${BASE_URL}/reservation/get?${reservationParams}`,{
-                headers: {
-                    Authorization: token,
-                },
-            });
+            reservation = await axios.get(`${BASE_URL}/reservation/get?${reservationParams}`, config);
         } catch (error) {
             console.log(error)
             this.setState({ panelStatus: "wrongCode" });
@@ -71,11 +70,11 @@ class CentralBox extends React.Component<any, any> {
 
         if (reservationData.registered) {
             //Get ticket data
-            const ticketData = await axios.get(`${BASE_URL}/ticket/get?${reservationParams}`);
+            const ticketData = await axios.get(`${BASE_URL}/ticket/get?${reservationParams}`, config);
             const ticket = ticketData.data.ticket;
 
             const queId = ticket.queId;
-            const queData = await axios.get(`${BASE_URL}/que/get/${queId}`);
+            const queData = await axios.get(`${BASE_URL}/que/get/${queId}`, config);
             const que = queData.data.que;
 
             const queIndex = que.activeTickets.findIndex((t: { _id: any; }) => t._id === ticket._id)
@@ -88,7 +87,7 @@ class CentralBox extends React.Component<any, any> {
         } else {
             //Create ticket
             const queParams = new URLSearchParams({ doctorId: reservationData.doctorId._id })
-            const que = await axios.get(`${BASE_URL}/que/get?${queParams}`);
+            const que = await axios.get(`${BASE_URL}/que/get?${queParams}`, config);
             const queData = que.data.que;
             const queId = queData._id;
 
@@ -98,7 +97,7 @@ class CentralBox extends React.Component<any, any> {
                 reservationCode: reservationData.reservationCode,
                 roomNumber: queData.roomNumber
             }
-            const createTicketResponse = await axios.post(`${BASE_URL}/ticket/create`, ticketPayload)
+            const createTicketResponse = await axios.post(`${BASE_URL}/ticket/create`, ticketPayload, config)
             const ticket = createTicketResponse.data.ticket;
             const queResponse = createTicketResponse.data.queResponse;
 
@@ -109,7 +108,7 @@ class CentralBox extends React.Component<any, any> {
                 visitCode: ticket.visitCode,
                 queIndex: queResponse.queIndex
             });
-            axios.post(`${BASE_URL}/reservation/login/`, reservationPayload);
+            axios.post(`${BASE_URL}/reservation/login/`, reservationPayload, config);
         }
     }
 
@@ -181,7 +180,7 @@ class CentralBox extends React.Component<any, any> {
                     <ConfirmationData label={"Gabinet:"} data={this.state.roomNumber} />
                     <ConfirmationData label={"Miejsce w kolejce:"} data={this.state.queIndex} />
                     <ConfirmationData label={"Godzina wizyty:"} data={this.state.time} />
-                    <ConfirmationData label={"Godzina potwierdzenia:"} data={confirmationTime} color={"var(--warning)"} />
+                    <ConfirmationData label={"Godzina potwierdzenia:"} data={confirmationTime} color={"var(--yellow)"} />
                 </div>
                 <div className={styles.buttonWrapper}>
                     <button className={styles.buttonNew} onClick={() => { this.backToLogin() }}>Powrót</button>
