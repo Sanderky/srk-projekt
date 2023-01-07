@@ -14,6 +14,7 @@ import daysRoutes from '@/routes/Days';
 import slotsRoutes from '@/routes/Slots';
 import queRoutes from '@/routes/Que';
 import ticketRoutes from '@/routes/Ticket';
+import roomRoutes from '@/routes/Room';
 import emailRoutes from '@/routes/Email';
 const router = express();
 
@@ -49,6 +50,7 @@ const startServer = () => {
 	router.use('/reservation', reservationRoutes);
 	router.use('/que', queRoutes);
 	router.use('/ticket', ticketRoutes);
+	router.use('/room', roomRoutes);
 	router.use('/user', userRoutes);
 	router.use('/email', emailRoutes);
 

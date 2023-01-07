@@ -41,20 +41,12 @@ const readDoctor = (req: Request, res: Response, next: NextFunction) => {
 };
 
 const readAllDoctors = async (req: Request, res: Response, next: NextFunction) => {
-	// const
-	return (
-		Doctor.find()
-			// .populate({
-			// 	path: 'days',
-			// 	select: '-doctorId -__v',
-			// 	populate: {
-			// 		path: 'days.slots',
-			// 		model: 'Slots'
-			// 	}
-			// })
-			.then((doctors) => res.status(200).json({ doctors }))
-			.catch((error) => res.status(500).json({ error }))
-	);
+	try {
+		const doctors = await Doctor.find();
+		return res.status(200).json({ doctors });
+	} catch (error) {
+		return res.status(500).json({ error });
+	}
 };
 
 const updateDoctor = (req: Request, res: Response, next: NextFunction) => {
