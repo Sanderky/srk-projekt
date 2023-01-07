@@ -1,5 +1,6 @@
 import React from 'react';
 import ConfirmationPanel from './Modules/ConfirmationPanel/ConfirmationPanel';
+import DoctorPanel from './Modules/DoctorPanel/DoctorPanel';
 import LoginPanel from './Modules/LoginPanel/LoginPanel';
 import Registration from './Modules/Registration/Registration';
 import QueDisplay from './Modules/QueDisplay/QueDisplay';
@@ -20,6 +21,10 @@ function App() {
 
         <Route element={<ProtectedRoute redirectPath="/login-panel" directTo="/confirmation-panel" roleNeeded="doctor" />}>
           <Route path="/confirmation-panel" element={<ConfirmationPanel />} />
+        </Route>
+
+        <Route element={<ProtectedRoute redirectPath="/login-panel" directTo="/doctor-panel" roleNeeded="doctor" />}>
+          <Route path="/doctor-panel" element={<DoctorPanel />} />
         </Route>
 
       </Routes>

@@ -1,0 +1,303 @@
+.page {
+    min-height: 100vh;
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+}
+
+header {
+    background-color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 25%;
+    color: var(--background);
+    font-size: var(--big);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logoImage {
+    max-width: 80px;
+}
+
+.logoText {
+    margin-left: 1rem;
+}
+
+.content {
+    background-color: var(--accent);
+    padding: 2rem 0;
+    min-height: 85vh;
+    color: var(--text);
+}
+
+.mainContainer {
+    margin: 1.5rem 25%;
+    background-color: var(--background);
+    padding: 64px;
+    border-radius: var(--radiusNormal);
+    box-shadow: var(--defaultContainerShadow);
+}
+
+.containerHeader {
+    display: block;
+}
+
+.containerHeaderSection {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
+.containerHeaderLeft {
+    font-weight: normal;
+    font-size: var(--big);
+}
+
+.containerHeaderRight {
+    font-weight: bold;
+    font-size: var(--titleSmall);
+}
+
+.roomSelectionContainer {
+    margin: auto;
+    display: block;
+    text-align: center;
+    padding-top: 5rem;
+}
+
+.roomSelectionLabel {
+    display: block;
+    margin: auto;
+    margin-bottom: 0.5rem;
+    color: var(--subText);
+    font-weight: bold;
+}
+
+.roomSelection {
+    text-align: center;
+    display: block;
+    margin: auto;
+    padding: 1rem 0;
+    width: 25rem;
+    font-size: var(--bigger);
+    font-weight: bold;
+    color: var(--text);
+    border-radius: var(--radiusNormal);
+    border: 2px solid var(--accentDark);
+    background-color: var(--accent);
+    transition: 0.2s;
+}
+
+.roomSelection:hover {
+    background-color: var(--accentDark);
+}
+
+.startTakingPatientsButton {
+    display: block;
+    margin: auto;
+    margin-top: 3rem;
+    width: 25rem;
+    padding: 2rem 0;
+    font-size: var(--bigger);
+    font-weight: bold;
+    color: var(--background);
+    border-radius: var(--radiusNormal);
+    border: none;
+    background-color: var(--green);
+    transition: 0.2s;
+}
+
+.startTakingPatientsButton:hover {
+    background-color: var(--greenHover);
+    box-shadow: var(--greenShadow);
+}
+
+.startTakingPatientsButton:active {
+    background-color: var(--greenActive);
+}
+
+.errorMessage {
+    color: var(--red);
+    font-weight: bold;
+    margin: 1rem auto;
+    max-width: 20rem;
+    border-bottom: 1px solid var(--red);
+    letter-spacing: var(--spreadSpacing);
+}
+
+.takingPanel {
+    display: flex;
+    gap: 2rem;
+    margin-top: 2rem;
+}
+
+.queContainer {
+    flex: 4;
+    background-color: var(--accent);
+    border: 2px solid var(--accentDark);
+    border-radius: var(--radiusSmall);
+    padding: 1rem;
+    text-align: center;
+}
+
+.ticketsContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.singleTicket {
+    display: flex;
+    gap: 1rem;
+    font-size: var(--big);
+}
+
+.ticketNumber {
+    flex: 2;
+    background-color: var(--background);
+    border-radius: var(--radiusSmall);
+    border: 2px solid var(--accentDark);
+}
+
+.visitTime {
+    flex: 1
+}
+
+.panelControlsContainer {
+    flex: 5;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.currentTicketInfo {
+    font-weight: normal;
+}
+
+.buttonsContainer {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    align-items: center;
+}
+
+.controlPanelButton,
+.logoutButton {
+    padding: 1rem 0;
+    border-radius: var(--radiusSmall);
+    border: none;
+    font-size: var(--small);
+    color: var(--background);
+    font-weight: bold;
+    transition: 0.2s;
+}
+
+.controlPanelButton:hover,
+.logoutButton:hover {
+    cursor: pointer;
+}
+
+.buttonEndCurrentVisit {
+    width: 8rem;
+    background-color: var(--red);
+}
+
+.buttonEndCurrentVisit:hover {
+    background-color: var(--redHover);
+    box-shadow: var(--redShadow);
+}
+
+.buttonEndCurrentVisit:active {
+    background-color: var(--redActive);
+}
+
+
+.buttonTakeInNext {
+    width: 8rem;
+    background-color: var(--green);
+}
+
+.buttonTakeInNext:hover {
+    background-color: var(--greenHover);
+    box-shadow: var(--greenShadow);
+}
+
+.buttonTakeInNext:active {
+    background-color: var(--greenActive);
+}
+
+
+.buttonFinishTakingIn {
+    width: 15rem;
+    padding: 1rem;
+    background-color: var(--dark);
+}
+
+.buttonFinishTakingIn:hover {
+    background-color: var(--darkHover);
+    box-shadow: var(--darkShadow);
+}
+
+.buttonFinishTakingIn:active {
+    background-color: var(--darkActive);
+}
+
+.logoutButton {
+    position: fixed;
+    right: 2rem;
+    top: 2rem;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    background-color: var(--dark);
+}
+
+.logoutButton:hover {
+    background-color: var(--darkHover);
+    box-shadow: var(--darkShadow);
+}
+
+.logoutIcon {
+    margin-left: 1rem;
+    height: 1.5rem;
+}
+
+@keyframes spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.spinner {
+    height: 50px;
+    width: 50px;
+    margin: 0 auto;
+    animation: spinner 1.5s linear infinite;
+}
+
+.footer {
+    background-color: var(--dark);
+    text-align: center;
+    letter-spacing: var(--spreadSpacing);
+    font-size: var(--small);
+    color: var(--accentDark);
+    padding: 15px 0;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+}
