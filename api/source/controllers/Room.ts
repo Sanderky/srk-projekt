@@ -35,7 +35,9 @@ const readAllRooms = async (req: Request, res: Response) => {
 };
 
 const updateRoom = async (req: Request, res: Response) => {
-	const roomId = req.params.roomId;
+	const roomNumber = req.query.roomNumber;
+	const room = await Room.findOne({ roomNumber: roomNumber }).exec();
+	const roomId = room?._id;
 	try {
 		const room = await Room.findById(roomId);
 		if (room) {

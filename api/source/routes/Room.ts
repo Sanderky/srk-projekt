@@ -14,7 +14,7 @@ router.use(isAuthorized('doctor'));
 
 //Sciezki zabezpieczone
 router.post('/create', controller.createRoom);
-router.patch('/update/:roomId', controller.updateRoom);
+router.patch('/update', controller.updateRoom);
 router.delete('/delete/:roomId', controller.deleteRoom);
 
 export = router;
