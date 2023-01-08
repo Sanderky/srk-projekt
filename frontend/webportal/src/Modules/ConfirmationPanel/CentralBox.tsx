@@ -9,8 +9,6 @@ interface SuccessDataProps {
 	color?: string;
 }
 
-const BASE_URL = 'http://localhost:3000';
-
 const ConfirmationData = ({ label, data, color = 'var(--subText)' }: SuccessDataProps): JSX.Element => {
 	return (
 		<div className={styles.ConfirmationDataContainer}>

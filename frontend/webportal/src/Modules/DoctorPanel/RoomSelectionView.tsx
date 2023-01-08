@@ -6,9 +6,6 @@ import useAxiosFunction, { AxiosConfig } from '../../Hooks/useAxiosFunction';
 import useAxiosPrivate from '../../Hooks/useAxiosPrivate';
 import { axiosPrivate } from '../../APIs/Axios';
 
-// const doctorId = '63b2258dbb4dc4efaf5b60b3';
-const BASE_URL = 'http://localhost:3000';
-
 interface RoomSelectionProps {
 	roomNumber: number | undefined;
 	setRoomNumber: (roomNumber: number | undefined) => void;

@@ -1,17 +1,9 @@
 import { useState, useRef, useEffect } from 'react';
 import styles from './LoginPanel.module.css';
 import axios from 'axios';
-import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import useAuth from '../../Hooks/useAuth';
-
-const BASE_URL = 'http://localhost:3000';
-
-const ERROR_MSG = {
-	noInputs: 'Wprowadź swój login i hasło.',
-	badCredentials: 'Niepoprawna nazwa użytkownika lub hasło.',
-	notAllowed: 'Nie masz uprawinień do przeglądania tego zasobu.',
-	other: 'Wystąpił błąd.'
-};
+import { BASE_URL, ERROR_MSG } from '../../config/settings';
 
 const LoginPanel = () => {
 	const [error, setError] = useState<string>('');
