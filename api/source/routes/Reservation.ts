@@ -7,7 +7,7 @@ const router = express.Router();
 router.post('/create', controller.createReservation);
 
 router.use(userController.verifyJWT);
-router.use(userController.verifyRoles('doctor'));
+router.use(userController.verifyRoles(['staff']));
 
 router.get('/get/:reservationId', controller.readReservation);
 router.get('/get/', controller.readAllReservations);

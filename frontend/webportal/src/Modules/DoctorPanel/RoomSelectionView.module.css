@@ -56,6 +56,13 @@
     background-color: var(--greenActive);
 }
 
+.startTakingPatientsButton:disabled {
+    background-color: var(--accentDark);
+    box-shadow: none;
+    cursor: default;
+    color: var(--subText);
+}
+
 .errorMessage {
     color: var(--red);
     font-weight: bold;
@@ -63,4 +70,5 @@
     max-width: 20rem;
     border-bottom: 1px solid var(--red);
     letter-spacing: var(--spreadSpacing);
+    cursor: default;
 }

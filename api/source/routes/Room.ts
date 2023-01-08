@@ -10,7 +10,7 @@ router.get('/get/:roomId', controller.readRoom);
 router.get('/get/', controller.readAllRooms);
 
 router.use(userController.verifyJWT);
-router.use(userController.verifyRoles('doctor'));
+router.use(userController.verifyRoles(['admin', 'doctor']));
 //Sciezki zabezpieczone
 router.post('/create', controller.createRoom);
 router.patch('/update', controller.updateRoom);

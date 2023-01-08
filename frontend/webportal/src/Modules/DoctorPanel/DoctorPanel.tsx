@@ -4,11 +4,10 @@ import logo from '../../Assets/Images/logo.png';
 import logoutIcon from '../../Assets/Images/logout.png';
 import spinnerImg from '../../Assets/Images/spinner.png';
 import Clock from '../../Components/Clock';
-import axios from 'axios';
 import RoomSelectionView from './RoomSelectionView';
 import TakingPatientsView from './TakingPatientsView';
 import useAxiosPrivate from '../../Hooks/useAxiosPrivate';
-const doctorId = '63b2258dbb4dc4efaf5b60b3';
+
 const BASE_URL = 'http://localhost:3000';
 
 interface HeaderProps {
@@ -18,13 +17,18 @@ interface HeaderProps {
 }
 
 function Header({ setRoomNumber, roomSelected, setRoomSelected }: HeaderProps) {
-	const logout = () => {
+	const axiosPrivate = useAxiosPrivate();
+	const logout = async () => {
 		setRoomNumber(undefined);
 		setRoomSelected(false);
 		localStorage.clear();
+		try {
+			await axiosPrivate.post(`${BASE_URL}/user/logout`);
+		} catch (error) {
+			console.log(error);
+		}
 		window.location.reload();
 	};
-
 
 	return (
 		<header>
@@ -51,6 +55,25 @@ interface ContainerHeaderProps {
 }
 
 function ContainerHeader({ roomNumber, roomSelected }: ContainerHeaderProps) {
+	const [doctorName, setDoctorName] = useState<string>('-');
+	const axiosPrivate = useAxiosPrivate();
+	const doctorId = localStorage.getItem('doctorId');
+
+	const getDoctorName = async () => {
+		try {
+			if (!doctorId) {
+				throw new Error('No doctorId.');
+			} else {
+				const fetchedDoctor = await axiosPrivate.get(`/doctor/get/${doctorId}`);
+				setDoctorName(`${fetchedDoctor.data.doctor.firstname} ${fetchedDoctor.data.doctor.lastname}`);
+			}
+		} catch (error) {}
+	};
+
+	useEffect(() => {
+		getDoctorName();
+	}, []);
+
 	const renderSelectedRoomPart = () => {
 		if (roomNumber && roomSelected) {
 			return (
@@ -61,17 +84,6 @@ function ContainerHeader({ roomNumber, roomSelected }: ContainerHeaderProps) {
 			);
 		}
 	};
-	const [doctorName, setDoctorName] = useState<string>('-');
-	const axiosPrivate = useAxiosPrivate();
-	const getDoctorName = async () => {
-		const fetchedDoctor = await axiosPrivate.get(`/doctor/get/${doctorId}`);
-		setDoctorName(`${fetchedDoctor.data.doctor.firstname} ${fetchedDoctor.data.doctor.lastname}`);
-	};
-
-	useEffect(() => {
-		getDoctorName();
-	}, []);
-
 	return (
 		<div className={styles.containerHeader}>
 			<section className={styles.containerHeaderSection}>
@@ -100,10 +112,12 @@ function Content({ roomNumber, setRoomNumber, roomSelected, setRoomSelected, err
 	useEffect(() => {
 		const globalRoomSelected = localStorage.getItem('roomSelected');
 		const globalRoomNumber = localStorage.getItem('roomNumber');
+		const globalQueId = localStorage.getItem('queId');
 
-		if (globalRoomNumber !== null && globalRoomSelected !== null) {
+		if (globalRoomNumber !== null && globalRoomSelected !== null && globalQueId !== null) {
 			setRoomNumber(parseInt(globalRoomNumber));
 			setRoomSelected(globalRoomSelected === 'true' ? true : false);
+			setQueId(globalQueId);
 		}
 	}, []);
 

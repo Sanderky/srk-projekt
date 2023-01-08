@@ -5,7 +5,7 @@ const router = express.Router();
 
 //SERVICE
 router.use(userController.verifyJWT);
-router.use(userController.verifyRoles('doctor'));
+router.use(userController.verifyRoles(['admin']));
 router.post('/send-confirmation', controller.sendConfirmationEmail);
 
 export = router;

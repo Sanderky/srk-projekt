@@ -26,6 +26,7 @@ export default function TakingPatientsView({ setRoomNumber, setRoomSelected, set
 			await axiosPrivate.patch(`/room/update?roomNumber=${roomNumber}`, updateRoomPayload);
 			localStorage.removeItem('roomNumber');
 			localStorage.removeItem('roomSelected');
+			localStorage.removeItem('queId');
 			setRoomNumber(undefined);
 			setRoomSelected(false);
 			setLoading(false);

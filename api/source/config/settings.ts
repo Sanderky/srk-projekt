@@ -48,3 +48,14 @@ export const cronSettings = {
 //====================================================================
 const FIRST_IN_QUE_THESHOLD = 20; //minutes threshold after which ticket is directed to last index
 export const lateThreshhold = FIRST_IN_QUE_THESHOLD;
+
+//====================================================================
+// SETTINGS FOR ROLES
+//====================================================================
+const ROLES_LIST = {
+	admin: 2134,
+	doctor: 2133,
+	staff: 2170
+};
+
+export default ROLES_LIST;

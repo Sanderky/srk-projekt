@@ -11,13 +11,15 @@ function App() {
 		<Routes>
 			{/* Not protected */}
 			<Route path="/" element={<Registration />} />
-			<Route path="loginPanel" element={<LoginPanel />} />
+			<Route path="login-panel" element={<LoginPanel />} />
 			{/* Protected */}
 			<Route element={<PersistLogin />}>
-				<Route element={<RequireAuth allowedRoles={['doctor']} />}>
-					<Route path="/queueDisplay" element={<QueDisplay />} />
-					<Route path="/confirmationPanel" element={<ConfirmationPanel />} />
-					<Route path="doctor-panel" element={<DoctorPanel />}></Route>
+				<Route element={<RequireAuth allowedRoles={['staff', 'admin']} />}>
+					<Route path="/que-display" element={<QueDisplay />} />
+					<Route path="/confirmation-panel" element={<ConfirmationPanel />} />
+				</Route>
+				<Route element={<RequireAuth allowedRoles={['doctor', 'admin']} />}>
+					<Route path="/doctor-panel" element={<DoctorPanel />} />
 				</Route>
 			</Route>
 		</Routes>

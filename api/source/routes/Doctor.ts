@@ -11,7 +11,7 @@ router.get('/get/', controller.readAllDoctors);
 
 //Sciezki zabezpieczone
 router.use(userController.verifyJWT);
-router.use(userController.verifyRoles('doctor'));
+router.use(userController.verifyRoles(['doctor', 'admin']));
 router.post('/create', controller.createDoctor);
 router.patch('/update/:doctorId', controller.updateDoctor);
 router.delete('/delete/:doctorId', controller.deleteDoctor);

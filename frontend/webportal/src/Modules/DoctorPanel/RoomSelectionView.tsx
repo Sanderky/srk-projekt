@@ -5,7 +5,8 @@ import axiosRoom from '../../APIs/Room';
 import useAxiosFunction, { AxiosConfig } from '../../Hooks/useAxiosFunction';
 import useAxiosPrivate from '../../Hooks/useAxiosPrivate';
 import { axiosPrivate } from '../../APIs/Axios';
-const doctorId = '63b2258dbb4dc4efaf5b60b3';
+
+// const doctorId = '63b2258dbb4dc4efaf5b60b3';
 const BASE_URL = 'http://localhost:3000';
 
 interface RoomSelectionProps {
@@ -19,6 +20,7 @@ interface RoomSelectionProps {
 }
 
 export default function RoomSelectionView({ roomNumber, setRoomNumber, setRoomSelected, error, setError, setLoading, setQueId }: RoomSelectionProps) {
+	const doctorId = localStorage.getItem('doctorId');
 	const handleChange = (value: string) => {
 		setRoomNumber(parseInt(value));
 		setError(false);
@@ -31,10 +33,6 @@ export default function RoomSelectionView({ roomNumber, setRoomNumber, setRoomSe
 			setRoomSelected(true);
 			localStorage.setItem('roomSelected', 'true');
 
-			const token = localStorage.getItem('token');
-			const config = {
-				headers: { Authorization: token! }
-			};
 			const createQuePayload = {
 				doctorId: doctorId,
 				roomNumber: roomNumber
@@ -42,6 +40,7 @@ export default function RoomSelectionView({ roomNumber, setRoomNumber, setRoomSe
 			try {
 				const createdQue = await axiosPrivate.post(`/que/create`, createQuePayload);
 				const createdQueId = createdQue.data.que._id;
+				localStorage.setItem('queId', createdQueId);
 				setQueId(createdQueId);
 
 				const updateRoomPayload = {
@@ -82,13 +81,13 @@ export default function RoomSelectionView({ roomNumber, setRoomNumber, setRoomSe
 		if (loadingAxios) {
 			return (
 				<option value="null" disabled>
-					Ładowanie
+					Ładowanie...
 				</option>
 			);
 		} else if (!loadingAxios && errorAxios) {
 			return (
 				<option value="null" disabled>
-					Wystąpił bład.
+					Wystąpił błąd.
 				</option>
 			);
 		} else if (!loadingAxios && !errorAxios && rooms?.length) {
@@ -125,10 +124,11 @@ export default function RoomSelectionView({ roomNumber, setRoomNumber, setRoomSe
 					{roomsJSX}
 				</select>
 			</div>
-			<button className={styles.startTakingPatientsButton} type="submit" onClick={startTakingPatients}>
+			<button className={styles.startTakingPatientsButton} disabled={!doctorId ? true : false} type="submit" onClick={startTakingPatients}>
 				ROZPOCZNIJ PRZYJMOWANIE
 			</button>
 			{error ? <p className={styles.errorMessage}>Wybierz numer gabinetu !</p> : <></>}
+			{!doctorId ? <p className={styles.errorMessage}>Nie jesteś zalogowany jako lekarz !</p> : <></>}
 		</div>
 	);
 }
