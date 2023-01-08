@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import styles from './LoginPanel.module.css';
 import axios from 'axios';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -15,20 +15,30 @@ const ERROR_MSG = {
 
 const LoginPanel = () => {
 	const [error, setError] = useState<string>('');
-	const [username, setUsername] = useState<string>('');
-	const [password, setPassword] = useState<string>('');
+	const usernameRef = useRef<HTMLInputElement>(null);
+	const passwordRef = useRef<HTMLInputElement>(null);
+	const [inputTouched, setInputTouched] = useState<boolean>(false);
 
 	const { setAuth }: any = useAuth();
 
 	const location = useLocation();
 	const navigate = useNavigate();
 	const from = location.state?.from?.pathname || '/';
+	const errorLogin = location.state?.error;
+
+	useEffect(() => {
+		if (errorLogin) {
+			setError(ERROR_MSG.notAllowed);
+		}
+	}, []);
 
 	const renderErrorMsg = () => {
-		return error ? <div className={styles.errorMsg}>{error}</div> : <></>;
+		return error && !inputTouched ? <div className={styles.errorMsg}>{error}</div> : <></>;
 	};
 
 	const handleSubmit = async (e: any) => {
+		const username = usernameRef.current?.value;
+		const password = passwordRef.current?.value;
 		e.preventDefault();
 		try {
 			const response = await axios.post(
@@ -72,33 +82,27 @@ const LoginPanel = () => {
 			<div className={`${styles.header} ${styles.disableSelecting}`}>Logowanie</div>
 			<form className={styles.loginForm} onSubmit={(e) => handleSubmit(e)}>
 				<div>
-					<div className={`${styles.label} ${styles.disableSelecting} ${error ? styles.error : ''}`}>Nazwa użytkownika</div>
+					<div className={`${styles.label} ${styles.disableSelecting} ${error && !inputTouched ? styles.error : ''}`}>Nazwa użytkownika</div>
 					<input
-						className={`${styles.input} ${error ? styles.error : ''}`}
+						className={`${styles.input} ${error && !inputTouched ? styles.error : ''}`}
 						type={'text'}
 						name={'username'}
-						onChange={(event) => {
-							setUsername(event.target.value);
-							setError('');
-						}}
-						value={username}
 						autoComplete={'off'}
+						ref={usernameRef}
 						required
+						onChange={(e) => setInputTouched(true)}
 					></input>
 				</div>
 				<div>
-					<div className={`${styles.label} ${styles.disableSelecting} ${error ? styles.error : ''}`}>Hasło</div>
+					<div className={`${styles.label} ${styles.disableSelecting} ${error && !inputTouched ? styles.error : ''}`}>Hasło</div>
 					<input
-						className={`${styles.input} ${error ? styles.error : ''}`}
+						className={`${styles.input} ${error && !inputTouched ? styles.error : ''}`}
 						type={'password'}
 						name={'password'}
-						onChange={(event) => {
-							setPassword(event.target.value);
-							setError('');
-						}}
-						value={password}
+						ref={passwordRef}
 						autoComplete={'off'}
 						required
+						onChange={(e) => setInputTouched(true)}
 					></input>
 				</div>
 				{renderErrorMsg()}
