@@ -7,8 +7,7 @@ import Clock from '../../Components/Clock';
 import RoomSelectionView from './RoomSelectionView';
 import TakingPatientsView from './TakingPatientsView';
 import useAxiosPrivate from '../../Hooks/useAxiosPrivate';
-
-const BASE_URL = 'http://localhost:3000';
+import { BASE_URL } from '../../config/settings';
 
 interface HeaderProps {
 	setRoomNumber: (roomNumber: number | undefined) => void;
