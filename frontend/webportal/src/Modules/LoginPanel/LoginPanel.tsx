@@ -3,10 +3,12 @@ import styles from './LoginPanel.module.css';
 import axios from 'axios';
 import { useLocation, useNavigate } from 'react-router-dom';
 import useAuth from '../../Hooks/useAuth';
+import spinnerImg from '../../Assets/Images/spinner.png';
 import { BASE_URL, ERROR_MSG } from '../../config/settings';
 
 const LoginPanel = () => {
 	const [error, setError] = useState<string | undefined>();
+	const [loading, setLoading] = useState<boolean>(false);
 	const usernameRef = useRef<HTMLInputElement>(null);
 	const passwordRef = useRef<HTMLInputElement>(null);
 
@@ -15,20 +17,23 @@ const LoginPanel = () => {
 	const location = useLocation();
 	const navigate = useNavigate();
 	const from = location.state?.from?.pathname || '/';
-	const roleAllowed = location.state?.roleAllowed;
-	const rolesAllowed = location.state?.rolesAllowed;
+	const rolesAllowed = location.state.rolesAllowed;
+
+	const allowed = useState(location.state.roleAllowed);
+	const roleExists = useState(location.state.roleExists);
 
 	useEffect(() => {
-		if (!roleAllowed) {
+		if (!allowed && roleExists) {
 			setError(ERROR_MSG.notAllowed);
 		}
-	}, [roleAllowed]);
+	}, [allowed, roleExists]);
 
 	const renderErrorMsg = () => {
 		return error ? <div className={styles.errorMsg}>{error}</div> : <></>;
 	};
 
 	const handleSubmit = async (e: any) => {
+		setLoading(true);
 		const username = usernameRef.current?.value;
 		const password = passwordRef.current?.value;
 		e.preventDefault();
@@ -53,6 +58,7 @@ const LoginPanel = () => {
 				}
 			}
 			setAuth({ username, password, roles, accessToken });
+			setLoading(false);
 			navigate(from, { replace: true });
 		} catch (err: any) {
 			if (!username || !password || err.request?.status === 400) {
@@ -65,6 +71,7 @@ const LoginPanel = () => {
 				console.log(err);
 				setError(ERROR_MSG.other);
 			}
+			setLoading(false);
 		}
 	};
 
@@ -107,6 +114,7 @@ const LoginPanel = () => {
 				>
 					Zaloguj
 				</button>
+				{loading ? <img src={spinnerImg} alt="" className={styles.spinner} /> : <></>}
 			</form>
 		</div>
 	);

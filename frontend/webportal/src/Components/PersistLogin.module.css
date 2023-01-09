@@ -1,0 +1,28 @@
+.loadingContainer {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+@keyframes spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.spinner {
+    height: 100px;
+    width: 100px;
+    animation: spinner 1.5s linear infinite;
+}
+
+.text {
+    font-size: var(--big);
+    margin-top: 2rem;
+}

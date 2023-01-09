@@ -99,3 +99,20 @@
     font-weight: var(--semiBold);
     margin-top: 24px;
 }
+
+@keyframes spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.spinner {
+    height: 50px;
+    width: 50px;
+    margin: 0 auto;
+    animation: spinner 1.5s linear infinite;
+}
