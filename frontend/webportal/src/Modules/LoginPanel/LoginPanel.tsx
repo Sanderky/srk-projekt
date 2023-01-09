@@ -23,7 +23,7 @@ const LoginPanel = () => {
 	const roleExists = useState(location.state.roleExists);
 
 	useEffect(() => {
-		if (allowed && roleExists) {
+		if (!allowed && roleExists) {
 			setError(ERROR_MSG.notAllowed);
 		}
 	}, [allowed, roleExists]);
