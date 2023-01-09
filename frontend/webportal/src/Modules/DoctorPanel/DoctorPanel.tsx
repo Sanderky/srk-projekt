@@ -8,7 +8,8 @@ import RoomSelectionView from './RoomSelectionView';
 import TakingPatientsView from './TakingPatientsView';
 import useAxiosPrivate from '../../Hooks/useAxiosPrivate';
 import { BASE_URL } from '../../config/settings';
-
+import axios from 'axios';
+import useAuth from '../../Hooks/useAuth';	
 interface HeaderProps {
 	setRoomNumber: (roomNumber: number | undefined) => void;
 	roomSelected: boolean;
@@ -16,13 +17,14 @@ interface HeaderProps {
 }
 
 function Header({ setRoomNumber, roomSelected, setRoomSelected }: HeaderProps) {
-	const axiosPrivate = useAxiosPrivate();
+	const {setAuth}:any = useAuth();
 	const logout = async () => {
 		setRoomNumber(undefined);
 		setRoomSelected(false);
 		localStorage.clear();
+		setAuth({});
 		try {
-			await axiosPrivate.post(`${BASE_URL}/user/logout`);
+			await axios.get(`${BASE_URL}/user/logout`,{withCredentials:true});	
 		} catch (error) {
 			console.log(error);
 		}
