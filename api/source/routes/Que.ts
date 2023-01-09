@@ -3,6 +3,8 @@ import controller from '@/controllers/Que';
 import userController from '@/controllers/User';
 const router = express.Router();
 
+router.get('/events', controller.queEventsHandler);
+
 router.use(userController.verifyJWT);
 router.use(userController.verifyRoles(['doctor', 'admin', 'staff']));
 

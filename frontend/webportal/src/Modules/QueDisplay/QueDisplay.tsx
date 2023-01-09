@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Que from './Que';
 import styles from './QueDisplay.module.css';
 import useAxiosPrivate from '../../Hooks/useAxiosPrivate';
@@ -31,7 +31,7 @@ const QueDisplay = () => {
 
 	useEffect(() => {
 		if (!listening) {
-			const events = new EventSource('http://localhost:3000/ticket/events');
+			const events = new EventSource('http://localhost:3000/que/events');
 			events.onmessage = async (event) => {
 				try {
 					const resposne = await axiosPrivate.get('/que/get');
@@ -43,7 +43,7 @@ const QueDisplay = () => {
 			};
 			setListening(true);
 		}
-	}, [listening]);
+	}, [listening,axiosPrivate,location,navigate]);
 
 	const ques = newQue.map((item, index) => {
 		return <Que key={index} tickets={item}></Que>;

@@ -1,4 +1,3 @@
-import { useState } from "react";
 import TicketNumber from "./TicketNumber";
 import styles from "./Que.module.css"
 

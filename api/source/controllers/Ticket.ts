@@ -4,29 +4,29 @@ import Ticket from '@/models/Ticket';
 import Log from '@/library/Logging';
 import { generateVisitCode } from '@/library/TicketUtils';
 import { insertTicketIntoQue } from '@/library/QueEngine';
+import queController from '@/controllers/Que';
+//import { updateQue } from '@/library/queEventHandler';
 
-let updateResponse: Response = response;
+// function queEventsHandler(request: Request, response: Response) {
+// 	const headers = {
+// 		'Content-Type': 'text/event-stream',
+// 		Connection: 'keep-alive',
+// 		'Cache-Control': 'no-cache'
+// 	};
+// 	response.writeHead(200, headers);
 
-function queEventsHandler(request: Request, response: Response) {
-	const headers = {
-		'Content-Type': 'text/event-stream',
-		'Connection': 'keep-alive',
-		'Cache-Control': 'no-cache'
-	};
-	response.writeHead(200, headers);
+// 	const data = `data: ${JSON.stringify('Connection Established')}\n\n`;
 
-	const data = `data: ${JSON.stringify("Connection Established")}\n\n`;
-
-	response.write(data);
-	updateResponse = response;
-}
+// 	response.write(data);
+// 	updateResponse = response;
+// }
 
 const createTicket = async (req: Request, res: Response) => {
 	const { queId, visitTime, reservationCode } = req.body;
 	const queIdObj = new mongoose.Types.ObjectId(queId);
 	try {
-		const visitCode = await generateVisitCode(queId)
-		const ticketId = new mongoose.Types.ObjectId()
+		const visitCode = await generateVisitCode(queId);
+		const ticketId = new mongoose.Types.ObjectId();
 		const ticket = new Ticket({
 			_id: ticketId,
 			queId: queIdObj,
@@ -38,9 +38,9 @@ const createTicket = async (req: Request, res: Response) => {
 		return ticket
 			.save()
 			.then(async (ticket) => {
-				const queResponse = await insertTicketIntoQue(ticketId)
-				updateResponse.write(`data: ${JSON.stringify("Added To Que")}\n\n`)
-				res.status(201).json({ ticket, queResponse })
+				const queResponse = await insertTicketIntoQue(ticketId);
+				queController.updateQuePanel();
+				res.status(201).json({ ticket, queResponse });
 			})
 			.catch((error) => {
 				throw error;
@@ -54,8 +54,7 @@ const createTicket = async (req: Request, res: Response) => {
 const readTicket = async (req: Request, res: Response) => {
 	const ticketId = req.params.ticketId;
 	try {
-		return await Ticket.findById(ticketId)
-			.then((ticket) => (ticket ? res.status(200).json({ ticket }) : res.status(404).json({ message: 'Not found' })));
+		return await Ticket.findById(ticketId).then((ticket) => (ticket ? res.status(200).json({ ticket }) : res.status(404).json({ message: 'Not found' })));
 	} catch (error) {
 		Log.error(error);
 		res.status(500).json({ error });
@@ -66,11 +65,9 @@ const readAllTickets = async (req: Request, res: Response) => {
 	const reservationCode = req.query.reservationCode; //TODO - query dla pojedynczej kolejki jako queId
 	try {
 		if (reservationCode) {
-			return await Ticket.findOne({ reservationCode: reservationCode })
-				.then((ticket) => (ticket ? res.status(200).json({ ticket }) : res.status(404).json({ message: 'Not found' })));
+			return await Ticket.findOne({ reservationCode: reservationCode }).then((ticket) => (ticket ? res.status(200).json({ ticket }) : res.status(404).json({ message: 'Not found' })));
 		} else {
-			return await Ticket.find()
-				.then((ticket) => (ticket ? res.status(200).json({ ticket }) : res.status(404).json({ message: 'Not found' })));
+			return await Ticket.find().then((ticket) => (ticket ? res.status(200).json({ ticket }) : res.status(404).json({ message: 'Not found' })));
 		}
 	} catch (error) {
 		Log.error(error);
@@ -105,4 +102,4 @@ const deleteTicket = async (req: Request, res: Response) => {
 	}
 };
 
-export default { createTicket, readTicket, readAllTickets, updateTicket, deleteTicket, queEventsHandler };
+export default { createTicket, readTicket, readAllTickets, updateTicket, deleteTicket };

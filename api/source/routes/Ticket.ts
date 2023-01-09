@@ -3,9 +3,8 @@ import controller from '@/controllers/Ticket';
 import { isAuthorized } from '@/middleware/Authorize';
 import passport from 'passport';
 import userController from '@/controllers/User';
-const router = express.Router();
 
-router.get('/events', controller.queEventsHandler);
+const router = express.Router();
 
 router.use(userController.verifyJWT);
 router.use(userController.verifyRoles(['doctor', 'staff', 'admin']));
