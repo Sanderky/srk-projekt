@@ -6,26 +6,26 @@ import useAuth from '../../Hooks/useAuth';
 import { BASE_URL, ERROR_MSG } from '../../config/settings';
 
 const LoginPanel = () => {
-	const [error, setError] = useState<string>('');
+	const [error, setError] = useState<string | undefined>();
 	const usernameRef = useRef<HTMLInputElement>(null);
 	const passwordRef = useRef<HTMLInputElement>(null);
-	const [inputTouched, setInputTouched] = useState<boolean>(false);
 
 	const { setAuth }: any = useAuth();
 
 	const location = useLocation();
 	const navigate = useNavigate();
 	const from = location.state?.from?.pathname || '/';
-	const errorLogin = location.state?.error;
+	const roleAllowed = location.state?.roleAllowed;
+	const rolesAllowed = location.state?.rolesAllowed;
 
 	useEffect(() => {
-		if (errorLogin) {
+		if (!roleAllowed) {
 			setError(ERROR_MSG.notAllowed);
 		}
-	}, []);
+	}, [roleAllowed]);
 
 	const renderErrorMsg = () => {
-		return error && !inputTouched ? <div className={styles.errorMsg}>{error}</div> : <></>;
+		return error ? <div className={styles.errorMsg}>{error}</div> : <></>;
 	};
 
 	const handleSubmit = async (e: any) => {
@@ -37,7 +37,8 @@ const LoginPanel = () => {
 				`${BASE_URL}/user/login`,
 				{
 					username: username,
-					password: password
+					password: password,
+					allowedRoles: rolesAllowed
 				},
 				{
 					headers: { 'Content-type': 'application/json' },
@@ -51,11 +52,10 @@ const LoginPanel = () => {
 					localStorage.setItem('doctorId', response.data.userDetails.doctorId);
 				}
 			}
-
 			setAuth({ username, password, roles, accessToken });
 			navigate(from, { replace: true });
 		} catch (err: any) {
-			if (!username || !password) {
+			if (!username || !password || err.request?.status === 400) {
 				setError(ERROR_MSG.noInputs);
 			} else if (err.request?.status === 401) {
 				setError(ERROR_MSG.badCredentials);
@@ -74,27 +74,27 @@ const LoginPanel = () => {
 			<div className={`${styles.header} ${styles.disableSelecting}`}>Logowanie</div>
 			<form className={styles.loginForm} onSubmit={(e) => handleSubmit(e)}>
 				<div>
-					<div className={`${styles.label} ${styles.disableSelecting} ${error && !inputTouched ? styles.error : ''}`}>Nazwa użytkownika</div>
+					<div className={`${styles.label} ${styles.disableSelecting} ${error ? styles.error : ''}`}>Nazwa użytkownika</div>
 					<input
-						className={`${styles.input} ${error && !inputTouched ? styles.error : ''}`}
+						className={`${styles.input} ${error ? styles.error : ''}`}
 						type={'text'}
 						name={'username'}
 						autoComplete={'off'}
 						ref={usernameRef}
 						required
-						onChange={(e) => setInputTouched(true)}
+						onChange={(e) => setError(undefined)}
 					></input>
 				</div>
 				<div>
-					<div className={`${styles.label} ${styles.disableSelecting} ${error && !inputTouched ? styles.error : ''}`}>Hasło</div>
+					<div className={`${styles.label} ${styles.disableSelecting} ${error ? styles.error : ''}`}>Hasło</div>
 					<input
-						className={`${styles.input} ${error && !inputTouched ? styles.error : ''}`}
+						className={`${styles.input} ${error ? styles.error : ''}`}
 						type={'password'}
 						name={'password'}
 						ref={passwordRef}
 						autoComplete={'off'}
 						required
-						onChange={(e) => setInputTouched(true)}
+						onChange={(e) => setError(undefined)}
 					></input>
 				</div>
 				{renderErrorMsg()}

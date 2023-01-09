@@ -22,42 +22,51 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
 };
 
 const loginUser = async (req: Request, res: Response, next: NextFunction) => {
-	const { username, password } = req.body;
+	const { username, password, allowedRoles } = req.body;
 	if (!username || !password) return res.status(400).json({ message: 'Username or password was not provided' });
-	const foundUser = await User.findOne({ username: username }).exec();
-	if (!foundUser) {
-		return res.sendStatus(401);
-	}
-	const userPassword = foundUser.password;
-	const userRoles = foundUser.roles;
-	const userDetails = foundUser.details ? foundUser.details : null;
+	try {
+		const foundUser = await User.findOne({ username: username }).exec();
+		if (!foundUser) {
+			return res.status(401).json({ message: 'Bad credentials.' });
+		}
+		const userPassword = foundUser.password;
+		const userRoles = foundUser.roles;
+		const userDetails = foundUser.details ? foundUser.details : null;
+		const checkPassword = await compare(password, userPassword);
+		if (!userRoles.every((val) => allowedRoles.includes(val))) {
+			return !checkPassword ? res.status(401).json({ message: 'Bad credentials.' }) : res.status(403).json({ message: 'Role not allowed.' });
+		} else if (checkPassword) {
+			const accessToken = jwt.sign(
+				{
+					User: {
+						username: foundUser.username,
+						roles: foundUser.roles
+					}
+				},
+				process.env.ACCESS_TOKEN_SECRET!,
+				{ expiresIn: '5m' }
+			);
 
-	const checkPassword = await compare(password, userPassword);
-	if (checkPassword) {
-		const accessToken = jwt.sign(
-			{
-				User: {
-					username: foundUser.username,
-					roles: foundUser.roles
-				}
-			},
-			process.env.ACCESS_TOKEN_SECRET!,
-			{ expiresIn: '5m' }
-		);
+			const refreshToken = jwt.sign(
+				{
+					username: foundUser.username
+				},
+				process.env.REFRESH_TOKEN_SECRET!
+			);
 
-		const refreshToken = jwt.sign(
-			{
-				username: foundUser.username
-			},
-			process.env.REFRESH_TOKEN_SECRET!
-		);
-
-		foundUser.refreshToken = refreshToken;
-		await foundUser.save();
-		res.cookie('jwt', refreshToken, { httpOnly: true, secure: true, maxAge: 24 * 60 * 60 * 1000 });
-		userDetails ? res.json({ accessToken, userRoles, userDetails }) : res.json({ accessToken, userRoles });
-	} else {
-		res.sendStatus(401);
+			foundUser.refreshToken = refreshToken;
+			await foundUser.save();
+			res;
+			console.log(userDetails);
+			return userDetails
+				? res.cookie('jwt', refreshToken, { httpOnly: true, secure: true, maxAge: 24 * 60 * 60 * 1000, sameSite: 'none' }).json({ accessToken, userRoles, userDetails })
+				: res.cookie('jwt', refreshToken, { httpOnly: true, secure: true, maxAge: 24 * 60 * 60 * 1000, sameSite: 'none' }).json({ accessToken, userRoles });
+		} else {
+			return res.status(401).json({ message: 'Bad credentials.' });
+		}
+	} catch (error) {
+		Log.error(error);
+		return res.status(500).json({ error });
 	}
 };
 
@@ -66,7 +75,7 @@ const verifyJWT = (req: any, res: Response, next: NextFunction) => {
 
 	jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!, (err: any, token: any) => {
 		if (err) {
-			return res.sendStatus(403).json({ err });
+			return res.status(403).json({ err });
 		}
 		req.user = token.User.username;
 		req.roles = token.User.roles;
@@ -77,6 +86,7 @@ const verifyJWT = (req: any, res: Response, next: NextFunction) => {
 const refreshTokenController = async (req: Request, res: Response) => {
 	const cookies = req.cookies;
 	if (!cookies?.jwt) return res.sendStatus(401);
+	// if (!cookies?.jwt) return res.sendStatus(200);
 	const refreshToken = cookies.jwt;
 
 	const foundUser = await User.findOne({ refreshToken: refreshToken }).exec();

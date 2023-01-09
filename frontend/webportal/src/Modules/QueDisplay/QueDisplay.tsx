@@ -1,9 +1,6 @@
 import { useContext, useEffect, useState } from 'react';
-import axios from 'axios';
 import Que from './Que';
 import styles from './QueDisplay.module.css';
-import AuthContext from '../../Context/AuthenticationProvider';
-import useRefreshToken from '../../Hooks/useResfreshToken';
 import useAxiosPrivate from '../../Hooks/useAxiosPrivate';
 import { useNavigate, useLocation } from 'react-router-dom';
 const Description = (): JSX.Element => {
