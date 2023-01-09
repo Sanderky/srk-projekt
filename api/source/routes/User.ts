@@ -7,6 +7,6 @@ require('@/library/Passport');
 router.post('/signup', controller.createUser);
 router.post('/login', controller.loginUser);
 router.get('/refresh', controller.refreshTokenController);
-router.post('/logout', controller.logout);
+router.get('/logout', controller.logout);
 
 export = router;
