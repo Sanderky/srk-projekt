@@ -1,12 +1,20 @@
-// import { useEffect } from "react";
 import styles from './CentralBox.module.css';
 import spinnerImg from '../../Assets/Images/spinner.png';
 import useAxiosPrivate from '../../Hooks/useAxiosPrivate';
-import { useState } from 'react';
+import useIdle from '../../Hooks/useIdleTimer';
+import { useReducer, useRef, useEffect } from 'react';
+
 interface SuccessDataProps {
 	label: string;
 	data: string | number;
 	color?: string;
+}
+
+interface TicketPayload {
+	queId: string;
+	visitTime: string;
+	reservationCode: string;
+	roomNumber: number;
 }
 
 const ConfirmationData = ({ label, data, color = 'var(--subText)' }: SuccessDataProps): JSX.Element => {
@@ -20,37 +28,91 @@ const ConfirmationData = ({ label, data, color = 'var(--subText)' }: SuccessData
 	);
 };
 
+const defaultState = {
+	panelStatus: 'enterInformation',
+	time: '-',
+	roomNumber: null,
+	visitCode: '-',
+	queIndex: null,
+	loading: false
+};
+
+const ACTION = {
+	default: 'defaultState',
+	loading: 'loading',
+	loadingFinished: 'loadingFinished',
+	wrongCode: 'wrongCode',
+	tooFast: 'tooFast',
+	tooLate: 'tooLate',
+	duplicate: 'duplicate',
+	confirmed: 'confirmed'
+};
+
+function reducer(state: any, action: any) {
+	switch (action.type) {
+		case 'defaultState':
+			return defaultState;
+		case 'loading':
+			return { ...state, loading: true };
+		case 'loadingFinished':
+			return { ...state, loading: false };
+		case 'wrongCode':
+			return { ...state, loading: false, panelStatus: 'wrongCode' };
+		case 'tooFast':
+			return { ...state, loading: false, panelStatus: 'tooFast' };
+		case 'tooLate':
+			return { ...state, loading: false, panelStatus: 'tooLate' };
+		case 'duplicate':
+			return {
+				...state,
+				loading: false,
+				panelStatus: 'duplicate',
+				roomNumber: action.roomNumber,
+				visitCode: action.visitCode,
+				queIndex: action.queIndex + 1
+			};
+		case 'confirmed':
+			return {
+				...state,
+				loading: false,
+				panelStatus: action.panelStatus,
+				roomNumber: action.roomNumber,
+				visitCode: action.visitCode,
+				visitTime: action.visitTime,
+				queIndex: action.queIndex + 1
+			};
+	}
+}
+
 const CentralBox = () => {
-	const [params, setParams] = useState({ panelStatus: 'enterInformation', time: '-', roomNumber: -1, visitCode: '-', queIndex: -1, loading: false });
+	const [state, dispatch] = useReducer(reducer, defaultState);
+	const codeInputRef = useRef<HTMLInputElement>(null);
 
 	const axiosPrivate = useAxiosPrivate();
 	const backToLogin = () => {
-		setParams({ panelStatus: 'enterInformation', time: '-', roomNumber: -1, visitCode: '-', queIndex: -1, loading: false });
+		dispatch({ type: ACTION.default });
 	};
 
-	const confirmReservation = async (event: any) => {
-		setParams((prev) => {
-			return { ...prev, loading: true };
-		});
+	// Handle clicking confirmation button
+	const confirmReservation = async (e: any) => {
+		dispatch({ type: ACTION.loading });
 
-		if (event.target.form[0].value === '') {
-			setParams((prev) => {
-				return { ...prev, loading: false };
-			});
+		if (codeInputRef.current?.value === '') {
+			dispatch({ type: ACTION.loadingFinished });
 			backToLogin();
 		}
-		event.preventDefault();
-		const reservationPayload = { reservationCode: event.target.form[0].value };
-		const reservationParams = new URLSearchParams(reservationPayload);
+		e.preventDefault();
+		const reservationCode = codeInputRef.current?.value;
+		if (!reservationCode) {
+			dispatch({ type: ACTION.loadingFinished });
+			backToLogin();
+		}
 		let reservation;
-
 		try {
-			reservation = await axiosPrivate.get(`/reservation/get?${reservationParams}`);
+			reservation = await axiosPrivate.get(`/reservation/get?reservationCode=${reservationCode}`);
 		} catch (error) {
 			console.log(error);
-			setParams((prev) => {
-				return { ...prev, panelStatus: 'wrongCode', loading: false };
-			});
+			dispatch({ type: ACTION.wrongCode });
 			return;
 		}
 		const reservationData = reservation?.data.reservation;
@@ -59,20 +121,16 @@ const CentralBox = () => {
 		const today = new Date(Date.UTC(nonUTC.getUTCFullYear(), nonUTC.getUTCMonth(), nonUTC.getUTCDate(), 0, 0, 0, 0));
 		const reservationDay = new Date(reservationData.day);
 		if (reservationDay.getTime() > today.getTime()) {
-			setParams((prev) => {
-				return { ...prev, loading: false, panelStatus: 'tooFast' };
-			});
+			dispatch({ type: ACTION.tooFast });
 			return;
 		} else if (reservationDay.getTime() < today.getTime()) {
-			setParams((prev) => {
-				return { ...prev, loading: false, panelStatus: 'tooLate' };
-			});
+			dispatch({ type: ACTION.tooLate });
 			return;
 		}
-
+		//Duplicate
 		if (reservationData.registered) {
 			//Get ticket data
-			const ticketData = await axiosPrivate.get(`/ticket/get?${reservationParams}`);
+			const ticketData = await axiosPrivate.get(`/ticket/get?reservationCode=${reservationCode}`);
 			const ticket = ticketData.data.ticket;
 
 			const queId = ticket.queId;
@@ -80,9 +138,7 @@ const CentralBox = () => {
 			const que = queData.data.que;
 
 			const queIndex = que.activeTickets.findIndex((t: { _id: any }) => t._id === ticket._id);
-			setParams((prev) => {
-				return { ...prev, roomNumber: que.roomNumber, visitCode: ticket.visitCode, panelStatus: 'duplicate' };
-			});
+			dispatch({ type: ACTION.duplicate, roomNumber: que.roomNumber, visitCode: ticket.visitCode, queIndex: queIndex });
 		} else {
 			//Create ticket
 			const queParams = new URLSearchParams({ doctorId: reservationData.doctorId._id });
@@ -90,35 +146,57 @@ const CentralBox = () => {
 			const queData = que.data.que;
 			const queId = queData._id;
 
-			const ticketPayload: any = {
+			const ticketPayload: TicketPayload = {
 				queId: queId,
 				visitTime: reservationData.time,
 				reservationCode: reservationData.reservationCode,
 				roomNumber: queData.roomNumber
 			};
-			const createTicketResponse = await axiosPrivate(`/ticket/create`, ticketPayload);
+			const createTicketResponse = await axiosPrivate.post('/ticket/create', ticketPayload);
 			const ticket = createTicketResponse.data.ticket;
 			const queResponse = createTicketResponse.data.queResponse;
-
-			setParams((prev) => {
-				return { ...prev, panelStatus: queResponse.lateStatus, time: ticket.visitTime, roomNumber: queData.roomNumber, visitCode: ticket.visitCode, queIndex: queResponse.queIndex };
+			dispatch({
+				type: ACTION.confirmed,
+				panelStatus: queResponse.lateStatus,
+				time: ticket.visitTime,
+				roomNumber: queData.roomNumber,
+				visitCode: ticket.visitCode,
+				visitTime: ticket.visitTime,
+				queIndex: queResponse.queIndex
 			});
+			const reservationPayload = {
+				reservationCode: reservationCode
+			};
 			axiosPrivate.post(`/reservation/login/`, reservationPayload);
 		}
 	};
+	//Return to default
+	const { isIdle, getLastActiveTime } = useIdle(backToLogin, 30);
+	useEffect(() => {
+		console.log(`Last seen activity: ${getLastActiveTime()?.toLocaleTimeString()}. Proceeding to login screen...`);
+	}, [isIdle]);
 
+	// Sub-components
 	const EnterCode = (): JSX.Element => {
 		return (
 			<div>
 				<div className={`${styles.text} ${styles.title}`}>Witaj</div>
 				<div className={styles.text}>Podaj swój unikatowy kod rezerwacji</div>
 				<form className={styles.form}>
-					<input type="text" name="reservationCode" placeholder="Unikatowy kod rezerwacji" className={styles.input} maxLength={8} />
-					<button type="submit" onClick={(event) => confirmReservation(event)} className={styles.buttonSend}>
+					<input
+						type="text"
+						name="reservationCode"
+						placeholder="Unikatowy kod rezerwacji"
+						className={styles.input}
+						maxLength={8}
+						ref={codeInputRef}
+						autoComplete={'off'}
+					/>
+					<button type="submit" onClick={(e) => confirmReservation(e)} className={styles.buttonSend}>
 						Zatwierdź
 					</button>
 				</form>
-				<img src={spinnerImg} alt="ładowanie..." className={params.loading ? styles.spinnerActive : styles.spinnerDisabled} />
+				<img src={spinnerImg} alt="ładowanie..." className={state.loading ? styles.spinnerActive : styles.spinnerDisabled} />
 			</div>
 		);
 	};
@@ -127,12 +205,14 @@ const CentralBox = () => {
 		return (
 			<div className={styles.success}>
 				<div className={styles.successData}>
-					<ConfirmationData label={'Twój numer:'} data={params.visitCode} />
-					<ConfirmationData label={'Gabinet:'} data={params.roomNumber} />
-					<ConfirmationData label={'Godzina wizyty:'} data={params.time} />
-					<ConfirmationData label={'Miejsce w kolejce:'} data={params.queIndex} />
+					<ConfirmationData label={'Twój numer:'} data={state.visitCode} />
+					<ConfirmationData label={'Gabinet:'} data={state.roomNumber} />
+					<ConfirmationData label={'Godzina wizyty:'} data={state.visitTime} />
+					<ConfirmationData label={'Miejsce w kolejce:'} data={state.queIndex} />
 				</div>
-				<div className={`${styles.successInfo} ${styles.text}`}>Proszę obserwować tablicę wywoławczą i oczekiwać na swoją kolej Po wywołaniu można udać się do odpowiedniego gabinetu</div>
+				<div className={`${styles.successInfo} ${styles.text}`}>
+					Proszę obserwować tablicę wywoławczą i oczekiwać na swoją kolej Po wywołaniu można udać się do odpowiedniego gabinetu
+				</div>
 				<div className={styles.buttonWrapper}>
 					<button
 						type="submit"
@@ -157,8 +237,8 @@ const CentralBox = () => {
 				</div>
 
 				<form className={styles.form}>
-					<input type="text" className={styles.input} maxLength={10} placeholder="Unikatowy kod rezerwacji" />
-					<button type="submit" className={`${styles.buttonSend} ${styles.buttonError}`} onClick={(event) => confirmReservation(event)}>
+					<input type="text" className={styles.input} maxLength={10} placeholder="Unikatowy kod rezerwacji" ref={codeInputRef} />
+					<button type="submit" className={`${styles.buttonSend} ${styles.buttonError}`} onClick={(e) => confirmReservation(e)}>
 						Zatwierdź
 					</button>
 					<button
@@ -171,7 +251,7 @@ const CentralBox = () => {
 						Powrót
 					</button>
 				</form>
-				<img src={spinnerImg} alt="ładowanie..." className={params.loading ? styles.spinnerActive : styles.spinnerDisabled} />
+				<img src={spinnerImg} alt="ładowanie..." className={state.loading ? styles.spinnerActive : styles.spinnerDisabled} />
 			</div>
 		);
 	};
@@ -188,10 +268,10 @@ const CentralBox = () => {
 					Kolejność przyjęcia mogła ulec zmianie
 				</div>
 				<div className={styles.successData}>
-					<ConfirmationData label={'Twój numer:'} data={params.visitCode} />
-					<ConfirmationData label={'Gabinet:'} data={params.roomNumber} />
-					<ConfirmationData label={'Miejsce w kolejce:'} data={params.queIndex} />
-					<ConfirmationData label={'Godzina wizyty:'} data={params.time} />
+					<ConfirmationData label={'Twój numer:'} data={state.visitCode} />
+					<ConfirmationData label={'Gabinet:'} data={state.roomNumber} />
+					<ConfirmationData label={'Miejsce w kolejce:'} data={state.queIndex} />
+					<ConfirmationData label={'Godzina wizyty:'} data={state.visitTime} />
 					<ConfirmationData label={'Godzina potwierdzenia:'} data={confirmationTime} color={'var(--yellow)'} />
 				</div>
 				<div className={styles.buttonWrapper}>
@@ -215,9 +295,9 @@ const CentralBox = () => {
 					Rezerwacja została już potwierdzona
 				</div>
 				<div className={styles.successData}>
-					<ConfirmationData label={'Twój numer:'} data={params.visitCode} />
-					<ConfirmationData label={'Gabinet:'} data={params.roomNumber} />
-					<ConfirmationData label={'Aktualne miejsce w kolejce:'} data={params.queIndex} />
+					<ConfirmationData label={'Twój numer:'} data={state.visitCode} />
+					<ConfirmationData label={'Gabinet:'} data={state.roomNumber} />
+					<ConfirmationData label={'Aktualne miejsce w kolejce:'} data={state.queIndex} />
 				</div>
 				<div className={styles.buttonWrapper}>
 					<button
@@ -271,18 +351,10 @@ const CentralBox = () => {
 		);
 	};
 
-	//Automatyczny powrót do ekranu wprowadzania danych po 30 sekundach
-	// const componentDidUpdate = () => {
-	//     setTimeout(() => {
-	//         backToLogin()
-	//     }, 30000);
-	// } //TODO
-
-	let toRender: any;
+	let toRender: JSX.Element;
 	let labelColor;
 
-	console.log(params.panelStatus);
-	switch (params.panelStatus) {
+	switch (state.panelStatus) {
 		case 'enterInformation':
 			labelColor = styles.defaultLabel;
 			toRender = <EnterCode />;
@@ -315,7 +387,7 @@ const CentralBox = () => {
 			labelColor = styles.defaultLabel;
 			toRender = <EnterCode />;
 	}
-	console.log(toRender);
+	// console.log(toRender);
 
 	return (
 		<div className={`${styles.containerBackground} ${labelColor}`}>

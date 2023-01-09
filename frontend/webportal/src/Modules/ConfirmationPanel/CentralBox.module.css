@@ -2,7 +2,7 @@
     box-shadow: var(--defaultContainerShadow);
     border-radius: var(--radiusNormal);
     padding-top: 45px;
-    width: 740px;
+    width: 100%;
     display: flex;
     flex-direction: column;
 }
@@ -29,7 +29,7 @@
     width: 100%;
     height: 100%;
     border-radius: var(--radiusNormal);
-    padding: 60px;
+    padding: 4rem;
     text-align: center;
 }
 
@@ -153,8 +153,7 @@
     font-weight: var(--semiBold);
     color: var(--dark);
     letter-spacing: var(--normalSpacing);
-    font-size: var(--monsterText);
-    font-size: var(--titleBig);
+    font-size: var(--titleSmall);
     margin-right: 25px;
 }
 

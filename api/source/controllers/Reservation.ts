@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import mongoose from 'mongoose';
 import Reservation from '@/models/Reservation';
-import { dayIdByDate } from '@/library/DaysUtils'
+import { dayIdByDate } from '@/library/DaysUtils';
 import { generateReservationCode, updateSlotForNewReservation, makeSlotAvailable, flagAsRegistered } from '@/library/ReservationUtils';
 import Log from '@/library/Logging';
 
@@ -15,10 +15,9 @@ const createReservation = async (req: Request, res: Response, next: NextFunction
 			.catch((error) => {
 				throw error;
 			});
-		await updateSlotForNewReservation(doctorId, dayId, day, time)
-			.catch((error) => {
-				throw error;
-			});
+		await updateSlotForNewReservation(doctorId, dayId, day, time).catch((error) => {
+			throw error;
+		});
 
 		const reservationCode = await generateReservationCode()
 			.then((result) => {
@@ -56,7 +55,7 @@ const readReservation = async (req: Request, res: Response, next: NextFunction) 
 };
 
 const readAllReservations = async (req: Request, res: Response, next: NextFunction) => {
-	const reservationCode = req.query.reservationCode;
+	const { reservationCode } = req.query;
 	try {
 		if (reservationCode) {
 			return await Reservation.findOne({ reservationCode: reservationCode })
@@ -65,7 +64,7 @@ const readAllReservations = async (req: Request, res: Response, next: NextFuncti
 		} else {
 			return await Reservation.find()
 				.populate('doctorId', '-days -__v')
-				.then((reservations) => res.status(200).json({ reservations }))
+				.then((reservations) => res.status(200).json({ reservations }));
 		}
 	} catch (error) {
 		Log.error(error);
@@ -77,10 +76,9 @@ const updateReservation = async (req: Request, res: Response, next: NextFunction
 	const reservationId = req.params.reservationId;
 	const { doctorId, day, time } = req.body;
 	try {
-		await makeSlotAvailable(reservationId)
-			.catch((error) => {
-				throw error;
-			});
+		await makeSlotAvailable(reservationId).catch((error) => {
+			throw error;
+		});
 		const dayId = await dayIdByDate(doctorId, day)
 			.then((result) => {
 				return result;
@@ -88,10 +86,9 @@ const updateReservation = async (req: Request, res: Response, next: NextFunction
 			.catch((error) => {
 				throw error;
 			});
-		await updateSlotForNewReservation(doctorId, dayId, day, time)
-			.catch((error) => {
-				throw error;
-			});
+		await updateSlotForNewReservation(doctorId, dayId, day, time).catch((error) => {
+			throw error;
+		});
 		return await Reservation.findById(reservationId)
 			.then((reservation) => {
 				if (reservation) {
@@ -116,10 +113,9 @@ const updateReservation = async (req: Request, res: Response, next: NextFunction
 const deleteReservation = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const reservationId = req.params.reservationId;
-		await makeSlotAvailable(reservationId)
-			.catch((error) => {
-				throw error;
-			});
+		await makeSlotAvailable(reservationId).catch((error) => {
+			throw error;
+		});
 		const reservation = await Reservation.findByIdAndDelete(reservationId);
 		return reservation ? res.status(201).json({ message: `Deleted: ${reservationId})` }) : res.status(404).json({ message: 'Not found' });
 	} catch (error) {
@@ -131,17 +127,16 @@ const deleteReservation = async (req: Request, res: Response, next: NextFunction
 const loginWithReservation = async (req: Request, res: Response, next: NextFunction) => {
 	const { reservationCode } = req.body;
 	try {
-		const reservations = await Reservation.find({ reservationCode: reservationCode }).exec()
+		const reservations = await Reservation.find({ reservationCode: reservationCode }).exec();
 		if (reservations.length === 1) {
-			flagAsRegistered(reservationCode)
+			flagAsRegistered(reservationCode);
 			return res.status(200).json({ message: 'Registered' });
 		} else if (reservations.length > 1) {
-			throw new Error('Multiple reservations with the same code.')
+			throw new Error('Multiple reservations with the same code.');
 		} else {
 			return res.status(404).json({ message: 'Not found.' });
 		}
-	}
-	catch (error) {
+	} catch (error) {
 		Log.error(error);
 		res.status(500).json({ error });
 	}

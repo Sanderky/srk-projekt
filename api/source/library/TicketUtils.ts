@@ -39,6 +39,6 @@ const generateVisitCode = async (queId: mongoose.Types.ObjectId) => {
 			return '1';
 		}
 	};
-	const visitCode = prefix(roomNumber) + (await postfix());
+	const visitCode = (await prefix(roomNumber)) + (await postfix());
 	return visitCode;
 };

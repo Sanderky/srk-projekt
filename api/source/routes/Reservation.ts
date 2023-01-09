@@ -1,13 +1,11 @@
 import express from 'express';
 import controller from '@/controllers/Reservation';
-import { isAuthorized } from '@/middleware/Authorize';
-import passport from 'passport';
 import userController from '@/controllers/User';
 const router = express.Router();
 router.post('/create', controller.createReservation);
 
 router.use(userController.verifyJWT);
-router.use(userController.verifyRoles(['staff']));
+router.use(userController.verifyRoles(['staff', 'admin']));
 
 router.get('/get/:reservationId', controller.readReservation);
 router.get('/get/', controller.readAllReservations);

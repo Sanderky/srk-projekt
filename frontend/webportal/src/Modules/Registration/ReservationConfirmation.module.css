@@ -163,16 +163,13 @@
     }
 }
 
-.spinnerActive {
+.spinner {
     height: 50px;
     width: 50px;
-    margin: 0 auto;
+    margin: auto;
+    margin-bottom: 1rem;
     margin-top: -40px;
     animation: spinner 1.5s linear infinite;
-}
-
-.spinnerDisabled {
-    display: none;
 }
 
 .errorFetching {

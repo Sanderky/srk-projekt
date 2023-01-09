@@ -57,7 +57,6 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
 			foundUser.refreshToken = refreshToken;
 			await foundUser.save();
 			res;
-			console.log(userDetails);
 			return userDetails
 				? res.cookie('jwt', refreshToken, { httpOnly: true, secure: true, maxAge: 24 * 60 * 60 * 1000, sameSite: 'none' }).json({ accessToken, userRoles, userDetails })
 				: res.cookie('jwt', refreshToken, { httpOnly: true, secure: true, maxAge: 24 * 60 * 60 * 1000, sameSite: 'none' }).json({ accessToken, userRoles });
