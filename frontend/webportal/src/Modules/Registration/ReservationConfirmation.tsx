@@ -165,7 +165,18 @@ function EmailForm({ doctorId, date, time, createReservation }: ReservationDataP
 	);
 }
 
-export default function ReservationConfirmation({ doctor, doctorId, date, time, setDoctor, setDoctorId, setDate, setTime, setCode, setSummary }: DataSummaryProps) {
+export default function ReservationConfirmation({
+	doctor,
+	doctorId,
+	date,
+	time,
+	setDoctor,
+	setDoctorId,
+	setDate,
+	setTime,
+	setCode,
+	setSummary
+}: DataSummaryProps) {
 	const [loading, setLoading] = useState<boolean>(false);
 	const [error, setError] = useState<boolean>(false);
 
@@ -203,7 +214,8 @@ export default function ReservationConfirmation({ doctor, doctorId, date, time, 
 
 	// Fetch doctor do display in a summary view (displays full name and specialization)
 	// @ts-ignore
-	const [doctorObj, errorDoctor, loadingDoctor, axiosFetchDoctor]: [{}, unknown, boolean, (configObj: AxiosConfig) => Promise<void>] = useAxiosFunction();
+	const [doctorObj, errorDoctor, loadingDoctor, axiosFetchDoctor]: [{}, unknown, boolean, (configObj: AxiosConfig) => Promise<void>] =
+		useAxiosFunction();
 
 	const getDoctor = () => {
 		axiosFetchDoctor({
@@ -248,7 +260,7 @@ export default function ReservationConfirmation({ doctor, doctorId, date, time, 
 				setSummary={setSummary}
 			/>
 			<EmailForm doctorId={doctorId} date={date} time={time} email={undefined} createReservation={createReservation} />
-			<img src={spinnerImg} alt="ładowanie..." className={loading ? styles.spinnerActive : styles.spinnerDisabled} />
+			{loading ? <img src={spinnerImg} alt="" className={styles.spinner} /> : <></>}
 			{error ? <p className={styles.errorFetching}>Wystąpił błąd. Proszę odświeżyć stronę i spróbować ponownie.</p> : ''}
 		</div>
 	);

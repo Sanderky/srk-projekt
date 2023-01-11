@@ -2,10 +2,8 @@ import 'module-alias/register';
 import Reservation from '@/models/Reservation';
 import Slots from '@/models/Slots';
 import mongoose from 'mongoose';
-import { dayIdByDate } from '@/library/DaysUtils'
+import { dayIdByDate } from '@/library/DaysUtils';
 import Log from '@/library/Logging';
-const AsyncAF = require('async-af');
-
 
 export { generateReservationCode, updateSlotForNewReservation, makeSlotAvailable, deleteOutdatedReservation, flagAsRegistered };
 
@@ -15,22 +13,20 @@ const generateReservationCode = async () => {
 	do {
 		randCode = 'REZ' + Math.floor(Math.random() * 99999);
 		resp = await Reservation.find({ reservationCode: randCode }).exec();
-	}
-	while (resp.length != 0)
+	} while (resp.length != 0);
 	return randCode;
-}
+};
 
 const updateSlotForNewReservation = async (doctorId: string, dayId: string, dayDate: Date, time: string) => {
 	const doctor = new mongoose.Types.ObjectId(doctorId);
 	const day = new mongoose.Types.ObjectId(dayId);
-	const occupied = await Reservation.findOne({ doctorId: doctorId, day: dayDate, time: time })
-		.then((reservation: any) => {
-			return reservation;
-		});
+	const occupied = await Reservation.findOne({ doctorId: doctorId, day: dayDate, time: time }).then((reservation: any) => {
+		return reservation;
+	});
 	if (occupied) {
 		throw Error('Reservation with given details already exists.');
 	}
-	const slotsObj = await Slots.findOne({ doctorId: doctor, dayId: day })
+	const slotsObj = await Slots.findOne({ doctorId: doctor, dayId: day });
 	if (slotsObj) {
 		const found = slotsObj.slots.find((slot: { start: string }) => {
 			return slot.start === time;
@@ -62,7 +58,7 @@ const makeSlotAvailable = async (reservationId: string) => {
 				throw error;
 			});
 		const day = new mongoose.Types.ObjectId(dayId);
-		const slotsObj = await Slots.findOne({ doctorId: doctorId, dayId: day })
+		const slotsObj = await Slots.findOne({ doctorId: doctorId, dayId: day });
 		if (slotsObj) {
 			const found = slotsObj.slots.find((slot: { start: string }) => {
 				return slot.start === reservation.time;
@@ -81,24 +77,25 @@ const makeSlotAvailable = async (reservationId: string) => {
 			throw Error('Slots object with specified doctorID or dayID does not exist.');
 		}
 	}
-}
+};
 
 const deleteOutdatedReservation = async () => {
 	const todayNonUTC = new Date();
 	const today = new Date(Date.UTC(todayNonUTC.getUTCFullYear(), todayNonUTC.getUTCMonth(), todayNonUTC.getUTCDate(), 0, 0, 0, 0));
 	let aux = 0;
 
-	const reservations = await Reservation.find().exec()
-	AsyncAF(reservations).forEachAF(async (reservation: { day: { getTime: () => number; }; _id: any; }) => {
+	const reservations = await Reservation.find().exec();
+	for (const reservation of reservations) {
 		if (reservation.day.getTime() < today.getTime()) {
 			await Reservation.findByIdAndDelete(reservation._id);
 			aux++;
 		}
-	})
+	}
+
 	if (aux !== 0) {
 		Log.debug('Outdated reservations have been deleted.');
 	}
-}
+};
 
 const flagAsRegistered = async (reservationCode: string) => {
 	const reservation = await Reservation.findOne({ reservationCode: reservationCode }).exec();
@@ -106,6 +103,6 @@ const flagAsRegistered = async (reservationCode: string) => {
 		throw Error('Reservation with given code not found.');
 	} else {
 		reservation.registered = true;
-		reservation.save()
+		reservation.save();
 	}
-}	
+};

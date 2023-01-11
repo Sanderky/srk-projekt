@@ -10,3 +10,26 @@
     padding: 4rem;
     margin: 0 25%;
 }
+
+header {
+    background-color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 25%;
+    color: var(--background);
+    font-size: var(--big);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logoImage {
+    max-width: 80px;
+}
+
+.logoText {
+    margin-left: 1rem;
+}

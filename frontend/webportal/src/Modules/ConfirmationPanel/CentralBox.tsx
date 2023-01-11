@@ -45,7 +45,8 @@ const ACTION = {
 	tooFast: 'tooFast',
 	tooLate: 'tooLate',
 	duplicate: 'duplicate',
-	confirmed: 'confirmed'
+	confirmed: 'confirmed',
+	noQue: 'noQue'
 };
 
 function reducer(state: any, action: any) {
@@ -62,6 +63,8 @@ function reducer(state: any, action: any) {
 			return { ...state, loading: false, panelStatus: 'tooFast' };
 		case 'tooLate':
 			return { ...state, loading: false, panelStatus: 'tooLate' };
+		case 'noQue':
+			return { ...state, loading: false, panelStatus: 'noQue' };
 		case 'duplicate':
 			return {
 				...state,
@@ -98,13 +101,11 @@ const CentralBox = () => {
 		dispatch({ type: ACTION.loading });
 
 		if (codeInputRef.current?.value === '') {
-			dispatch({ type: ACTION.loadingFinished });
 			backToLogin();
 		}
 		e.preventDefault();
 		const reservationCode = codeInputRef.current?.value;
 		if (!reservationCode) {
-			dispatch({ type: ACTION.loadingFinished });
 			backToLogin();
 		}
 		let reservation;
@@ -141,33 +142,38 @@ const CentralBox = () => {
 			dispatch({ type: ACTION.duplicate, roomNumber: que.roomNumber, visitCode: ticket.visitCode, queIndex: queIndex });
 		} else {
 			//Create ticket
-			const queParams = new URLSearchParams({ doctorId: reservationData.doctorId._id });
-			const que = await axiosPrivate.get(`/que/get?${queParams}`);
-			const queData = que.data.que;
-			const queId = queData._id;
+			try {
+				const queParams = new URLSearchParams({ doctorId: reservationData.doctorId._id });
+				const que = await axiosPrivate.get(`/que/get?${queParams}`);
+				const queData = que.data.que;
+				const queId = queData._id;
 
-			const ticketPayload: TicketPayload = {
-				queId: queId,
-				visitTime: reservationData.time,
-				reservationCode: reservationData.reservationCode,
-				roomNumber: queData.roomNumber
-			};
-			const createTicketResponse = await axiosPrivate.post('/ticket/create', ticketPayload);
-			const ticket = createTicketResponse.data.ticket;
-			const queResponse = createTicketResponse.data.queResponse;
-			dispatch({
-				type: ACTION.confirmed,
-				panelStatus: queResponse.lateStatus,
-				time: ticket.visitTime,
-				roomNumber: queData.roomNumber,
-				visitCode: ticket.visitCode,
-				visitTime: ticket.visitTime,
-				queIndex: queResponse.queIndex
-			});
-			const reservationPayload = {
-				reservationCode: reservationCode
-			};
-			axiosPrivate.post(`/reservation/login/`, reservationPayload);
+				const ticketPayload: TicketPayload = {
+					queId: queId,
+					visitTime: reservationData.time,
+					reservationCode: reservationData.reservationCode,
+					roomNumber: queData.roomNumber
+				};
+				const createTicketResponse = await axiosPrivate.post('/ticket/create', ticketPayload);
+				const ticket = createTicketResponse.data.ticket;
+				const queResponse = createTicketResponse.data.queResponse;
+				dispatch({
+					type: ACTION.confirmed,
+					panelStatus: queResponse.lateStatus,
+					time: ticket.visitTime,
+					roomNumber: queData.roomNumber,
+					visitCode: ticket.visitCode,
+					visitTime: ticket.visitTime,
+					queIndex: queResponse.queIndex
+				});
+				const reservationPayload = {
+					reservationCode: reservationCode
+				};
+				axiosPrivate.post(`/reservation/login/`, reservationPayload);
+			} catch (error) {
+				dispatch({ type: ACTION.noQue });
+				console.log(error);
+			}
 		}
 	};
 	//Return to default
@@ -211,7 +217,7 @@ const CentralBox = () => {
 					<ConfirmationData label={'Miejsce w kolejce:'} data={state.queIndex} />
 				</div>
 				<div className={`${styles.successInfo} ${styles.text}`}>
-					Proszę obserwować tablicę wywoławczą i oczekiwać na swoją kolej Po wywołaniu można udać się do odpowiedniego gabinetu
+					Proszę obserwować tablicę wywoławczą i oczekiwać na swoją kolej. <br /> Po wywołaniu można udać się do odpowiedniego gabinetu
 				</div>
 				<div className={styles.buttonWrapper}>
 					<button
@@ -252,6 +258,30 @@ const CentralBox = () => {
 					</button>
 				</form>
 				<img src={spinnerImg} alt="ładowanie..." className={state.loading ? styles.spinnerActive : styles.spinnerDisabled} />
+			</div>
+		);
+	};
+
+	const NoQue = (): JSX.Element => {
+		return (
+			<div className={styles.TooFast}>
+				<div className={`${styles.text} ${styles.title}`} style={{ marginBottom: '30px' }}>
+					Lekarz obecnie nie przyjmuje
+				</div>
+				<div className={styles.text} style={{ marginBottom: '30px' }}>
+					Specjalista, u którego chcesz potwierdzić wizytę obecnie nie prowadzi przyjęć.
+				</div>
+				<div className={styles.text}>Prosimy spróbować ponownie później.</div>
+				<div className={styles.buttonWrapper}>
+					<button
+						className={styles.buttonNew}
+						onClick={() => {
+							backToLogin();
+						}}
+					>
+						Powrót
+					</button>
+				</div>
 			</div>
 		);
 	};
@@ -359,7 +389,11 @@ const CentralBox = () => {
 			labelColor = styles.defaultLabel;
 			toRender = <EnterCode />;
 			break;
-		case 'success':
+		case 'noQue':
+			labelColor = styles.warningLabel;
+			toRender = <NoQue />;
+			break;
+		case 'onTime':
 			labelColor = styles.successLabel;
 			toRender = <Success />;
 			break;

@@ -1,9 +1,7 @@
 import { useEffect } from 'react';
 import styles from './RoomSelectionView.module.css';
-import axios from 'axios';
 import axiosRoom from '../../APIs/Room';
 import useAxiosFunction, { AxiosConfig } from '../../Hooks/useAxiosFunction';
-import useAxiosPrivate from '../../Hooks/useAxiosPrivate';
 import { axiosPrivate } from '../../APIs/Axios';
 
 interface RoomSelectionProps {
@@ -37,8 +35,8 @@ export default function RoomSelectionView({ roomNumber, setRoomNumber, setRoomSe
 			try {
 				const createdQue = await axiosPrivate.post(`/que/create`, createQuePayload);
 				const createdQueId = createdQue.data.que._id;
-				localStorage.setItem('queId', createdQueId);
 				setQueId(createdQueId);
+				localStorage.setItem('queId', createdQueId);
 
 				const updateRoomPayload = {
 					available: false,
