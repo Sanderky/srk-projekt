@@ -6,7 +6,7 @@ const router = express.Router();
 router.get('/events', controller.queEventsHandler);
 router.get('/get/:queId', controller.readQue);
 router.get('/get/', controller.readAllQues);
-router.patch('/unshift/:queId', controller.unshiftQue);
+router.patch('/shift/:queId', controller.shiftQue);
 
 router.use(userController.verifyJWT);
 router.use(userController.verifyRoles(['doctor', 'admin', 'staff']));

@@ -5,21 +5,6 @@ import Log from '@/library/Logging';
 import { generateVisitCode } from '@/library/TicketUtils';
 import { insertTicketIntoQue } from '@/library/QueEngine';
 import queController from '@/controllers/Que';
-//import { updateQue } from '@/library/queEventHandler';
-
-// function queEventsHandler(request: Request, response: Response) {
-// 	const headers = {
-// 		'Content-Type': 'text/event-stream',
-// 		Connection: 'keep-alive',
-// 		'Cache-Control': 'no-cache'
-// 	};
-// 	response.writeHead(200, headers);
-
-// 	const data = `data: ${JSON.stringify('Connection Established')}\n\n`;
-
-// 	response.write(data);
-// 	updateResponse = response;
-// }
 
 const createTicket = async (req: Request, res: Response) => {
 	const { queId, visitTime, reservationCode } = req.body;

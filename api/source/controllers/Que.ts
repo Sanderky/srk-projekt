@@ -91,8 +91,10 @@ const updateQue = async (req: Request, res: Response) => {
 		.then((que) => {
 			if (que) {
 				que.set(req.body);
-				updateQuePanel();
-				return que.save().then((que) => res.status(201).json({ que }));
+				return que.save().then((que) => {
+					updateQuePanel();
+					res.status(201).json({ que });
+				});
 			} else {
 				res.status(404).json({ message: 'Not found' });
 			}
@@ -100,15 +102,17 @@ const updateQue = async (req: Request, res: Response) => {
 		.catch((error) => res.status(500).json({ error }));
 };
 
-const unshiftQue = async (req: Request, res: Response) => {
+const shiftQue = async (req: Request, res: Response) => {
 	const queId = req.params.queId;
 
 	return await Que.findById(queId)
 		.then((que) => {
 			if (que) {
-				que.activeTickets.shift();
-				updateQuePanel();
-				return que.save().then((que) => res.status(201).json({ que }));
+				const shiftedTicket = que.activeTickets.shift();
+				return que.save().then((que) => {
+					updateQuePanel();
+					res.status(201).json({ shiftedTicket });
+				});
 			} else {
 				res.status(404).json({ message: 'Not found' });
 			}
@@ -128,4 +132,4 @@ const deleteQue = async (req: Request, res: Response) => {
 	}
 };
 
-export default { createQue, readQue, readAllQues, updateQue, unshiftQue, deleteQue, queEventsHandler, updateQuePanel };
+export default { createQue, readQue, readAllQues, updateQue, shiftQue, deleteQue, queEventsHandler, updateQuePanel };

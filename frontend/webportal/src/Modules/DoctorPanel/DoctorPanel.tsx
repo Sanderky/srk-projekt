@@ -9,7 +9,7 @@ import TakingPatientsView from './TakingPatientsView';
 import useAxiosPrivate from '../../Hooks/useAxiosPrivate';
 import { BASE_URL } from '../../config/settings';
 import axios from 'axios';
-import useAuth from '../../Hooks/useAuth';	
+import useAuth from '../../Hooks/useAuth';
 interface HeaderProps {
 	setRoomNumber: (roomNumber: number | undefined) => void;
 	roomSelected: boolean;
@@ -17,14 +17,14 @@ interface HeaderProps {
 }
 
 function Header({ setRoomNumber, roomSelected, setRoomSelected }: HeaderProps) {
-	const {setAuth}:any = useAuth();
+	const { setAuth }: any = useAuth();
 	const logout = async () => {
 		setRoomNumber(undefined);
 		setRoomSelected(false);
 		localStorage.clear();
 		setAuth({});
 		try {
-			await axios.get(`${BASE_URL}/user/logout`,{withCredentials:true});	
+			await axios.get(`${BASE_URL}/user/logout`, { withCredentials: true });
 		} catch (error) {
 			console.log(error);
 		}
@@ -68,7 +68,7 @@ function ContainerHeader({ roomNumber, roomSelected }: ContainerHeaderProps) {
 				const fetchedDoctor = await axiosPrivate.get(`/doctor/get/${doctorId}`);
 				setDoctorName(`${fetchedDoctor.data.doctor.firstname} ${fetchedDoctor.data.doctor.lastname}`);
 			}
-		} catch (error) {}
+		} catch (error) { }
 	};
 
 	useEffect(() => {

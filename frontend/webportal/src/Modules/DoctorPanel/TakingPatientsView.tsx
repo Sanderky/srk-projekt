@@ -18,64 +18,48 @@ export default function TakingPatientsView({ setRoomNumber, setRoomSelected, set
 	const axiosPrivate = useAxiosPrivate();
 	const [ticketInRoom, setTicketInRoom] = useState<string | undefined>();
 	const [state, setState] = useState<boolean>(true);
+
+	const [activeTickets, setActiveTickets] = useState([]);
+	const [listening, setListening] = useState(false);
 	// =========================================================================
 	// QUE Handling
 	// =========================================================================
 	const queIdToFetch = !queId ? localStorage.getItem('queId') : queId;
-	// @ts-ignore
-	const [queObj, errorAxios, loadingAxios, axiosFetch]: [{}, unknown, boolean, (configObj: AxiosConfig) => Promise<void>] = useAxiosFunction();
-
-	const getData = () => {
-		axiosFetch({
-			axiosInstance: axiosQue,
-			method: 'GET',
-			url: `/get/${queIdToFetch}`,
-			requestConfig: {}
-		});
-	};
 
 	useEffect(() => {
-		if (!ticketInRoom) {
-			getData();
+		if (!listening) {
+			const events = new EventSource('http://localhost:3000/que/events');
+			events.onmessage = async (event) => {
+				try {
+					const response = await axiosPrivate.get(`/que/get/${queIdToFetch}`);
+					setActiveTickets(response.data.que.activeTickets);
+				} catch (err) {
+					console.log(err)
+				}
+			};
+			setListening(true);
 		}
-	}, [state, errorAxios, ticketInRoom]);
-
-	useEffect(() => {
 		const savedTicketInRoom = localStorage.getItem('ticketInRoom');
 		if (savedTicketInRoom) {
 			setTicketInRoom(savedTicketInRoom);
 		}
-	}, []);
-	let activeTickets: [];
-	// @ts-ignore
-	if (!queObj.que) {
-		activeTickets = [];
-	} else {
-		// @ts-ignore
-		activeTickets = queObj.que.activeTickets;
-	}
+	}, [listening, activeTickets]);
+
 	// =========================================================================
 	// QUE Rendering
 	// =========================================================================
 	const queLimit = 5;
 	const toRender = () => {
-		if (loadingAxios) {
-			return <h4>Ładowanie...</h4>;
-		} else if (!loadingAxios && errorAxios) {
-			return <h4>Wystąpił błąd.</h4>;
-		} else if (!loadingAxios && !errorAxios && activeTickets?.length) {
+		if (activeTickets?.length) {
 			if (activeTickets.length > queLimit) {
-				//@ts-ignore
-				activeTickets = activeTickets.slice(0, queLimit);
+				// activeTickets = activeTickets.slice(0, queLimit);
 			}
 			return activeTickets.map((ticket: { visitCode: string; visitTime: string }, i: number) => {
 				return (
 					<div className={styles.singleTicket} id={i.toString()}>
-						{/* @ts-ignore */}
 						<div className={i === 0 && ticketInRoom ? `${styles.ticketNumber} ${styles.ticketNumberFirst}` : styles.ticketNumber}>
 							{ticket?.visitCode}
 						</div>
-						{/* @ts-ignore */}
 						<div className={styles.visitTime}>{ticket?.visitTime}</div>
 					</div>
 				);
@@ -92,17 +76,13 @@ export default function TakingPatientsView({ setRoomNumber, setRoomSelected, set
 		setLoading(true);
 		try {
 			if (activeTickets.length) {
-				// @ts-ignore
-				const nextInQue = activeTickets[0];
-				// @ts-ignore
+				const nextInQue: any = activeTickets[0];
 				const inRoomTicketId = nextInQue?._id;
 				const updateTicketPayload = {
 					inRoom: true
 				};
 				await axiosPrivate.patch(`/ticket/update/${inRoomTicketId}`, updateTicketPayload);
-				// @ts-ignore
 				setTicketInRoom(nextInQue?.visitCode);
-				// @ts-ignore
 				localStorage.setItem('ticketInRoom', nextInQue?.visitCode);
 				setLoading(false);
 			} else {
@@ -117,7 +97,7 @@ export default function TakingPatientsView({ setRoomNumber, setRoomSelected, set
 	const finishVisit = async () => {
 		setLoading(true);
 		try {
-			await axiosPrivate.patch(`/que/unshift/${queIdToFetch}`);
+			const ticketId = await axiosPrivate.patch(`/que/shift/${queIdToFetch}`);
 		} catch (error) {
 			setLoading(false);
 		}
@@ -153,7 +133,6 @@ export default function TakingPatientsView({ setRoomNumber, setRoomSelected, set
 			<div className={styles.queContainer}>
 				<h2 className={styles.queTitle}>Kolejka</h2>
 				<div className={styles.ticketsContainer}>{queJSX}</div>
-				{loadingAxios ? <img src={spinnerImg} alt="" className={styles.spinnerQue} /> : <></>}
 			</div>
 			<div className={styles.panelControlsContainer}>
 				<h2 className={styles.currentTicketInfo}>Aktualnie w gabinecie</h2>
