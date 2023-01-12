@@ -102,7 +102,9 @@ export default function TakingPatientsView({ setRoomNumber, setRoomSelected, set
 	const finishVisit = async () => {
 		setLoading(true);
 		try {
-			const ticketId = await axiosPrivate.patch(`/que/shift/${queId}`);
+			const ticket = await axiosPrivate.patch(`/que/shift/${queId}`);
+			const ticketId = ticket.data.shiftedTicket;
+			console.log(ticketId);
 			await axiosPrivate.delete(`/ticket/delete/${ticketId}`);
 			localStorage.removeItem('ticketInRoom');
 			setTicketInRoom(undefined);
