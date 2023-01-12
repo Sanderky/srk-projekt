@@ -35,17 +35,17 @@ export default function RoomSelectionView({ roomNumber, setRoomNumber, setRoomSe
 			try {
 				const createdQue = await axiosPrivate.post(`/que/create`, createQuePayload);
 				const createdQueId = createdQue.data.que._id;
-				setQueId(createdQueId);
 				localStorage.setItem('queId', createdQueId);
+				setQueId(createdQueId);
 
 				const updateRoomPayload = {
 					available: false,
 					occupiedBy: doctorId
 				};
 				await axiosPrivate.patch(`/room/update?roomNumber=${roomNumber}`, updateRoomPayload);
-				setLoading(false);
 			} catch (error) {
 				console.log(error);
+			} finally {
 				setLoading(false);
 			}
 		} else {
@@ -54,7 +54,7 @@ export default function RoomSelectionView({ roomNumber, setRoomNumber, setRoomSe
 	};
 
 	// @ts-ignore
-	const [roomsObj, errorAxios, loadingAxios, axiosFetch]: [{}, unknown, boolean, (configObj: AxiosConfig) => Promise<void>] = useAxiosFunction();
+	const [roomsObj, errorAxios, loadingAxios, axiosFetch]: [any, unknown, boolean, (configObj: AxiosConfig) => Promise<void>] = useAxiosFunction();
 
 	const getData = () => {
 		axiosFetch({
@@ -69,8 +69,7 @@ export default function RoomSelectionView({ roomNumber, setRoomNumber, setRoomSe
 		getData();
 	}, []);
 
-	// @ts-ignore
-	const rooms: [] = roomsObj.rooms;
+	const rooms: any = roomsObj.rooms;
 
 	const toRender = () => {
 		if (loadingAxios) {
@@ -86,14 +85,11 @@ export default function RoomSelectionView({ roomNumber, setRoomNumber, setRoomSe
 				</option>
 			);
 		} else if (!loadingAxios && !errorAxios && rooms?.length) {
-			return rooms.map((room, i) => {
+			return rooms.map((room: any, i: number) => {
 				return (
-					// @ts-ignore
-					<option value={room.roomNumber} key={i} disabled={room.available ? null : true}>
-						{/* @ts-ignore */}
+					<option value={room.roomNumber} key={i} disabled={room.available ? false : true}>
 						{room.roomNumber}
-						{/* @ts-ignore */}
-						{room.available ? null : '  (Niedostępny)'}
+						{room.available ? undefined : '  (Niedostępny)'}
 					</option>
 				);
 			});

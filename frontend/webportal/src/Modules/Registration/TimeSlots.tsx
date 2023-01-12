@@ -1,89 +1,76 @@
-import styles from "./TimeSlots.module.css";
-import React, { useEffect } from "react";
-import axios from "../../APIs/Slots";
+import styles from './TimeSlots.module.css';
+import React, { useEffect } from 'react';
+import axios from '../../APIs/Slots';
 import useAxiosFunction, { AxiosConfig } from '../../Hooks/useAxiosFunction';
 
 interface SingleSlotProps {
-    time: string;
-    available: boolean;
-    id: string;
-    setSelected: (doctor: string) => void;
+	time: string;
+	available: boolean;
+	id: string;
+	setSelected: (doctor: string) => void;
 }
 
-const SingleSlot = ({ time, available, id, setSelected }: SingleSlotProps) => {
-    const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
-        event.preventDefault();
-        if (available) {
-            setSelected(time);
-        }
-    }
+const SingleSlot = ({ time, available, setSelected }: SingleSlotProps) => {
+	const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+		event.preventDefault();
+		if (available) {
+			setSelected(time);
+		}
+	};
 
-    return (
-        <button type='button' className={`${styles.slotBox} ${available ? styles.slotAvail : styles.slotNotAvail}`} onClick={handleClick} name={time}>
-            {time}
-        </button>
-    );
-}
+	return (
+		<button type="button" className={`${styles.slotBox} ${available ? styles.slotAvail : styles.slotNotAvail}`} onClick={handleClick} name={time}>
+			{time}
+		</button>
+	);
+};
 
 interface TimeSlotsProps {
-    doctor: string | undefined;
-    date: string | undefined;
-    selected: string | undefined;
-    setSelected: (doctor: string | undefined) => void;
+	doctor: string | undefined;
+	date: string | undefined;
+	selected: string | undefined;
+	setSelected: (doctor: string | undefined) => void;
 }
 
 export default function TimeSlots({ doctor, date, selected, setSelected }: TimeSlotsProps) {
-    // @ts-ignore
-    const [slotsObj, error, loading, axiosFetch]: [{}, unknown, boolean, (configObj: AxiosConfig) => Promise<void>] = useAxiosFunction();
+	// @ts-ignore
+	const [slotsObj, error, loading, axiosFetch]: [any, unknown, boolean, (configObj: AxiosConfig) => Promise<void>] = useAxiosFunction();
 
-    const getData = () => {
-        axiosFetch({
-            axiosInstance: axios,
-            method: 'GET',
-            url: `/get/${doctor}?date=${date}`,
-            requestConfig: {}
-        });
-    }
+	const getData = () => {
+		axiosFetch({
+			axiosInstance: axios,
+			method: 'GET',
+			url: `/get/${doctor}?date=${date}`,
+			requestConfig: {}
+		});
+	};
 
-    useEffect(() => {
-        if (doctor && date) {
-            getData();
-            setSelected(undefined);
-        }
-    }, [doctor, date])
+	useEffect(() => {
+		if (doctor && date) {
+			getData();
+			setSelected(undefined);
+		}
+	}, [doctor, date]);
 
-    // @ts-ignore
-    // console.log(slotsObj.slots.slots)
+	let slots: any;
+	if (slotsObj.length === 0) {
+		<p className={styles.specialistNotDataText}>Brak wyników.</p>;
+	} else {
+		slots = slotsObj.slots.slots;
+	}
 
-    let slots: [];
-    // @ts-ignore
-    if (slotsObj.length === 0) {
-        <p className={styles.specialistNotDataText}>Brak wyników.</p>
-    } else {
-        // @ts-ignore
-        slots = slotsObj.slots.slots
-    }
+	const toRender = () => {
+		if (loading) {
+			return <p className={styles.specialistNotDataText}>Ładowanie...</p>;
+		} else if (!loading && error) {
+			return <p className={styles.specialistNotDataText}>Wystąpił błąd. Proszę odświeżyć stronę.</p>;
+		} else if (!loading && !error && slots?.length) {
+			return slots.map((slot: any, i: number) => {
+				return <SingleSlot time={slot?.start} available={slot?.availability} key={i} id={slot?._id} setSelected={setSelected} />;
+			});
+		} else return <p className={styles.specialistNotDataText}>Brak wyników.</p>;
+	};
+	const slotsJSX = toRender();
 
-    const toRender = () => {
-        if (loading) {
-            return <p className={styles.specialistNotDataText}>Ładowanie...</p>
-        } else if (!loading && error) {
-            return <p className={styles.specialistNotDataText}>Wystąpił błąd. Proszę odświeżyć stronę.</p>
-        } else if (!loading && !error && slots?.length) {
-            return slots.map((slot, i) => {
-                return <SingleSlot                          // @ts-ignore
-                    time={slot?.start}              // @ts-ignore
-                    available={slot?.availability}  // @ts-ignore
-                    key={i} id={slot?._id}
-                    setSelected={setSelected} />
-            })
-        } else return <p className={styles.specialistNotDataText}>Brak wyników.</p>
-    }
-    const slotsJSX = toRender()
-
-    return (
-        <div className={styles.slotList}>
-            {slotsJSX}
-        </div>
-    );
+	return <div className={styles.slotList}>{slotsJSX}</div>;
 }

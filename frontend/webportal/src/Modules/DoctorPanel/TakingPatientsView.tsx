@@ -1,9 +1,7 @@
 import styles from './TakingPatientsView.module.css';
-import { useState, useEffect, JSXElementConstructor, ReactElement, ReactFragment, ReactPortal } from 'react';
+import { useState, useEffect } from 'react';
 import useAxiosPrivate from '../../Hooks/useAxiosPrivate';
-import spinnerImg from '../../Assets/Images/spinner.png';
-import axiosQue from '../../APIs/Que';
-import useAxiosFunction, { AxiosConfig } from '../../Hooks/useAxiosFunction';
+import { BASE_URL } from '../../config/settings';
 
 interface TakingPatientsProps {
 	setRoomNumber: (roomNumber: number | undefined) => void;
@@ -18,30 +16,34 @@ export default function TakingPatientsView({ setRoomNumber, setRoomSelected, set
 	const axiosPrivate = useAxiosPrivate();
 	const [ticketInRoom, setTicketInRoom] = useState<string | undefined>();
 	const [state, setState] = useState<boolean>(true);
-
 	const [activeTickets, setActiveTickets] = useState([]);
 	const [listening, setListening] = useState(false);
 	// =========================================================================
 	// QUE Handling
 	// =========================================================================
-	const queIdToFetch = !queId ? localStorage.getItem('queId') : queId;
 
 	useEffect(() => {
-		if (!listening) {
-			const events = new EventSource('http://localhost:3000/que/events');
-			events.onmessage = async (event) => {
-				try {
-					const response = await axiosPrivate.get(`/que/get/${queIdToFetch}`);
-					setActiveTickets(response.data.que.activeTickets);
-				} catch (err) {
-					console.log(err)
-				}
-			};
-			setListening(true);
+		if (!queId) {
+			setQueId(localStorage.getItem('queId')!);
 		}
 		const savedTicketInRoom = localStorage.getItem('ticketInRoom');
 		if (savedTicketInRoom) {
 			setTicketInRoom(savedTicketInRoom);
+		}
+	}, []);
+
+	useEffect(() => {
+		if (!listening && queId) {
+			const events = new EventSource(`${BASE_URL}/que/events`);
+			events.onmessage = async () => {
+				try {
+					const response = await axiosPrivate.get(`/que/get/${queId}`);
+					setActiveTickets(response.data.que.activeTickets);
+				} catch (err) {
+					console.log(err);
+				}
+			};
+			setListening(true);
 		}
 	}, [listening, activeTickets]);
 
@@ -52,7 +54,7 @@ export default function TakingPatientsView({ setRoomNumber, setRoomSelected, set
 	const toRender = () => {
 		if (activeTickets?.length) {
 			if (activeTickets.length > queLimit) {
-				// activeTickets = activeTickets.slice(0, queLimit);
+				setActiveTickets(activeTickets.slice(0, queLimit));
 			}
 			return activeTickets.map((ticket: { visitCode: string; visitTime: string }, i: number) => {
 				return (
@@ -84,12 +86,12 @@ export default function TakingPatientsView({ setRoomNumber, setRoomSelected, set
 				await axiosPrivate.patch(`/ticket/update/${inRoomTicketId}`, updateTicketPayload);
 				setTicketInRoom(nextInQue?.visitCode);
 				localStorage.setItem('ticketInRoom', nextInQue?.visitCode);
-				setLoading(false);
 			} else {
 				setState((prev) => !prev);
-				setLoading(false);
 			}
 		} catch (error) {
+			console.log(error);
+		} finally {
 			setLoading(false);
 		}
 	};
@@ -97,13 +99,15 @@ export default function TakingPatientsView({ setRoomNumber, setRoomSelected, set
 	const finishVisit = async () => {
 		setLoading(true);
 		try {
-			const ticketId = await axiosPrivate.patch(`/que/shift/${queIdToFetch}`);
+			const ticketId = await axiosPrivate.patch(`/que/shift/${queId}`);
+			await axiosPrivate.delete(`/ticket/delete/${ticketId}`);
+			localStorage.removeItem('ticketInRoom');
+			setTicketInRoom(undefined);
 		} catch (error) {
+			console.log(error);
+		} finally {
 			setLoading(false);
 		}
-		localStorage.removeItem('ticketInRoom');
-		setTicketInRoom(undefined);
-		setLoading(false);
 	};
 
 	const finishTakingPatients = async () => {
@@ -121,9 +125,10 @@ export default function TakingPatientsView({ setRoomNumber, setRoomSelected, set
 			localStorage.removeItem('roomNumber');
 			localStorage.removeItem('roomSelected');
 			localStorage.removeItem('queId');
-			setLoading(false);
 		} catch (error) {
+			console.log(error);
 			setQueId(undefined);
+		} finally {
 			setLoading(false);
 		}
 	};

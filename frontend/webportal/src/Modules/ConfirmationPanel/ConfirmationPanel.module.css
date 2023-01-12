@@ -3,22 +3,19 @@
     background-color: var(--accent);
 }
 
-.centralBoxWrapper {
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    padding: 4rem;
-    margin: 0 25%;
+.confirmHeader {
+    background-color: var(--primary);
+    color: var(--background);
+    font-size: var(--big);
 }
 
-header {
-    background-color: var(--primary);
+.headerWrapper {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    padding: 1.5rem 25%;
-    color: var(--background);
-    font-size: var(--big);
+    max-width: 750px;
+    margin: auto;
+    padding: 1.5rem 0;
 }
 
 .logo {

@@ -8,13 +8,15 @@ import styles from './ConfirmationPanel.module.css';
 
 function Header() {
 	return (
-		<header>
-			<div className={styles.logo}>
-				<img className={styles.logoImage} src={logo} alt="Logo" />
-				<h1 className={styles.logoText}>SRK</h1>
+		<div className={styles.confirmHeader}>
+			<div className={styles.headerWrapper}>
+				<div className={styles.logo}>
+					<img className={styles.logoImage} src={logo} alt="Logo" />
+					<h1 className={styles.logoText}>SRK</h1>
+				</div>
+				<Clock />
 			</div>
-			<Clock />
-		</header>
+		</div>
 	);
 }
 
@@ -22,9 +24,7 @@ const ConfirmationPanel = () => {
 	return (
 		<div className={styles.main}>
 			<Header />
-			<div className={styles.centralBoxWrapper}>
-				<CentralBox />
-			</div>
+			<CentralBox />
 		</div>
 	);
 	// }
