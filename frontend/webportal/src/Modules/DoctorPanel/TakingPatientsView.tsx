@@ -23,9 +23,7 @@ export default function TakingPatientsView({ setRoomNumber, setRoomSelected, set
 	// =========================================================================
 
 	useEffect(() => {
-		if (!queId) {
-			setQueId(localStorage.getItem('queId')!);
-		}
+		setQueId(localStorage.getItem('queId')!);
 		const savedTicketInRoom = localStorage.getItem('ticketInRoom');
 		if (savedTicketInRoom) {
 			setTicketInRoom(savedTicketInRoom);
@@ -33,17 +31,22 @@ export default function TakingPatientsView({ setRoomNumber, setRoomSelected, set
 	}, []);
 
 	useEffect(() => {
-		if (!listening && queId) {
-			const events = new EventSource(`${BASE_URL}/que/events`);
-			events.onmessage = async () => {
-				try {
-					const response = await axiosPrivate.get(`/que/get/${queId}`);
-					setActiveTickets(response.data.que.activeTickets);
-				} catch (err) {
-					console.log(err);
-				}
-			};
-			setListening(true);
+		if (queId) {
+			setQueId(localStorage.getItem('queId')!);
+			const savedTicketInRoom = localStorage.getItem('ticketInRoom');
+			if (!listening) {
+				console.log(queId);
+				const events = new EventSource(`${BASE_URL}/que/events`);
+				events.onmessage = async () => {
+					try {
+						const response = await axiosPrivate.get(`/que/get/${queId}`);
+						setActiveTickets(response.data.que.activeTickets);
+					} catch (err) {
+						console.log(err);
+					}
+				};
+				setListening(true);
+			}
 		}
 	}, [listening, activeTickets]);
 
@@ -66,7 +69,7 @@ export default function TakingPatientsView({ setRoomNumber, setRoomSelected, set
 					</div>
 				);
 			});
-		} else return <h4>Brak aktywnych biletów</h4>;
+		} else return <h4 id={'F'}>Brak aktywnych biletów</h4>;
 	};
 
 	const queJSX = toRender();
@@ -106,6 +109,7 @@ export default function TakingPatientsView({ setRoomNumber, setRoomSelected, set
 		} catch (error) {
 			console.log(error);
 		} finally {
+			setState((prev) => !prev);
 			setLoading(false);
 		}
 	};
@@ -113,6 +117,9 @@ export default function TakingPatientsView({ setRoomNumber, setRoomSelected, set
 	const finishTakingPatients = async () => {
 		setLoading(true);
 		try {
+			if (ticketInRoom) {
+				await finishVisit();
+			}
 			await axiosPrivate.delete(`/que/delete/${queId}`);
 			const updateRoomPayload = {
 				available: true,
@@ -143,10 +150,18 @@ export default function TakingPatientsView({ setRoomNumber, setRoomSelected, set
 				<h2 className={styles.currentTicketInfo}>Aktualnie w gabinecie</h2>
 				<h1 className={styles.currentTicketValue}>{ticketInRoom ? ticketInRoom : '-'}</h1>
 				<div className={styles.buttonsContainer}>
-					<button className={`${styles.controlPanelButton} ${styles.buttonEndCurrentVisit}`} onClick={finishVisit}>
+					<button
+						className={`${styles.controlPanelButton} ${styles.buttonEndCurrentVisit}`}
+						onClick={finishVisit}
+						disabled={!ticketInRoom ? true : false}
+					>
 						ZAKOŃCZ
 					</button>
-					<button className={`${styles.controlPanelButton} ${styles.buttonTakeInNext}`} onClick={startVisit}>
+					<button
+						className={`${styles.controlPanelButton} ${styles.buttonTakeInNext}`}
+						onClick={startVisit}
+						disabled={ticketInRoom ? true : false}
+					>
 						PRZYJMIJ
 					</button>
 					<button className={`${styles.controlPanelButton} ${styles.buttonFinishTakingIn}`} onClick={finishTakingPatients}>
