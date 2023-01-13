@@ -52,10 +52,10 @@ export const lateThreshhold = FIRST_IN_QUE_THESHOLD;
 //====================================================================
 // SETTINGS FOR ROLES
 //====================================================================
-export const ROLES_LIST = {
-	admin: 2134,
-	doctor: 2133,
-	staff: 2170
+export const ROLES = {
+	admin: 'admin',
+	staff: 'staff',
+	doctor: 'doctor'
 };
 
 export const FRONTEND_BASE_URL = 'http://localhost:3030';

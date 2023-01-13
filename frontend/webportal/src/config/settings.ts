@@ -6,3 +6,9 @@ export const ERROR_MSG = {
 	notAllowed: 'Nie masz uprawinień do przeglądania tego zasobu.',
 	other: 'Wystąpił błąd.'
 };
+
+export const ROLES = {
+	admin: 'admin',
+	staff: 'staff',
+	doctor: 'doctor'
+};
