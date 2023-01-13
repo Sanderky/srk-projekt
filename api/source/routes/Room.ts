@@ -6,12 +6,12 @@ import userController from '@/controllers/User';
 const router = express.Router();
 
 //Sciezki niezabepieczone
-router.get('/get/:roomId', controller.readRoom);
-router.get('/get/', controller.readAllRooms);
 
+//Sciezki zabezpieczone
 router.use(userController.verifyJWT);
 router.use(userController.verifyRoles(['admin', 'doctor']));
-//Sciezki zabezpieczone
+router.get('/get/:roomId', controller.readRoom);
+router.get('/get/', controller.readAllRooms);
 router.post('/create', controller.createRoom);
 router.patch('/update', controller.updateRoom);
 router.delete('/delete/:roomId', controller.deleteRoom);

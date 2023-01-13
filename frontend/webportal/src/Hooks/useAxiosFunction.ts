@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
+import useAxiosPrivate from './useAxiosPrivate';
 
 export interface AxiosConfig {
-	axiosInstance: any;
 	method: string;
 	url: string;
 	requestConfig: {};
@@ -12,18 +12,20 @@ const useAxiosFunction = () => {
 	const [error, setError] = useState<unknown>();
 	const [loading, setLoading] = useState(false);
 	const [controller, setController] = useState<AbortController>();
-
+	const axiosPrivate = useAxiosPrivate();
 	const axiosFetch = async (configObj: AxiosConfig) => {
-		const { axiosInstance, method, url, requestConfig = {} } = configObj;
+		const { method, url, requestConfig = {} } = configObj;
 
 		try {
 			setLoading(true);
 			const ctrl = new AbortController();
 			setController(ctrl);
-			const res = await axiosInstance[method.toLowerCase()](url, {
-				...requestConfig,
-				signal: ctrl.signal
+			const res = await axiosPrivate(url, {
+				method: method,
+				signal: ctrl.signal,
+				...requestConfig
 			});
+			console.log(res);
 			setResponse(res.data);
 		} catch (error) {
 			console.log(error);
@@ -36,7 +38,7 @@ const useAxiosFunction = () => {
 	useEffect(() => {
 		//useEffect cleanup function
 		return () => controller && controller.abort();
-	}, [controller]);
+	}, []);
 
 	return [response, error, loading, axiosFetch];
 };

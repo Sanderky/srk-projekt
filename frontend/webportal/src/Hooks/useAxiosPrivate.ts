@@ -18,15 +18,20 @@ const useAxiosPrivate = () => {
 		);
 
 		const responseIntercept = axiosPrivate.interceptors.response.use(
-			(response) => response,
+			async (response) => {
+				//console.log(response);
+				return response;
+			},
 			async (error) => {
+				//console.log(error);
 				const prevRequest = error.config;
-				if (error.response.status === 403 && !prevRequest.sent) {
+				if (error?.response?.status === 403 && !prevRequest.sent) {
 					prevRequest.sent = true;
 					const newAccessToken = await refresh();
 					prevRequest.headers['Authorization'] = newAccessToken;
 					return axiosPrivate(prevRequest);
 				}
+				//onsole.log(error);
 				return Promise.reject(error);
 			}
 		);

@@ -38,9 +38,8 @@ export default function TimeSlots({ doctor, date, selected, setSelected }: TimeS
 
 	const getData = () => {
 		axiosFetch({
-			axiosInstance: axios,
 			method: 'GET',
-			url: `/get/${doctor}?date=${date}`,
+			url: `slots/get/${doctor}?date=${date}`,
 			requestConfig: {}
 		});
 	};

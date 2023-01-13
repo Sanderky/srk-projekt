@@ -58,9 +58,8 @@ export default function RoomSelectionView({ roomNumber, setRoomNumber, setRoomSe
 
 	const getData = () => {
 		axiosFetch({
-			axiosInstance: axiosRoom,
 			method: 'GET',
-			url: '/get',
+			url: 'room/get',
 			requestConfig: {}
 		});
 	};

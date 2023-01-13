@@ -219,9 +219,8 @@ export default function ReservationConfirmation({
 
 	const getDoctor = () => {
 		axiosFetchDoctor({
-			axiosInstance: axiosDoctor,
 			method: 'GET',
-			url: `/get/${doctorId}`,
+			url: `doctor/get/${doctorId}`,
 			requestConfig: {}
 		});
 	};

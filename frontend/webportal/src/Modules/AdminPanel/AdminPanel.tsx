@@ -47,9 +47,8 @@ function AllDoctors({ loading, setLoading }: AllDoctorsProps) {
 
 	const getData = () => {
 		axiosFetch({
-			axiosInstance: axios,
 			method: 'GET',
-			url: '/get',
+			url: 'doctor/get',
 			requestConfig: {}
 		});
 	};
@@ -57,6 +56,7 @@ function AllDoctors({ loading, setLoading }: AllDoctorsProps) {
 	useEffect(() => {
 		getData();
 	}, [loading]);
+
 
 	const doctors: any = doctorsObj.doctors;
 

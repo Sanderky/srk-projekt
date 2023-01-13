@@ -48,9 +48,8 @@ const SpecialistsList = (props: { selected: string | undefined; setSelected: any
 
 	const getData = () => {
 		axiosFetch({
-			axiosInstance: axios,
 			method: 'GET',
-			url: '/get',
+			url: 'doctor/get',
 			requestConfig: {}
 		});
 	};
