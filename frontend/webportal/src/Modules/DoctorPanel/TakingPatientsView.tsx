@@ -33,7 +33,6 @@ export default function TakingPatientsView({ setRoomNumber, setRoomSelected, set
 	useEffect(() => {
 		if (queId) {
 			setQueId(localStorage.getItem('queId')!);
-			const savedTicketInRoom = localStorage.getItem('ticketInRoom');
 			if (!listening) {
 				console.log(queId);
 				const events = new EventSource(`${BASE_URL}/que/events`);
