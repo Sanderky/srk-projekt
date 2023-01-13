@@ -48,7 +48,7 @@ export default function TakingPatientsView({ setRoomNumber, setRoomSelected, set
 				setListening(true);
 			}
 		}
-	}, [listening, activeTickets]);
+	}, [listening, activeTickets, queId]);
 
 	// =========================================================================
 	// QUE Rendering
@@ -62,10 +62,15 @@ export default function TakingPatientsView({ setRoomNumber, setRoomSelected, set
 			return activeTickets.map((ticket: { visitCode: string; visitTime: string }, i: number) => {
 				return (
 					<div className={styles.singleTicket} id={i.toString()}>
-						<div className={i === 0 && ticketInRoom ? `${styles.ticketNumber} ${styles.ticketNumberFirst}` : styles.ticketNumber}>
+						<div
+							className={i === 0 && ticketInRoom ? `${styles.ticketNumber} ${styles.ticketNumberFirst}` : styles.ticketNumber}
+							id={`${i}C`}
+						>
 							{ticket?.visitCode}
 						</div>
-						<div className={styles.visitTime}>{ticket?.visitTime}</div>
+						<div className={styles.visitTime} id={`${i}T`}>
+							{ticket?.visitTime}
+						</div>
 					</div>
 				);
 			});

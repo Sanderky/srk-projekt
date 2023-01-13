@@ -1,6 +1,7 @@
 import ConfirmationPanel from './Modules/ConfirmationPanel/ConfirmationPanel';
 import DoctorPanel from './Modules/DoctorPanel/DoctorPanel';
 import LoginPanel from './Modules/LoginPanel/LoginPanel';
+import AdminPanel from './Modules/AdminPanel/AdminPanel';
 import Registration from './Modules/Registration/Registration';
 import QueDisplay from './Modules/QueDisplay/QueDisplay';
 import PersistLogin from './Components/PersistLogin';
@@ -20,6 +21,9 @@ function App() {
 				</Route>
 				<Route element={<RequireAuth allowedRoles={['doctor', 'admin']} />}>
 					<Route path="/doctor-panel" element={<DoctorPanel />} />
+				</Route>
+				<Route element={<RequireAuth allowedRoles={['admin']} />}>
+					<Route path="/admin-panel" element={<AdminPanel />} />
 				</Route>
 			</Route>
 		</Routes>
