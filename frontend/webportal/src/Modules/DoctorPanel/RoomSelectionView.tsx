@@ -88,7 +88,7 @@ export default function RoomSelectionView({ roomNumber, setRoomNumber, setRoomSe
 				return (
 					<option value={room.roomNumber} key={i} disabled={room.available ? false : true}>
 						{room.roomNumber}
-						{room.available ? undefined : '  (Niedostępny)'}
+						{room.available ? '' : '  (Niedostępny)'}
 					</option>
 				);
 			});

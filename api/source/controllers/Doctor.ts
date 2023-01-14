@@ -71,9 +71,7 @@ const updateDoctor = (req: Request, res: Response, next: NextFunction) => {
 const deleteDoctor = async (req: Request, res: Response, next: NextFunction) => {
 	const doctorId = req.params.doctorId;
 	try {
-		await cascadeDeleteDoctor(doctorId).catch((error) => {
-			throw error;
-		});
+		await cascadeDeleteDoctor(doctorId);
 		const doctor = await Doctor.findByIdAndDelete(doctorId);
 		return doctor ? res.status(201).json({ message: `Deleted: ${doctorId}` }) : res.status(404).json({ message: 'Not found' });
 	} catch (error) {
