@@ -40,5 +40,5 @@ const generateVisitCode = async (queId: mongoose.Types.ObjectId) => {
 		}
 	};
 	const visitCode = (await prefix(roomNumber)) + (await postfix());
-	return visitCode;
+	return [visitCode, roomNumber];
 };

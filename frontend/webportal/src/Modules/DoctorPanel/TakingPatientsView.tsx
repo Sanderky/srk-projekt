@@ -60,7 +60,7 @@ export default function TakingPatientsView({ setRoomNumber, setRoomSelected, set
 			}
 			return activeTickets.map((ticket: { visitCode: string; visitTime: string }, i: number) => {
 				return (
-					<div className={styles.singleTicket} id={i.toString()}>
+					<div className={styles.singleTicket} key={i}>
 						<div
 							className={i === 0 && ticketInRoom ? `${styles.ticketNumber} ${styles.ticketNumberFirst}` : styles.ticketNumber}
 							id={`${i}C`}

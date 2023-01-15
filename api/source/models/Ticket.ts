@@ -7,7 +7,7 @@ export interface ITicket {
 	visitTime: string;
 }
 
-export interface ITicketModel extends ITicket, Document { }
+export interface ITicketModel extends ITicket, Document {}
 
 const TicketSchema: Schema = new Schema({
 	queId: { type: Schema.Types.ObjectId, required: true, ref: 'Que' },
@@ -15,7 +15,8 @@ const TicketSchema: Schema = new Schema({
 	visitCode: { type: String, required: true },
 	visitTime: String,
 	reservationCode: String,
-	inRoom: { type: Boolean, default: false }
+	inRoom: { type: Boolean, default: false },
+	roomNumber: Number
 });
 
 export default mongoose.model<ITicketModel>('Ticket', TicketSchema);

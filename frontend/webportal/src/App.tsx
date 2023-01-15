@@ -4,6 +4,7 @@ import LoginPanel from './Modules/LoginPanel/LoginPanel';
 import AdminPanel from './Modules/AdminPanel/AdminPanel';
 import Registration from './Modules/Registration/Registration';
 import QueDisplay from './Modules/QueDisplay/QueDisplay';
+import MainDisplay from './Modules/MainDisplay/MainDisplay';
 import PersistLogin from './Components/PersistLogin';
 import { Routes, Route } from 'react-router-dom';
 import RequireAuth from './Components/RequireAuth';
@@ -18,7 +19,7 @@ function App() {
 			{/* Protected */}
 			<Route element={<PersistLogin />}>
 				<Route element={<RequireAuth allowedRoles={[ROLES.admin, ROLES.staff]} />}>
-					<Route path="/que-display" element={<QueDisplay />} />
+					<Route path="/main-display" element={<MainDisplay />} />
 					<Route path="/confirmation-panel" element={<ConfirmationPanel />} />
 				</Route>
 				<Route element={<RequireAuth allowedRoles={[ROLES.admin, ROLES.doctor]} />}>

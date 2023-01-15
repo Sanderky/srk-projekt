@@ -5,6 +5,9 @@ import Header from '../../Components/HeaderAdmin';
 import useAxiosFunction, { AxiosConfig } from '../../Hooks/useAxiosFunction';
 import { ROLES } from '../../config/settings';
 
+// =========================================================================
+// DOCTORS
+// =========================================================================
 interface AddNewDoctorUserProps {
 	loading: boolean;
 	setLoading: (loading: boolean) => void;
@@ -119,6 +122,10 @@ function AllDoctors({ loading, setLoading, doctors, error, loadingAxios }: AllDo
 	return <div className={styles.doctorsList}>{doctorsJSX}</div>;
 }
 
+// =========================================================================
+// USERS
+// =========================================================================
+
 function AddNewUser({ loading, setLoading, doctors, error, loadingAxios }: AllDoctorsProps) {
 	const axiosPrivate = useAxiosPrivate();
 	const username = useRef<HTMLInputElement>(null);
@@ -164,7 +171,7 @@ function AddNewUser({ loading, setLoading, doctors, error, loadingAxios }: AllDo
 		if (loadingAxios) {
 			return (
 				<option value="null" key={null} disabled={true}>
-					Ładowanie...
+					Brak lekarzy.
 				</option>
 			);
 		} else if (doctors) {
@@ -234,6 +241,10 @@ function AddNewUser({ loading, setLoading, doctors, error, loadingAxios }: AllDo
 function Separator() {
 	return <div className={styles.separator}></div>;
 }
+
+// =========================================================================
+// CONTENT
+// =========================================================================
 
 function Content() {
 	const [loading, setLoading] = useState<boolean>(false);
