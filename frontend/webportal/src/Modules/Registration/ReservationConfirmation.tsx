@@ -179,26 +179,18 @@ export default function ReservationConfirmation({
 	const createReservation = async (email: string | undefined, doctorId: string | undefined, date: Date | undefined, time: string | undefined) => {
 		setLoading(true);
 		const dateUTCNonString = new Date(Date.UTC(date!.getUTCFullYear(), date!.getUTCMonth(), date!.getUTCDate() + 1, 0, 0, 0, 0));
-		const dateUTC = dateUTCNonString.toISOString();
 		const reservationPayload = {
 			email: email,
 			doctorId: doctorId,
-			day: dateUTC,
-			time: time
+			date: dateUTCNonString,
+			time: time,
+			doctorName: doctor
 		};
 		try {
 			const reservationData = await axios.post(`${BASE_URL}/reservation/create/`, reservationPayload);
 			const reservationCode = reservationData.data.reservation.reservationCode;
 			setCode(reservationCode);
 
-			const emailPayload = {
-				email: email,
-				date: dateUTCNonString.toLocaleDateString(),
-				code: reservationCode,
-				doctor: doctor,
-				time: time
-			};
-			await axios.post(`${BASE_URL}/email/send-confirmation`, emailPayload);
 			setLoading(false);
 			setSummary(true);
 		} catch (error) {

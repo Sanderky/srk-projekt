@@ -15,7 +15,6 @@ import slotsRoutes from '@/routes/Slots';
 import queRoutes from '@/routes/Que';
 import ticketRoutes from '@/routes/Ticket';
 import roomRoutes from '@/routes/Room';
-import emailRoutes from '@/routes/Email';
 import cookieParser from 'cookie-parser';
 const router = express();
 
@@ -53,7 +52,6 @@ const startServer = () => {
 	router.use('/ticket', ticketRoutes);
 	router.use('/room', roomRoutes);
 	router.use('/user', userRoutes);
-	router.use('/email', emailRoutes);
 
 	// Healthcheck Route
 	router.get('/healthcheck', (req, res, next) => {

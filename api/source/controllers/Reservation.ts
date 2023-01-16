@@ -1,13 +1,23 @@
 import { NextFunction, Request, Response } from 'express';
-import mongoose from 'mongoose';
+import mongoose, { ObjectId } from 'mongoose';
 import Reservation from '@/models/Reservation';
 import { dayIdByDate } from '@/library/DaysUtils';
 import { generateReservationCode, updateSlotForNewReservation, makeSlotAvailable, flagAsRegistered } from '@/library/ReservationUtils';
 import Log from '@/library/Logging';
+import mailService from '@/services/Mailer';
+
+interface CreateResReqBody {
+	email: String;
+	doctorId: mongoose.Types.ObjectId;
+	date: Date;
+	time: string;
+	doctorName: String;
+}
 
 const createReservation = async (req: Request, res: Response, next: NextFunction) => {
-	const { email, doctorId, day, time } = req.body;
+	const { email, doctorId, date, time, doctorName }: CreateResReqBody = req.body;
 	try {
+		const day = new Date(date).toISOString();
 		const dayId = await dayIdByDate(doctorId, day)
 			.then((result) => {
 				return result;
@@ -15,7 +25,7 @@ const createReservation = async (req: Request, res: Response, next: NextFunction
 			.catch((error) => {
 				throw error;
 			});
-		await updateSlotForNewReservation(doctorId, dayId, day, time).catch((error) => {
+		await updateSlotForNewReservation(doctorId.toString(), dayId, date, time).catch((error) => {
 			throw error;
 		});
 
@@ -36,7 +46,16 @@ const createReservation = async (req: Request, res: Response, next: NextFunction
 		});
 		return await reservation
 			.save()
-			.then((reservation) => res.status(201).json({ reservation }))
+			.then((reservation) => {
+				mailService.sendConfirmationEmail({
+					email: email,
+					date: new Date(date).toLocaleDateString(),
+					code: reservationCode,
+					doctor: doctorName,
+					time: time
+				});
+				res.status(201).json({ reservation });
+			})
 			.catch((error) => {
 				throw error;
 			});
