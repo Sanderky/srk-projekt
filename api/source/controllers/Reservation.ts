@@ -49,7 +49,7 @@ const createReservation = async (req: Request, res: Response, next: NextFunction
 			.then((reservation) => {
 				mailService.sendConfirmationEmail({
 					email: email,
-					date: new Date(date).toLocaleDateString(),
+					date: new Date(date).toLocaleDateString('pl-PL'),
 					code: reservationCode,
 					doctor: doctorName,
 					time: time
