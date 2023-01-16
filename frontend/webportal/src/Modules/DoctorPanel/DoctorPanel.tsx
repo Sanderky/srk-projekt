@@ -1,54 +1,10 @@
 import { useState, useEffect } from 'react';
 import styles from './DoctorPanel.module.css';
-import logo from '../../Assets/Images/logo.png';
-import logoutIcon from '../../Assets/Images/logout.png';
 import spinnerImg from '../../Assets/Images/spinner.png';
-import Clock from '../../Components/Clock';
 import RoomSelectionView from './RoomSelectionView';
 import TakingPatientsView from './TakingPatientsView';
 import useAxiosPrivate from '../../Hooks/useAxiosPrivate';
-import { BASE_URL } from '../../config/settings';
-import axios from 'axios';
-import useAuth from '../../Hooks/useAuth';	
-interface HeaderProps {
-	setRoomNumber: (roomNumber: number | undefined) => void;
-	roomSelected: boolean;
-	setRoomSelected: (roomSelected: boolean) => void;
-}
-
-function Header({ setRoomNumber, roomSelected, setRoomSelected }: HeaderProps) {
-	const {setAuth}:any = useAuth();
-	const logout = async () => {
-		setRoomNumber(undefined);
-		setRoomSelected(false);
-		localStorage.clear();
-		setAuth({});
-		try {
-			await axios.get(`${BASE_URL}/user/logout`,{withCredentials:true});	
-		} catch (error) {
-			console.log(error);
-		}
-		window.location.reload();
-	};
-
-	return (
-		<header>
-			<div className={styles.logo}>
-				<img className={styles.logoImage} src={logo} alt="Logo" />
-				<h1 className={styles.logoText}>SRK</h1>
-			</div>
-			<Clock />
-			{!roomSelected ? (
-				<button className={styles.logoutButton} onClick={logout}>
-					<p>Wyloguj</p>
-					<img className={styles.logoutIcon} src={logoutIcon} alt=">" />
-				</button>
-			) : (
-				<></>
-			)}
-		</header>
-	);
-}
+import Header from '../../Components/Header';
 
 interface ContainerHeaderProps {
 	roomNumber: number | undefined;
@@ -68,7 +24,9 @@ function ContainerHeader({ roomNumber, roomSelected }: ContainerHeaderProps) {
 				const fetchedDoctor = await axiosPrivate.get(`/doctor/get/${doctorId}`);
 				setDoctorName(`${fetchedDoctor.data.doctor.firstname} ${fetchedDoctor.data.doctor.lastname}`);
 			}
-		} catch (error) {}
+		} catch (error) {
+			console.log(error);
+		}
 	};
 
 	useEffect(() => {
@@ -113,12 +71,10 @@ function Content({ roomNumber, setRoomNumber, roomSelected, setRoomSelected, err
 	useEffect(() => {
 		const globalRoomSelected = localStorage.getItem('roomSelected');
 		const globalRoomNumber = localStorage.getItem('roomNumber');
-		const globalQueId = localStorage.getItem('queId');
 
-		if (globalRoomNumber !== null && globalRoomSelected !== null && globalQueId !== null) {
+		if (globalRoomNumber !== null && globalRoomSelected !== null) {
 			setRoomNumber(parseInt(globalRoomNumber));
 			setRoomSelected(globalRoomSelected === 'true' ? true : false);
-			setQueId(globalQueId);
 		}
 	}, []);
 
@@ -127,7 +83,14 @@ function Content({ roomNumber, setRoomNumber, roomSelected, setRoomSelected, err
 			<div className={styles.mainContainer}>
 				<ContainerHeader roomNumber={roomNumber} roomSelected={roomSelected} />
 				{roomNumber && roomSelected ? (
-					<TakingPatientsView setRoomNumber={setRoomNumber} setRoomSelected={setRoomSelected} setLoading={setLoading} queId={queId} setQueId={setQueId} roomNumber={roomNumber} />
+					<TakingPatientsView
+						setRoomNumber={setRoomNumber}
+						setRoomSelected={setRoomSelected}
+						setLoading={setLoading}
+						queId={queId}
+						setQueId={setQueId}
+						roomNumber={roomNumber}
+					/>
 				) : (
 					<RoomSelectionView
 						setRoomNumber={setRoomNumber}

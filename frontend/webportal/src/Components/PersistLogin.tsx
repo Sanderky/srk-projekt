@@ -22,7 +22,7 @@ const PersistLogin = () => {
 		};
 
 		!auth?.accessToken ? veryfiyRefreshToken() : setIsLoading(false);
-	}, []);
+	}, [auth?.accessToken, refresh]);
 
 	return (
 		<>

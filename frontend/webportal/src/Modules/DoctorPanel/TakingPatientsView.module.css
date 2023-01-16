@@ -11,6 +11,18 @@
     border-radius: var(--radiusSmall);
     padding: 1rem;
     text-align: center;
+    align-items: center;
+    position: relative;
+}
+
+.spinnerQue {
+    height: 50px;
+    width: 50px;
+    animation: spinner 1.5s linear infinite;
+    z-index: 1;
+    position: absolute;
+    bottom: 1rem;
+    right: calc(50% - 25px);
 }
 
 .ticketsContainer {
@@ -31,6 +43,16 @@
     background-color: var(--background);
     border-radius: var(--radiusSmall);
     border: 2px solid var(--accentDark);
+    transition: 0.2s
+}
+
+.ticketNumberFirst {
+    flex: 2;
+    color: var(--background);
+    font-weight: bold;
+    background-color: var(--green);
+    border-radius: var(--radiusSmall);
+    border: 2px solid var(--greenHover);
 }
 
 .visitTime {
@@ -116,4 +138,21 @@
 
 .buttonFinishTakingIn:active {
     background-color: var(--darkActive);
+}
+
+@keyframes spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.spinner {
+    height: 50px;
+    width: 50px;
+    margin: 0 auto;
+    animation: spinner 1.5s linear infinite;
 }

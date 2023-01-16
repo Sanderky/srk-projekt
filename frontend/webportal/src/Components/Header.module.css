@@ -1,0 +1,52 @@
+header {
+    background-color: var(--primary);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.5rem 25%;
+    color: var(--background);
+    font-size: var(--big);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logoImage {
+    max-width: 80px;
+}
+
+.logoText {
+    margin-left: 1rem;
+}
+
+.logoutButton {
+    border-radius: var(--radiusSmall);
+    border: none;
+    font-size: var(--small);
+    color: var(--background);
+    font-weight: bold;
+    transition: 0.2s;
+    position: fixed;
+    right: 2rem;
+    top: 2rem;
+    padding: 1rem 2rem;
+    display: flex;
+    align-items: center;
+    background-color: var(--dark);
+}
+
+.logoutButton:hover {
+    cursor: pointer;
+}
+
+.logoutButton:hover {
+    background-color: var(--darkHover);
+    box-shadow: var(--darkShadow);
+}
+
+.logoutIcon {
+    margin-left: 1rem;
+    height: 1.5rem;
+}

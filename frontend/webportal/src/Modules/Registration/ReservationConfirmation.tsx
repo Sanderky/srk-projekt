@@ -1,8 +1,7 @@
 import styles from './ReservationConfirmation.module.css';
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { format } from 'date-fns';
 import pl from 'date-fns/locale/pl';
-import axiosDoctor from '../../APIs/Doctor';
 import axios from 'axios';
 import useAxiosFunction, { AxiosConfig } from '../../Hooks/useAxiosFunction';
 import nextArrowActive from '../../Assets/Images/expand_arrow_white.png';
@@ -94,15 +93,12 @@ function EmailForm({ doctorId, date, time, createReservation }: ReservationDataP
 				setShowErrorMessageNotMatching(true);
 			}
 		}
-	}, [isConfirmEmailDirty]);
-
-	useEffect(() => {
 		const regexExp: RegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 		const isValid: boolean = regexExp.test(email.current!.value);
 		if (isEmailDirty) {
 			isValid ? setShowErrorMessageNotValid(true) : setShowErrorMessageNotValid(false);
 		}
-	}, [isEmailDirty]);
+	}, [isEmailDirty, isConfirmEmailDirty]);
 
 	function ifButtonActive() {
 		if (email.current?.value !== '' && confirmEmail.current?.value !== '') {
@@ -165,33 +161,36 @@ function EmailForm({ doctorId, date, time, createReservation }: ReservationDataP
 	);
 }
 
-export default function ReservationConfirmation({ doctor, doctorId, date, time, setDoctor, setDoctorId, setDate, setTime, setCode, setSummary }: DataSummaryProps) {
+export default function ReservationConfirmation({
+	doctor,
+	doctorId,
+	date,
+	time,
+	setDoctor,
+	setDoctorId,
+	setDate,
+	setTime,
+	setCode,
+	setSummary
+}: DataSummaryProps) {
 	const [loading, setLoading] = useState<boolean>(false);
 	const [error, setError] = useState<boolean>(false);
 
 	const createReservation = async (email: string | undefined, doctorId: string | undefined, date: Date | undefined, time: string | undefined) => {
 		setLoading(true);
 		const dateUTCNonString = new Date(Date.UTC(date!.getUTCFullYear(), date!.getUTCMonth(), date!.getUTCDate() + 1, 0, 0, 0, 0));
-		const dateUTC = dateUTCNonString.toISOString();
 		const reservationPayload = {
 			email: email,
 			doctorId: doctorId,
-			day: dateUTC,
-			time: time
+			date: dateUTCNonString,
+			time: time,
+			doctorName: doctor
 		};
 		try {
 			const reservationData = await axios.post(`${BASE_URL}/reservation/create/`, reservationPayload);
 			const reservationCode = reservationData.data.reservation.reservationCode;
 			setCode(reservationCode);
 
-			const emailPayload = {
-				email: email,
-				date: dateUTCNonString.toLocaleDateString(),
-				code: reservationCode,
-				doctor: doctor,
-				time: time
-			};
-			await axios.post(`${BASE_URL}/email/send-confirmation`, emailPayload);
 			setLoading(false);
 			setSummary(true);
 		} catch (error) {
@@ -203,13 +202,13 @@ export default function ReservationConfirmation({ doctor, doctorId, date, time, 
 
 	// Fetch doctor do display in a summary view (displays full name and specialization)
 	// @ts-ignore
-	const [doctorObj, errorDoctor, loadingDoctor, axiosFetchDoctor]: [{}, unknown, boolean, (configObj: AxiosConfig) => Promise<void>] = useAxiosFunction();
+	const [doctorObj, errorDoctor, loadingDoctor, axiosFetchDoctor]: [{}, unknown, boolean, (configObj: AxiosConfig) => Promise<void>] =
+		useAxiosFunction();
 
 	const getDoctor = () => {
 		axiosFetchDoctor({
-			axiosInstance: axiosDoctor,
 			method: 'GET',
-			url: `/get/${doctorId}`,
+			url: `doctor/get/${doctorId}`,
 			requestConfig: {}
 		});
 	};
@@ -248,7 +247,7 @@ export default function ReservationConfirmation({ doctor, doctorId, date, time, 
 				setSummary={setSummary}
 			/>
 			<EmailForm doctorId={doctorId} date={date} time={time} email={undefined} createReservation={createReservation} />
-			<img src={spinnerImg} alt="ładowanie..." className={loading ? styles.spinnerActive : styles.spinnerDisabled} />
+			{loading ? <img src={spinnerImg} alt="" className={styles.spinner} /> : <></>}
 			{error ? <p className={styles.errorFetching}>Wystąpił błąd. Proszę odświeżyć stronę i spróbować ponownie.</p> : ''}
 		</div>
 	);

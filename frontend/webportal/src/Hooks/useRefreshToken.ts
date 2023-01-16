@@ -1,4 +1,3 @@
-import React from 'react';
 import useAuth from './useAuth';
 import axios from 'axios';
 import { BASE_URL } from '../config/settings';

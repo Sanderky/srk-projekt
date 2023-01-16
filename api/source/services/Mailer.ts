@@ -7,8 +7,16 @@ import Log from '@/library/Logging';
 const GMAIL_USERNAME = process.env.GMAIL_USERNAME || '';
 const GMAIL_PASSWORD = process.env.GMAIL_PASSWORD || '';
 
-const sendConfirmationEmail = (req: Request, res: Response) => {
-	const { email, date, code, doctor, time } = req.body;
+interface Email {
+	email: String;
+	date: String;
+	code: String;
+	doctor: String;
+	time: String;
+}
+
+const sendConfirmationEmail = (mailParameters: Email) => {
+	const { email, date, code, doctor, time } = mailParameters;
 
 	const transporter = nodemailer.createTransport({
 		service: 'gmail',
@@ -39,17 +47,17 @@ const sendConfirmationEmail = (req: Request, res: Response) => {
 			code: `${code}`, //replace {{code}} with reservation code
 			date: `${date}`, //replace {{date}} with reservation date
 			doctor: `${doctor}`,
-			time: `${time}`,
+			time: `${time}`
 		}
 	};
 
 	transporter.sendMail(mailOptions, (error, info) => {
 		if (error) {
 			Log.error(error);
-			return res.status(500).json({ error });
+			return error;
 		}
 		Log.info('Confirmation email sent to: ' + email);
-		return res.status(200).json({ message: `Confirmation email sent to: ${email}.`, LOG: `${info.response}` });
+		return;
 	});
 };
 

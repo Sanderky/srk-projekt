@@ -49,12 +49,13 @@
     --greenGradient: linear-gradient(90deg, #56C878, #49a589);
     --greenGradientSmall: linear-gradient(90deg, #60d684, #49a56c);
     --greenShadow: 0 0 30px #56c8787e;
+    --yellow: #e2a128;
     --yellow: #F6AE2D;
     --dark: #24243F;
     --darkHover: #1d1d33;
     --darkActive: #121220;
     --darkShadow: 0 0 30px #24243f7c;
-    --darkGradient: linear-gradient(100deg, #3a2f6b, #24243F); 
+    --darkGradient: linear-gradient(100deg, #3a2f6b, #24243F);
     --defaultContainerShadow: 0px 20px 36px -8px rgba(14, 14, 44, 0.1), 0px 1px 1px rgba(0, 0, 0, 0.05);
 
     /* typography */

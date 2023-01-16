@@ -84,15 +84,15 @@ const verifyJWT = (req: any, res: Response, next: NextFunction) => {
 
 const refreshTokenController = async (req: Request, res: Response) => {
 	const cookies = req.cookies;
-	if (!cookies?.jwt) return res.sendStatus(401);
-	// if (!cookies?.jwt) return res.sendStatus(200);
+	if (!cookies?.jwt) return res.status(401).json({});
+	// if (!cookies?.jwt) return res.status(200).json({});
 	const refreshToken = cookies.jwt;
 
 	const foundUser = await User.findOne({ refreshToken: refreshToken }).exec();
-	if (!foundUser) return res.sendStatus(403);
+	if (!foundUser) return res.status(403).json({ message: 'Error' });
 
 	jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET!, (err: any, token: any) => {
-		if (err || foundUser.username !== token.username) return res.sendStatus(403);
+		if (err || foundUser.username !== token.username) return res.status(403).json({ message: 'Error' });
 		const roles = foundUser.roles;
 		const accessToken = jwt.sign(
 			{
@@ -110,28 +110,28 @@ const refreshTokenController = async (req: Request, res: Response) => {
 
 const logout = async (req: Request, res: Response) => {
 	const cookies = req.cookies;
-	if (!cookies?.jwt) return res.sendStatus(204);
+	if (!cookies?.jwt) return res.status(204).json({ message: 'No Content' });
 	const refreshToken = cookies.jwt;
 
 	const foundUser = await User.findOne({ refreshToken }).exec();
 	if (!foundUser) {
 		res.clearCookie('jwt', { httpOnly: true, sameSite: 'none' });
-		return res.sendStatus(204);
+		return res.status(204).json({ message: 'No content' });
 	}
 	foundUser.refreshToken = '';
 	await foundUser.save();
 
 	res.clearCookie('jwt', { httpOnly: true, sameSite: 'none' });
-	return res.sendStatus(204);
+	return res.status(100).json({ message: 'Logged out' });
 };
 
 const verifyRoles = (allowedRoles: any) => {
 	return (req: any, res: Response, next: NextFunction) => {
-		if (!req?.roles) return res.sendStatus(401);
+		if (!req?.roles) return res.status(401).json({ message: 'Unauthorized' });
 		const allowRoles = [...allowedRoles];
 		const result = allowRoles.some((r) => req.roles.includes(r));
 		if (!result) {
-			return res.sendStatus(403);
+			return res.status(403).json({ message: 'Bad credentials' });
 		}
 		next();
 	};

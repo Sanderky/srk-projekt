@@ -34,8 +34,8 @@ const QueDisplay = () => {
 			const events = new EventSource('http://localhost:3000/que/events');
 			events.onmessage = async (event) => {
 				try {
-					const resposne = await axiosPrivate.get('/que/get');
-					setNewQue(resposne.data.que);
+					const response = await axiosPrivate.get('/que/get');
+					setNewQue(response.data.que);
 				} catch (err) {
 					console.log('location');
 					navigate('/login-panel', { state: { from: location }, replace: true });
@@ -43,7 +43,7 @@ const QueDisplay = () => {
 			};
 			setListening(true);
 		}
-	}, [listening,axiosPrivate,location,navigate]);
+	}, [listening, axiosPrivate, location, navigate]);
 
 	const ques = newQue.map((item, index) => {
 		return <Que key={index} tickets={item}></Que>;

@@ -5,7 +5,6 @@ import Que from '@/models/Que';
 import Ticket from '@/models/Ticket';
 import { lateThreshhold } from '@/config/settings';
 import Log from './Logging';
-const AsyncAF = require('async-af');
 
 function convertTime(time: string) {
 	const hour = parseInt(time.split(':')[0]);
