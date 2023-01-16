@@ -15,7 +15,6 @@ interface TakingPatientsProps {
 export default function TakingPatientsView({ setRoomNumber, setRoomSelected, setLoading, queId, setQueId, roomNumber }: TakingPatientsProps) {
 	const axiosPrivate = useAxiosPrivate();
 	const [ticketInRoom, setTicketInRoom] = useState<string | undefined>();
-	const [state, setState] = useState<boolean>(true);
 	const [activeTickets, setActiveTickets] = useState([]);
 	const [listening, setListening] = useState(false);
 	// =========================================================================
@@ -23,24 +22,22 @@ export default function TakingPatientsView({ setRoomNumber, setRoomSelected, set
 	// =========================================================================
 
 	useEffect(() => {
-		setQueId(localStorage.getItem('queId')!);
-		const savedTicketInRoom = localStorage.getItem('ticketInRoom');
-		if (savedTicketInRoom) {
-			setTicketInRoom(savedTicketInRoom);
+		const savedQueId = localStorage.getItem('queId');
+		if (savedQueId) {
+			setQueId(savedQueId);
 		}
+		// eslint-disable-next-line
 	}, []);
 
 	useEffect(() => {
 		if (queId) {
-			setQueId(localStorage.getItem('queId')!);
 			if (!listening) {
-				console.log(queId);
 				const events = new EventSource(`${BASE_URL}/que/events`);
 				events.onmessage = async () => {
 					try {
 						const response = await axiosPrivate.get(`/que/get/${queId}`);
 						setActiveTickets(response.data.que.activeTickets);
-					} catch (err) {
+					} catch (err: any) {
 						console.log(err);
 					}
 				};
@@ -91,10 +88,9 @@ export default function TakingPatientsView({ setRoomNumber, setRoomSelected, set
 					inRoom: true
 				};
 				await axiosPrivate.patch(`/ticket/update/${inRoomTicketId}`, updateTicketPayload);
-				setTicketInRoom(nextInQue?.visitCode);
 				localStorage.setItem('ticketInRoom', nextInQue?.visitCode);
+				setTicketInRoom(nextInQue?.visitCode);
 			} else {
-				setState((prev) => !prev);
 			}
 		} catch (error) {
 			console.log(error);
@@ -108,14 +104,12 @@ export default function TakingPatientsView({ setRoomNumber, setRoomSelected, set
 		try {
 			const ticket = await axiosPrivate.patch(`/que/shift/${queId}`);
 			const ticketId = ticket.data.shiftedTicket;
-			console.log(ticketId);
 			await axiosPrivate.delete(`/ticket/delete/${ticketId}`);
 			localStorage.removeItem('ticketInRoom');
 			setTicketInRoom(undefined);
 		} catch (error) {
 			console.log(error);
 		} finally {
-			setState((prev) => !prev);
 			setLoading(false);
 		}
 	};
@@ -127,20 +121,19 @@ export default function TakingPatientsView({ setRoomNumber, setRoomSelected, set
 				await finishVisit();
 			}
 			await axiosPrivate.delete(`/que/delete/${queId}`);
+			localStorage.removeItem('queId');
+			setQueId(undefined);
 			const updateRoomPayload = {
 				available: true,
 				occupiedBy: null
 			};
 			await axiosPrivate.patch(`/room/update?roomNumber=${roomNumber}`, updateRoomPayload);
-			setRoomNumber(undefined);
-			setRoomSelected(false);
-			setQueId(undefined);
 			localStorage.removeItem('roomNumber');
 			localStorage.removeItem('roomSelected');
-			localStorage.removeItem('queId');
+			setRoomNumber(undefined);
+			setRoomSelected(false);
 		} catch (error) {
 			console.log(error);
-			setQueId(undefined);
 		} finally {
 			setLoading(false);
 		}

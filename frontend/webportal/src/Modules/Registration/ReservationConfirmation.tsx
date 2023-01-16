@@ -1,8 +1,7 @@
 import styles from './ReservationConfirmation.module.css';
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { format } from 'date-fns';
 import pl from 'date-fns/locale/pl';
-import axiosDoctor from '../../APIs/Doctor';
 import axios from 'axios';
 import useAxiosFunction, { AxiosConfig } from '../../Hooks/useAxiosFunction';
 import nextArrowActive from '../../Assets/Images/expand_arrow_white.png';
@@ -94,15 +93,12 @@ function EmailForm({ doctorId, date, time, createReservation }: ReservationDataP
 				setShowErrorMessageNotMatching(true);
 			}
 		}
-	}, [isConfirmEmailDirty]);
-
-	useEffect(() => {
 		const regexExp: RegExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i;
 		const isValid: boolean = regexExp.test(email.current!.value);
 		if (isEmailDirty) {
 			isValid ? setShowErrorMessageNotValid(true) : setShowErrorMessageNotValid(false);
 		}
-	}, [isEmailDirty]);
+	}, [isEmailDirty, isConfirmEmailDirty]);
 
 	function ifButtonActive() {
 		if (email.current?.value !== '' && confirmEmail.current?.value !== '') {

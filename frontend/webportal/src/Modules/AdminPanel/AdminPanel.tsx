@@ -250,16 +250,13 @@ function Content() {
 	const [loading, setLoading] = useState<boolean>(false);
 	// @ts-ignore
 	const [doctorsObj, error, loadingAxios, axiosFetch]: [any, unknown, boolean, (configObj: AxiosConfig) => Promise<void>] = useAxiosFunction();
-	const getData = () => {
+
+	useEffect(() => {
 		axiosFetch({
 			method: 'GET',
 			url: 'doctor/get',
 			requestConfig: {}
 		});
-	};
-
-	useEffect(() => {
-		getData();
 	}, [loading]);
 
 	const doctors: any = doctorsObj.doctors;

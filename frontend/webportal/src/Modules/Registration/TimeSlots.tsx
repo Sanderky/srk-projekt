@@ -1,6 +1,5 @@
 import styles from './TimeSlots.module.css';
 import React, { useEffect } from 'react';
-import axios from '../../APIs/Slots';
 import useAxiosFunction, { AxiosConfig } from '../../Hooks/useAxiosFunction';
 
 interface SingleSlotProps {
@@ -36,19 +35,16 @@ export default function TimeSlots({ doctor, date, selected, setSelected }: TimeS
 	// @ts-ignore
 	const [slotsObj, error, loading, axiosFetch]: [any, unknown, boolean, (configObj: AxiosConfig) => Promise<void>] = useAxiosFunction();
 
-	const getData = () => {
-		axiosFetch({
-			method: 'GET',
-			url: `slots/get/${doctor}?date=${date}`,
-			requestConfig: {}
-		});
-	};
-
 	useEffect(() => {
 		if (doctor && date) {
-			getData();
+			axiosFetch({
+				method: 'GET',
+				url: `slots/get/${doctor}?date=${date}`,
+				requestConfig: {}
+			});
 			setSelected(undefined);
 		}
+		// eslint-disable-next-line
 	}, [doctor, date]);
 
 	let slots: any;

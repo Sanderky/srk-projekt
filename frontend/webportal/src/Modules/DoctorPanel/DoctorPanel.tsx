@@ -71,12 +71,10 @@ function Content({ roomNumber, setRoomNumber, roomSelected, setRoomSelected, err
 	useEffect(() => {
 		const globalRoomSelected = localStorage.getItem('roomSelected');
 		const globalRoomNumber = localStorage.getItem('roomNumber');
-		const globalQueId = localStorage.getItem('queId');
 
-		if (globalRoomNumber !== null && globalRoomSelected !== null && globalQueId !== null) {
+		if (globalRoomNumber !== null && globalRoomSelected !== null) {
 			setRoomNumber(parseInt(globalRoomNumber));
 			setRoomSelected(globalRoomSelected === 'true' ? true : false);
-			setQueId(globalQueId);
 		}
 	}, []);
 

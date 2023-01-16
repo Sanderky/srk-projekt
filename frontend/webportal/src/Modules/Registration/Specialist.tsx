@@ -1,7 +1,6 @@
 import styles from './Specialist.module.css';
 import searchIcon from '../../Assets/Images/search.png';
 import React, { useEffect } from 'react';
-import axios from '../../APIs/Doctor';
 import useAxiosFunction, { AxiosConfig } from '../../Hooks/useAxiosFunction';
 
 interface SearchBarProps {
@@ -46,16 +45,13 @@ const SpecialistsList = (props: { selected: string | undefined; setSelected: any
 	// @ts-ignore
 	const [doctorsObj, error, loading, axiosFetch]: [any, unknown, boolean, (configObj: AxiosConfig) => Promise<void>] = useAxiosFunction();
 
-	const getData = () => {
+	useEffect(() => {
 		axiosFetch({
 			method: 'GET',
 			url: 'doctor/get',
 			requestConfig: {}
 		});
-	};
-
-	useEffect(() => {
-		getData();
+		// eslint-disable-next-line
 	}, []);
 
 	const doctors: any = doctorsObj.doctors;

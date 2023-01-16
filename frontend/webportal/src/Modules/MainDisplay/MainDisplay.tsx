@@ -100,7 +100,7 @@ export default function MainDisplay() {
 			};
 			setListening(true);
 		}
-	}, [listening, tickets]);
+	}, [listening, tickets, location, navigate]);
 
 	const ticketsWaiting = tickets.filter((ticket: { inRoom: boolean }) => {
 		return ticket.inRoom === false;

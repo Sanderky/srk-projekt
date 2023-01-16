@@ -189,6 +189,7 @@ const CentralBox = () => {
 	const { isIdle, getLastActiveTime } = useIdle(backToLogin, 30);
 	useEffect(() => {
 		console.log(`Last seen activity: ${getLastActiveTime()?.toLocaleTimeString()}. Proceeding to login screen...`);
+		// eslint-disable-next-line
 	}, [isIdle]);
 
 	// =========================================================================

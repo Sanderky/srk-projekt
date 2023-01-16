@@ -1,6 +1,5 @@
 import { useEffect } from 'react';
 import styles from './RoomSelectionView.module.css';
-import axiosRoom from '../../APIs/Room';
 import useAxiosFunction, { AxiosConfig } from '../../Hooks/useAxiosFunction';
 import { axiosPrivate } from '../../APIs/Axios';
 

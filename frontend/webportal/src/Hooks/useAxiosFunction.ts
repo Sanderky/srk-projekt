@@ -25,7 +25,6 @@ const useAxiosFunction = () => {
 				signal: ctrl.signal,
 				...requestConfig
 			});
-			console.log(res);
 			setResponse(res.data);
 		} catch (error) {
 			console.log(error);
@@ -38,6 +37,7 @@ const useAxiosFunction = () => {
 	useEffect(() => {
 		//useEffect cleanup function
 		return () => controller && controller.abort();
+		// eslint-disable-next-line
 	}, []);
 
 	return [response, error, loading, axiosFetch];
