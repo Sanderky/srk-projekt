@@ -238,7 +238,7 @@ const Forms = ({ setCode, setSummary }: SummaryStateProps) => {
 				status={selectedDoctorId ? ExpandableStatus.Done : ExpandableStatus.Active}
 				style={{ marginBottom: '30px' }}
 			>
-				<SpecialistSelection selected={selectedDoctorId} setSelectedId={setSelectedDoctorId} setSelected={setSelectedDoctor} />
+				<SpecialistSelection setSelectedId={setSelectedDoctorId} setSelected={setSelectedDoctor} />
 			</ExpandableView>
 			<ExpandableView
 				expandedContentHeight={600}
