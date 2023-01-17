@@ -1,17 +1,31 @@
 import styles from './Specialist.module.css';
 import searchIcon from '../../Assets/Images/search.png';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import useAxiosFunction, { AxiosConfig } from '../../Hooks/useAxiosFunction';
 
 interface SearchBarProps {
 	style?: React.CSSProperties;
+	doctorsDefault: { firstname: string; lastname: string; specialization: string; _id: string }[];
+	setDoctors: (doctors: { firstname: string; lastname: string; specialization: string; _id: string }[]) => void;
 }
 
-const SearchBar = ({ style }: SearchBarProps) => {
+const SearchBar = ({ style, doctorsDefault, setDoctors }: SearchBarProps) => {
+	const filterData = (searchPhrase: string) => {
+		searchPhrase = searchPhrase.toLowerCase();
+		if (searchPhrase !== '' && doctorsDefault) {
+			const filteredDoctors = doctorsDefault.filter((doctor) => {
+				return `${doctor.firstname}${doctor.lastname}${doctor.specialization}`.toLowerCase().indexOf(searchPhrase) > -1;
+			});
+			setDoctors(filteredDoctors);
+		} else {
+			setDoctors(doctorsDefault);
+		}
+	};
+
 	return (
 		<div className={styles.searchWrapper} style={style}>
 			<img src={searchIcon} className={styles.searchIcon} alt="Szukaj" />
-			<input type={'text'} className={styles.search} placeholder={'Szukaj...'} />
+			<input type={'text'} className={styles.search} placeholder={'Szukaj...'} onChange={(e) => filterData(e.target.value)} />
 		</div>
 	);
 };
@@ -19,13 +33,12 @@ const SearchBar = ({ style }: SearchBarProps) => {
 interface SpecialistBoxProps {
 	name: string;
 	description: string;
-	selected: string | undefined;
 	id: string;
 	setSelectedId: (doctorId: string) => void;
 	setSelected: (doctor: string) => void;
 }
 
-const SpecialistBox = ({ name, description, selected, id, setSelected, setSelectedId }: SpecialistBoxProps) => {
+const SpecialistBox = ({ name, description, id, setSelected, setSelectedId }: SpecialistBoxProps) => {
 	const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
 		event.preventDefault();
 		const doctorButton: HTMLButtonElement = event.currentTarget;
@@ -41,21 +54,15 @@ const SpecialistBox = ({ name, description, selected, id, setSelected, setSelect
 	);
 };
 
-const SpecialistsList = (props: { selected: string | undefined; setSelected: any; setSelectedId: any }) => {
-	// @ts-ignore
-	const [doctorsObj, error, loading, axiosFetch]: [any, unknown, boolean, (configObj: AxiosConfig) => Promise<void>] = useAxiosFunction();
+interface SpecialistListProps {
+	loading: boolean;
+	error: unknown;
+	setSelected: (doctor: string) => void;
+	setSelectedId: (doctorId: string) => void;
+	doctors: { firstname: string; lastname: string; specialization: string; _id: string }[];
+}
 
-	useEffect(() => {
-		axiosFetch({
-			method: 'GET',
-			url: 'doctor/get',
-			requestConfig: {}
-		});
-		// eslint-disable-next-line
-	}, []);
-
-	const doctors: any = doctorsObj.doctors;
-
+const SpecialistsList = ({ loading, error, setSelected, setSelectedId, doctors }: SpecialistListProps) => {
 	const toRender = () => {
 		if (loading) {
 			return <p className={styles.specialistNotDataText}>Ładowanie...</p>;
@@ -69,9 +76,8 @@ const SpecialistsList = (props: { selected: string | undefined; setSelected: any
 						description={doctor?.specialization}
 						key={i}
 						id={doctor?._id}
-						selected={props.selected}
-						setSelected={props.setSelected}
-						setSelectedId={props.setSelectedId}
+						setSelected={setSelected}
+						setSelectedId={setSelectedId}
 					/>
 				);
 			});
@@ -82,12 +88,41 @@ const SpecialistsList = (props: { selected: string | undefined; setSelected: any
 	return <div className={styles.specialistsList}>{doctorsJSX}</div>;
 };
 
-export default function SpecialistSelection(props: { selected: string | undefined; setSelectedId: any; setSelected: any }) {
+interface SpecialistSelectionProps {
+	setSelected: (doctor: string) => void;
+	setSelectedId: (doctorId: string) => void;
+}
+
+export default function SpecialistSelection({ setSelected, setSelectedId }: SpecialistSelectionProps) {
+	const [doctors, setDoctors] = useState<{ firstname: string; lastname: string; specialization: string; _id: string }[]>([]);
+	const [doctorsDefault, setDoctorsDefault] = useState<{ firstname: string; lastname: string; specialization: string; _id: string }[]>([]);
+	// @ts-ignore
+	const [doctorsObj, error, loading, axiosFetch]: [
+		{ doctors: { firstname: string; lastname: string; specialization: string; _id: string }[] },
+		unknown,
+		boolean,
+		(configObj: AxiosConfig) => Promise<void>
+	] = useAxiosFunction();
+
+	useEffect(() => {
+		axiosFetch({
+			method: 'GET',
+			url: 'doctor/get',
+			requestConfig: {}
+		});
+		// eslint-disable-next-line
+	}, []);
+
+	useEffect(() => {
+		setDoctors(doctorsObj.doctors);
+		setDoctorsDefault(doctorsObj.doctors);
+	}, [doctorsObj]);
+
 	return (
 		<div className={styles.specialistSelection}>
 			<div className={styles.specialistSelectionWrapper}>
-				<SearchBar style={{ marginBottom: '20px' }} />
-				<SpecialistsList selected={props.selected} setSelected={props.setSelected} setSelectedId={props.setSelectedId} />
+				<SearchBar style={{ marginBottom: '20px' }} doctorsDefault={doctorsDefault} setDoctors={setDoctors} />
+				<SpecialistsList setSelected={setSelected} setSelectedId={setSelectedId} doctors={doctors} loading={loading} error={error} />
 			</div>
 		</div>
 	);
