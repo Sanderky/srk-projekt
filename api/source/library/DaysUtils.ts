@@ -121,53 +121,51 @@ const createDayArray = (doctorId: mongoose.Types.ObjectId, daysId: mongoose.Type
 //====================================================================
 // Shifting array of days in database
 //====================================================================
-const updateDoctorDayArray = () => {
+const updateDoctorDayArray = async () => {
 	const todayNonUTC = new Date();
 	const today = new Date(Date.UTC(todayNonUTC.getUTCFullYear(), todayNonUTC.getUTCMonth(), todayNonUTC.getUTCDate(), 0, 0, 0, 0));
 	let aux = 0;
 	const slotsArray = createSlotArray();
 
-	Days.find().exec((err, daysArray) => {
-		daysArray.forEach(async (daysObj) => {
-			try {
-				while (daysObj.days[0].date < today) {
-					const deletedDay = daysObj.days.shift();
-					const deletedSlotsId = deletedDay?.slots;
-					if (deletedSlotsId !== null) {
-						await deleteSlotsForDay(deletedSlotsId?.toString()!).catch((error) => {
-							throw error;
-						});
-					} else {
-						continue;
-					}
-					const dayCount = workdaySettings.days.dayCount || 30;
-					const date = new Date();
-					const dayId = new mongoose.Types.ObjectId();
-					const slotsId = new mongoose.Types.ObjectId();
+	const days = await Days.find();
+	for (const daysObj of days) {
+		try {
+			while (daysObj.days[0].date < today) {
+				const deletedDay = daysObj.days.shift();
+				const deletedSlotsId = deletedDay?.slots;
+				if (deletedSlotsId !== null) {
+					await deleteSlotsForDay(deletedSlotsId?.toString()!);
+				} else {
+					continue;
+				}
+				const dayCount = workdaySettings.days.dayCount || 30;
+				const date = new Date();
+				const dayId = new mongoose.Types.ObjectId();
+				const slotsId = new mongoose.Types.ObjectId();
 
-					await new Slots({
-						_id: slotsId,
-						doctorId: daysObj.doctorId,
-						dayId: dayId,
-						slots: slotsArray
-					}).save();
-					const newDay = new Day(new Date(date.setDate(date.getDate() + dayCount)), slotsId, dayId);
-					daysObj.days.push(newDay);
-					aux++;
-					daysObj.save();
-				}
-				if (aux === 1) {
-					Log.debug(`Updated day array of doctor ${daysObj.doctorName} 1 time.`);
-					aux = 0;
-				} else if (aux) {
-					Log.debug(`Updated day array of doctor ${daysObj.doctorName} ${aux} times.`);
-					aux = 0;
-				}
-			} catch (error) {
-				Log.error(error);
+				const newSlots = new Slots({
+					_id: slotsId,
+					doctorId: daysObj.doctorId,
+					dayId: dayId,
+					slots: slotsArray
+				});
+				await newSlots.save();
+				const newDay = new Day(new Date(date.setDate(date.getDate() + dayCount)), slotsId, dayId);
+				daysObj.days.push(newDay);
+				aux++;
+				daysObj.save();
 			}
-		});
-	});
+			if (aux === 1) {
+				Log.debug(`Updated day array of doctor ${daysObj.doctorName} 1 time.`);
+				aux = 0;
+			} else if (aux) {
+				Log.debug(`Updated day array of doctor ${daysObj.doctorName} ${aux} times.`);
+				aux = 0;
+			}
+		} catch (error) {
+			Log.error(error);
+		}
+	}
 };
 
 //====================================================================
