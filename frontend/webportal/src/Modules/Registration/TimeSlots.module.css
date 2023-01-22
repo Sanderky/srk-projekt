@@ -1,0 +1,49 @@
+.slotList {
+    display: flex;
+    height: 80%;
+    gap: 20px;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    padding-top: 30px;
+    padding-bottom: 20px;
+    max-width: 720px;
+    margin: auto;
+    margin-top: 30px;
+    background-color: var(--background);
+    border-radius: var(--radiusNormal);
+    box-shadow: var(--defaultContainerShadow);
+}
+
+.slotBox {
+    height: 60px;
+    padding: 10px;
+    border: none;
+    font-size: var(--normal);
+    width: calc(100% / 6);
+    font-weight: bold;
+    transition: 0.2s;
+    border-radius: var(--radiusSmall)
+}
+
+.slotAvail {
+    background-color: var(--green);
+    color: var(--white);
+    cursor: pointer;
+}
+
+.slotAvail:hover {
+    background-color: var(--greenHover);
+    box-shadow: var(--greenShadow);
+}
+
+.slotAvail:active {
+    background-color: var(--greenActive);
+}
+
+.slotNotAvail {
+    background-color: var(--accentDark);
+    /* border: 1px solid var(--subText); */
+    color: var(--subText);
+    cursor: default;
+}

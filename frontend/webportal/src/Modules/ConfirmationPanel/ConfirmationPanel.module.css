@@ -1,10 +1,32 @@
 .main {
-    height: 100vh;
+    min-height: 100vh;
+    background-color: var(--accent);
 }
 
-.centralBoxWrapper {
+.confirmHeader {
+    background-color: var(--primary);
+    color: var(--background);
+    font-size: var(--big);
+}
+
+.headerWrapper {
     display: flex;
-    flex-direction: row;
-    justify-content: center;
-    padding-top: 120px;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 750px;
+    margin: auto;
+    padding: 1.5rem 0;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+}
+
+.logoImage {
+    max-width: 80px;
+}
+
+.logoText {
+    margin-left: 1rem;
 }

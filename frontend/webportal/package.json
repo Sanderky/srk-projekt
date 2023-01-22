@@ -11,17 +11,20 @@
     "@types/react": "^18.0.18",
     "@types/react-dom": "^18.0.6",
     "axios": "^0.27.2",
+    "date-fns": "^2.29.3",
     "react": "^18.2.0",
+    "react-day-picker": "^8.4.1",
     "react-dom": "^18.2.0",
+    "react-idle-timer": "^5.4.2",
     "react-scripts": "5.0.1",
     "typescript": "^4.8.2",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
-    "start": "PORT=8080 react-scripts start",
-    "build": "PORT=8080 react-scripts build",
-    "test": "PORT=8080 react-scripts test",
-    "eject": "PORT=8080 react-scripts eject"
+    "start": "PORT=3030 react-scripts start",
+    "build": "PORT=3030 react-scripts build",
+    "test": "PORT=3030 react-scripts test",
+    "eject": "PORT=3030 react-scripts eject"
   },
   "eslintConfig": {
     "extends": [
@@ -42,6 +45,6 @@
     ]
   },
   "devDependencies": {
-    "react-router-dom": "^6.4.0"
+    "react-router-dom": "^6.6.1"
   }
 }

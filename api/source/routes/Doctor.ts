@@ -1,14 +1,19 @@
 import express from 'express';
 import controller from '@/controllers/Doctor';
-import {isAuthorized} from "@/middleware/Authorize";
+import userController from '@/controllers/User';
+import { ROLES } from '@/config/settings';
 
 const router = express.Router();
 
-
-router.post('/create',isAuthorized("doctor"), controller.createDoctor);
+//Sciezki niezabepieczone
 router.get('/get/:doctorId', controller.readDoctor);
 router.get('/get/', controller.readAllDoctors);
-router.patch('/update/:doctorId',isAuthorized("doctor"), controller.updateDoctor);
-router.delete('/delete/:doctorId',isAuthorized("doctor"), controller.deleteDoctor);
+
+//Sciezki zabezpieczone
+router.use(userController.verifyJWT);
+router.use(userController.verifyRoles([ROLES.admin, ROLES.doctor]));
+router.post('/create', controller.createDoctor);
+router.patch('/update/:doctorId', controller.updateDoctor);
+router.delete('/delete/:doctorId', controller.deleteDoctor);
 
 export = router;

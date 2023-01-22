@@ -1,0 +1,50 @@
+.rdp {
+    --rdp-cell-size: 60px;
+    --rdp-accent-color: var(--dark);
+    --rdp-background-color: var(--accentDark);
+    --rdp-accent-color-dark: var(--primary);
+    --rdp-background-color-dark: #180270;
+    --rdp-outline: 2px solid var(--rdp-accent-color);
+    /* Outline border for focused elements */
+    --rdp-outline-selected: 3px solid var(--rdp-accent-color);
+    /* Outline border for focused _and_ selected elements */
+    height: 100%;
+    padding: 0 2em;
+}
+
+.rdp-caption {
+    font-size: var(--normal);
+}
+
+.rdp-months {
+    justify-content: center;
+    margin: auto;
+    margin-top: 30px;
+    background-color: var(--background);
+    border-radius: var(--radiusNormal);
+    box-shadow: var(--defaultContainerShadow);
+    height: 85%;
+}
+
+.rdp-head {
+    font-size: var(--normal);
+}
+
+.rdp-tbody {
+    font-size: var(--normal);
+}
+
+.rdp-tfoot>tr>td>p {
+    text-align: center;
+    font-size: var(--normal);
+    font-weight: bold;
+    margin: 20px;
+}
+
+.rdp-button:hover {
+    box-shadow: 0 0 20px #1327352c;
+}
+
+.rdp-day_disabled:hover {
+    box-shadow: none;
+}

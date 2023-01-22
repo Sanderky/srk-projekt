@@ -1,0 +1,178 @@
+.reservationConfirmation {
+    padding-top: 30px;
+    color: var(--dark);
+    max-width: 720px;
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    margin-top: 30px;
+    background-color: var(--background);
+    border-radius: var(--radiusNormal);
+    box-shadow: var(--defaultContainerShadow);
+}
+
+.dataSummary {
+    display: block;
+    padding: 2rem;
+    padding-top: 0;
+    margin-top: 0;
+}
+
+.summaryData {
+    font-weight: bold;
+    color: var(--text);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.summaryText {
+    font-size: var(--normal)
+}
+
+.clearSelections {
+    font-weight: bold;
+    padding: 1.2rem 2rem;
+    background-color: transparent;
+    color: var(--red);
+    border: 2px solid var(--red);
+    text-transform: uppercase;
+    border-radius: var(--radiusSmall);
+    transition: 0.2s;
+    cursor: pointer;
+    box-shadow: 0 0 30px var(--redShadow);
+}
+
+.clearSelections:hover {
+    background-color: var(--red);
+    color: var(--background);
+    border: 2px solid var(--red);
+    box-shadow: var(--redShadow);
+}
+
+
+.emailForm {
+    padding: 2rem;
+}
+
+.formPart {
+    margin-bottom: 1.5rem;
+}
+
+.emailForm label {
+    display: block;
+    padding-left: 1rem;
+    margin-bottom: 5px;
+}
+
+.emailInput {
+    display: block;
+    width: 100%;
+    background-color: var(--accent);
+    border: 0;
+    border-radius: var(--radiusSmall);
+    height: 3rem;
+    padding: 1rem;
+    text-align: center;
+    font-size: 18px;
+    font-weight: var(--bold);
+    letter-spacing: var(--spread);
+    color: var(--dark);
+    border: 2px solid var(--accentDark)
+}
+
+.emailInput:focus {
+    outline: 2px solid var(--dark)
+}
+
+.wrongEmailInput {
+    border: 1px solid var(--red);
+    box-shadow: 0 0 20px #eb5d4735;
+    color: var(--red);
+}
+
+.wrongEmailInput:focus {
+    border: 2px solid var(--red);
+    outline: none;
+}
+
+.emailError {
+    width: 100%;
+    border-bottom: 1px solid var(--red);
+    color: var(--red);
+    padding-left: 1rem;
+    letter-spacing: var(--spreadSpacing);
+    font-weight: bold;
+    margin-top: -1rem;
+    margin-bottom: 1.5rem;
+}
+
+.createReservationButton {
+    font-weight: var(--semiBold);
+    font-size: var(--big);
+    text-decoration: none;
+    color: var(--accent);
+    background-color: var(--green);
+    border: 2px solid var(--green);
+    cursor: pointer;
+    border-radius: var(--radiusSmall);
+    padding: 1rem 1rem 1rem 2rem;
+    margin: 2rem auto;
+    transition: 0.3s;
+    box-shadow: 0 0 30px #56c87871;
+    display: flex;
+    align-items: center;
+}
+
+.createReservationButton:hover {
+    background-color: var(--greenHover);
+    border: 2px solid var(--greenHover);
+    box-shadow: 0 0 30px #56c878a4;
+}
+
+.createReservationButtonInactive {
+    font-weight: var(--semiBold);
+    font-size: var(--big);
+    text-decoration: none;
+    color: var(--subText);
+    background-color: var(--background);
+    border: 2px solid var(--subText);
+    cursor: default;
+    border-radius: var(--radiusSmall);
+    padding: 1rem 1rem 1rem 2rem;
+    margin: 2rem auto;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    transition: all 0.3s;
+}
+
+.nextArrow {
+    width: 2rem;
+    height: 2rem;
+    rotate: 90deg;
+}
+
+@keyframes spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.spinner {
+    height: 50px;
+    width: 50px;
+    margin: auto;
+    margin-bottom: 1rem;
+    margin-top: -40px;
+    animation: spinner 1.5s linear infinite;
+}
+
+.errorFetching {
+    margin: auto;
+    margin-bottom: 24px;
+}

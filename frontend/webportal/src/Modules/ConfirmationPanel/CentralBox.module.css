@@ -1,10 +1,28 @@
 .containerBackground {
-    box-shadow: 0px 20px 36px -8px rgba(14, 14, 44, 0.1), 0px 1px 1px rgba(0, 0, 0, 0.05);
-    border-radius: 24px;
-    background-color: var(--primary);
+    box-shadow: var(--defaultContainerShadow);
+    border-radius: var(--radiusNormal);
     padding-top: 45px;
-    width: 740px;
-    height: 640px;
+    margin: auto;
+    margin-top: 4rem;
+    max-width: 750px;
+    display: flex;
+    flex-direction: column;
+}
+
+.defaultLabel {
+    background-color: var(--primary);
+}
+
+.successLabel {
+    background-color: var(--green);
+}
+
+.wrongCodeLabel {
+    background-color: var(--red);
+}
+
+.warningLabel {
+    background-color: var(--yellow);
 }
 
 
@@ -12,14 +30,15 @@
     background-color: var(--white);
     width: 100%;
     height: 100%;
-    border-radius: 24px;
-    padding: 60px;
+    border-radius: var(--radiusNormal);
+    padding: 4rem;
+    text-align: center;
 }
 
 .text {
     font-weight: var(--semiBold);
     color: var(--dark);
-    letter-spacing: var(--normal);
+    letter-spacing: var(--normalSpacing);
     font-size: var(--monsterText);
 }
 
@@ -31,29 +50,38 @@
 .input {
     background-color: var(--accent);
     border: 0;
-    border-radius: 15px;
-    height: 80px;
-    width: 500px;
-    padding: 12px;
+    border-radius: var(--radiusNormal);
+    max-width: 30rem;
+    width: 100%;
+    height: 5rem;
+    padding: 1rem;
     text-align: center;
-    font-size: var(--titleBig);
+    font-size: 25px;
     font-weight: var(--bold);
     letter-spacing: var(--spread);
     color: var(--subText);
 }
 
 .buttonSend {
-    width: 500px;
-    height: 80px;
-    padding: 12px;
+    max-width: 30rem;
+    width: 100%;
+    height: 6rem;
+    padding: 1rem;
     text-align: center;
     color: var(--white);
     background-color: var(--primary);
-    border-radius: 15px;
+    border-radius: var(--radiusNormal);
     border: 0;
     font-size: var(--titleBig);
     font-weight: var(--bold);
-    margin-top: 25px;
+    margin-top: 3rem;
+    margin-bottom: 25px;
+    transition: 0.2s;
+    letter-spacing: var(--spreadSpacing);
+}
+
+.buttonSend:hover {
+    background-color: var(--primaryHover);
 }
 
 .form {
@@ -64,25 +92,43 @@
 }
 
 .buttonError {
-    background-color: var(--error);
+    background-color: var(--red);
+    transition: 0.2s;
+}
+
+.buttonError:hover {
+    background-color: var(--redHover);
 }
 
 .buttonNew {
     font-weight: var(--semiBold);
     color: var(--text);
-    letter-spacing: var(--normal);
+    letter-spacing: var(--normalSpacing);
     font-size: var(--monsterText);
     background-color: transparent;
     border: 0;
     text-align: center;
     align-self: center;
     margin-top: 40px;
+    transition: 0.2s;
+    border: 1px solid var(--text);
+    border-radius: var(--radiusNormal);
+    padding: 10px 40px;
 }
 
-.WrongCode, .TooFast, .success {
+.buttonNew:hover {
+    color: var(--dark);
+    background-color: var(--whiteHover);
+}
+
+.WrongCode,
+.TooFast,
+.TooLate,
+.success {
     display: flex;
     flex-direction: column;
     height: 100%;
+    align-items: center;
 }
 
 .buttonWrapper {
@@ -111,9 +157,28 @@
 .ConfirmationDataLabel {
     font-weight: var(--semiBold);
     color: var(--dark);
-    letter-spacing: var(--normal);
-    font-size: var(--monsterText);
-    font-size: var(--titleBig);
+    letter-spacing: var(--normalSpacing);
+    font-size: var(--titleSmall);
     margin-right: 25px;
 }
 
+@keyframes spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.spinnerActive {
+    height: 80px;
+    width: 80px;
+    margin: 20px;
+    animation: spinner 1.5s linear infinite;
+}
+
+.spinnerDisabled {
+    display: none;
+}

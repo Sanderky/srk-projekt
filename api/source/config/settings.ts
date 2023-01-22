@@ -2,7 +2,7 @@
 // SETTINGS FOR WORKDAYS
 //====================================================================
 
-const DAY_COUNT = 30;
+const DAY_COUNT = 90;
 const WORKDAY_START = 480; // in minutes from midnight, 480 -> 8:00
 const WORKDAY_END = 900; // in minutes from midnight, 900 -> 15:00
 const SLOT_DURATION = 30; // in minutes
@@ -42,3 +42,20 @@ export const cronSettings = {
 		minutes: TIME_OF_DELETE_MINUTES
 	}
 };
+
+//====================================================================
+// SETTINGS FOR TICKETS
+//====================================================================
+const FIRST_IN_QUE_THESHOLD = 20; //minutes threshold after which ticket is directed to last index
+export const lateThreshhold = FIRST_IN_QUE_THESHOLD;
+
+//====================================================================
+// SETTINGS FOR ROLES
+//====================================================================
+export const ROLES = {
+	admin: 'admin',
+	staff: 'staff',
+	doctor: 'doctor'
+};
+
+export const FRONTEND_BASE_URL = 'http://localhost:3030';

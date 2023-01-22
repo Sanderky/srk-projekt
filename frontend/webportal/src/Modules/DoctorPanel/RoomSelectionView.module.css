@@ -1,0 +1,74 @@
+.roomSelectionContainer {
+    margin: auto;
+    display: block;
+    text-align: center;
+    padding-top: 5rem;
+}
+
+.roomSelectionLabel {
+    display: block;
+    margin: auto;
+    margin-bottom: 0.5rem;
+    color: var(--subText);
+    font-weight: bold;
+}
+
+.roomSelection {
+    text-align: center;
+    display: block;
+    margin: auto;
+    padding: 1rem 0;
+    width: 25rem;
+    font-size: var(--bigger);
+    font-weight: bold;
+    color: var(--text);
+    border-radius: var(--radiusNormal);
+    border: 2px solid var(--accentDark);
+    background-color: var(--accent);
+    transition: 0.2s;
+}
+
+.roomSelection:hover {
+    background-color: var(--accentDark);
+}
+
+.startTakingPatientsButton {
+    display: block;
+    margin: auto;
+    margin-top: 3rem;
+    width: 25rem;
+    padding: 2rem 0;
+    font-size: var(--bigger);
+    font-weight: bold;
+    color: var(--background);
+    border-radius: var(--radiusNormal);
+    border: none;
+    background-color: var(--green);
+    transition: 0.2s;
+}
+
+.startTakingPatientsButton:hover {
+    background-color: var(--greenHover);
+    box-shadow: var(--greenShadow);
+}
+
+.startTakingPatientsButton:active {
+    background-color: var(--greenActive);
+}
+
+.startTakingPatientsButton:disabled {
+    background-color: var(--accentDark);
+    box-shadow: none;
+    cursor: default;
+    color: var(--subText);
+}
+
+.errorMessage {
+    color: var(--red);
+    font-weight: bold;
+    margin: 1rem auto;
+    max-width: 20rem;
+    border-bottom: 1px solid var(--red);
+    letter-spacing: var(--spreadSpacing);
+    cursor: default;
+}

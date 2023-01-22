@@ -14,7 +14,7 @@
 .logo {
     font-weight: var(--bold);
     font-size: var(--header1);
-    color: var(--white); 
+    color: var(--white);
     letter-spacing: var(--spread);
     text-align: center;
 }
@@ -24,22 +24,23 @@
     height: 0.5em;
     background-color: var(--white);
     align-self: center;
-    border-radius: 15px;
+    border-radius: var(--radiusSmall);
 }
 
 .clock {
     font-weight: var(--bold);
     font-size: 128px;
     color: var(--white);
-    letter-spacing: var(--normal);
+    letter-spacing: var(--normalSpacing);
     text-align: center;
 }
 
-.info, .clickMe {
+.info,
+.clickMe {
     font-weight: var(--bold);
     font-size: var(--header2);
-    color: var(--white); 
-    letter-spacing: var(--normal);
+    color: var(--white);
+    letter-spacing: var(--normalSpacing);
     text-align: center;
 }
 

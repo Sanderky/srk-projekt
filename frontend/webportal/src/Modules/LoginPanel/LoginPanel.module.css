@@ -1,8 +1,11 @@
+.loginWrapper {
+    margin-top: 5em;
+}
+
 .main {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
 }
 
 .logo {
@@ -25,6 +28,7 @@
 }
 
 .label {
+    margin-left: 0.5rem;
     color: var(--subText);
     font-size: var(--big);
     font-weight: var(--semiBold);
@@ -33,9 +37,9 @@
 
 .input {
     background-color: var(--accent);
-    border-color: var(--dark);
+    border-color: var(--text);
     border-width: 1px;
-    border-radius: 15px;
+    border-radius: var(--radiusSmall);
     width: 400px;
     height: 55px;
     border-style: solid;
@@ -52,22 +56,30 @@
 
 .input:focus {
     border-color: var(--dark);
-    border-width: 2px;
+    border-width: 3px;
     outline: none;
 }
 
 .submitButton {
-    background-color: transparent;
-    border-width: 0;
-    color: var(--subText);
-    font-size: var(--big);
     font-weight: var(--semiBold);
-    margin-top: 24px;
+    font-size: var(--big);
+    text-decoration: none;
+    color: var(--accent);
+    background-color: var(--primary);
+    border: 2px solid var(--primary);
     cursor: pointer;
+    border-radius: var(--radiusSmall);
+    padding: 1rem 2rem;
+    margin: 2rem auto;
+    transition: 0.2s;
+    display: flex;
+    align-items: center;
 }
 
 .submitButton:hover {
-    color: var(--dark);
+    background-color: var(--primaryHover);
+    border: 2px solid var(--primaryHover);
+    box-shadow: var(--primaryShadow);
 }
 
 .loginForm {
@@ -77,13 +89,30 @@
 }
 
 .error {
-    color: var(--error);
-    border-color: var(--error);
+    color: var(--red);
+    border-color: var(--red);
 }
 
 .errorMsg {
-    color: var(--error);
-    font-size: var(--big);
+    color: var(--red);
+    font-size: var(--normal);
     font-weight: var(--semiBold);
     margin-top: 24px;
+}
+
+@keyframes spinner {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.spinner {
+    height: 50px;
+    width: 50px;
+    margin: 0 auto;
+    animation: spinner 1.5s linear infinite;
 }

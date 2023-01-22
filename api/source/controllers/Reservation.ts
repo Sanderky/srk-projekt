@@ -1,14 +1,23 @@
 import { NextFunction, Request, Response } from 'express';
-import mongoose from 'mongoose';
+import mongoose, { ObjectId } from 'mongoose';
 import Reservation from '@/models/Reservation';
-import { generateReservationCode } from '@/library/GenerateReservationCode';
-import { dayIdByDate } from '@/library/DaysUtils'
-import { updateSlotForNewReservation, makeSlotAvailable } from '@/library/ReservationUtils';
+import { dayIdByDate } from '@/library/DaysUtils';
+import { generateReservationCode, updateSlotForNewReservation, makeSlotAvailable, flagAsRegistered } from '@/library/ReservationUtils';
 import Log from '@/library/Logging';
+import mailService from '@/services/Mailer';
+
+interface CreateResReqBody {
+	email: String;
+	doctorId: mongoose.Types.ObjectId;
+	date: Date;
+	time: string;
+	doctorName: String;
+}
 
 const createReservation = async (req: Request, res: Response, next: NextFunction) => {
-	const { email, doctorId, day, time } = req.body;
+	const { email, doctorId, date, time, doctorName }: CreateResReqBody = req.body;
 	try {
+		const day = new Date(date).toISOString();
 		const dayId = await dayIdByDate(doctorId, day)
 			.then((result) => {
 				return result;
@@ -16,10 +25,9 @@ const createReservation = async (req: Request, res: Response, next: NextFunction
 			.catch((error) => {
 				throw error;
 			});
-		await updateSlotForNewReservation(doctorId, dayId, day, time)
-			.catch((error) => {
-				throw error;
-			});
+		await updateSlotForNewReservation(doctorId.toString(), dayId, date, time).catch((error) => {
+			throw error;
+		});
 
 		const reservationCode = await generateReservationCode()
 			.then((result) => {
@@ -38,7 +46,16 @@ const createReservation = async (req: Request, res: Response, next: NextFunction
 		});
 		return await reservation
 			.save()
-			.then((reservation) => res.status(201).json({ reservation }))
+			.then((reservation) => {
+				mailService.sendConfirmationEmail({
+					email: email,
+					date: new Date(date).toLocaleDateString('pl-PL'),
+					code: reservationCode,
+					doctor: doctorName,
+					time: time
+				});
+				res.status(201).json({ reservation });
+			})
 			.catch((error) => {
 				throw error;
 			});
@@ -57,36 +74,67 @@ const readReservation = async (req: Request, res: Response, next: NextFunction) 
 };
 
 const readAllReservations = async (req: Request, res: Response, next: NextFunction) => {
-	return Reservation.find()
-		.populate('doctorId', '-days -__v')
-		.then((reservations) => res.status(200).json({ reservations }))
-		.catch((error) => res.status(500).json({ error }));
+	const { reservationCode } = req.query;
+	try {
+		if (reservationCode) {
+			return await Reservation.findOne({ reservationCode: reservationCode })
+				.populate('doctorId', '-days -__v')
+				.then((reservation) => (reservation ? res.status(200).json({ reservation }) : res.status(404).json({ message: 'Not found' })));
+		} else {
+			return await Reservation.find()
+				.populate('doctorId', '-days -__v')
+				.then((reservations) => res.status(200).json({ reservations }));
+		}
+	} catch (error) {
+		Log.error(error);
+		res.status(500).json({ error });
+	}
 };
 
 const updateReservation = async (req: Request, res: Response, next: NextFunction) => {
 	const reservationId = req.params.reservationId;
-	return await Reservation.findById(reservationId)
-		.then((reservation) => {
-			if (reservation) {
-				reservation.set(req.body);
-				return reservation
-					.save()
-					.then((reservation) => res.status(201).json({ reservation }))
-					.catch((error) => res.status(500).json({ error }));
-			} else {
-				res.status(404).json({ message: 'Not found' });
-			}
-		})
-		.catch((error) => res.status(500).json({ error }));
+	const { doctorId, day, time } = req.body;
+	try {
+		await makeSlotAvailable(reservationId).catch((error) => {
+			throw error;
+		});
+		const dayId = await dayIdByDate(doctorId, day)
+			.then((result) => {
+				return result;
+			})
+			.catch((error) => {
+				throw error;
+			});
+		await updateSlotForNewReservation(doctorId, dayId, day, time).catch((error) => {
+			throw error;
+		});
+		return await Reservation.findById(reservationId)
+			.then((reservation) => {
+				if (reservation) {
+					reservation.set(req.body);
+					return reservation
+						.save()
+						.then((reservation) => res.status(201).json({ reservation }))
+						.catch((error) => res.status(500).json({ error }));
+				} else {
+					res.status(404).json({ message: 'Not found' });
+				}
+			})
+			.catch((error) => {
+				throw error;
+			});
+	} catch (error) {
+		Log.error(error);
+		res.status(500).json({ error });
+	}
 };
 
 const deleteReservation = async (req: Request, res: Response, next: NextFunction) => {
 	try {
 		const reservationId = req.params.reservationId;
-		await makeSlotAvailable(reservationId)
-			.catch((error) => {
-				throw error;
-			});
+		await makeSlotAvailable(reservationId).catch((error) => {
+			throw error;
+		});
 		const reservation = await Reservation.findByIdAndDelete(reservationId);
 		return reservation ? res.status(201).json({ message: `Deleted: ${reservationId})` }) : res.status(404).json({ message: 'Not found' });
 	} catch (error) {
@@ -96,16 +144,21 @@ const deleteReservation = async (req: Request, res: Response, next: NextFunction
 };
 
 const loginWithReservation = async (req: Request, res: Response, next: NextFunction) => {
-	const { email, reservationCode } = req.body;
-	Reservation.find({ email: email, reservationCode: reservationCode }, (err: any, reservations: any) => {
-		if (err) return res.status(500).json({ err });
-		if (reservations.length != 0) {
-			Reservation.find({ email: email }, (err: any, reservations: any) => {
-				if (err) return res.status(500).json({ err });
-				return res.status(200).json({ reservations });
-			});
-		} else res.status(404).json({ message: 'Not found / Bad credentials' });
-	});
+	const { reservationCode } = req.body;
+	try {
+		const reservations = await Reservation.find({ reservationCode: reservationCode }).exec();
+		if (reservations.length === 1) {
+			flagAsRegistered(reservationCode);
+			return res.status(200).json({ message: 'Registered' });
+		} else if (reservations.length > 1) {
+			throw new Error('Multiple reservations with the same code.');
+		} else {
+			return res.status(404).json({ message: 'Not found.' });
+		}
+	} catch (error) {
+		Log.error(error);
+		res.status(500).json({ error });
+	}
 };
-//TODO Poprawić powyższe spaghetti.
+
 export default { createReservation, readReservation, readAllReservations, updateReservation, deleteReservation, loginWithReservation };

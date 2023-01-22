@@ -12,15 +12,16 @@ import reservationRoutes from '@/routes/Reservation';
 import userRoutes from '@/routes/User';
 import daysRoutes from '@/routes/Days';
 import slotsRoutes from '@/routes/Slots';
-import session from 'express-session';
-import MongoStore from 'connect-mongo';
-import passport from 'passport';
-
+import queRoutes from '@/routes/Que';
+import ticketRoutes from '@/routes/Ticket';
+import roomRoutes from '@/routes/Room';
+import cookieParser from 'cookie-parser';
 const router = express();
 
+mongoose.set('strictQuery', true);
 // Connect to Mongo
 mongoose
-	.connect(config.mongo.url, { retryWrites: true, w: 'majority' })
+	.connect(config.mongo.url, { retryWrites: true, w: 'majority', authSource: 'admin' })
 	.then(() => {
 		Log.info('Connected to MongoDB.');
 		startServer();
@@ -37,39 +38,19 @@ const startServer = () => {
 	// Middleware
 	router.use(express.urlencoded({ extended: true }));
 	router.use(express.json());
-
+	router.use(cookieParser());
 	//Custom Middleware
 	router.use(logTraffic);
 	router.use(rules);
 
-	//Creating new session Store
-	const sessionStore = new MongoStore({
-		mongoUrl: config.mongo.url,
-		collectionName: 'sessions'
-	});
-
-	//Implementing session Middleware
-	router.use(
-		session({
-			secret: 'someSecret',
-			resave: false,
-			saveUninitialized: true,
-			store: sessionStore,
-			cookie: {
-				maxAge: 1000 * 60 * 60 * 24 // 1 Day
-			}
-		})
-	);
-
-	router.use(passport.initialize());
-	router.use(passport.session());
-
-	require('@/middleware/Passport');
 	// Routes
 	router.use('/doctor', doctorRoutes);
 	router.use('/days', daysRoutes);
 	router.use('/slots', slotsRoutes);
 	router.use('/reservation', reservationRoutes);
+	router.use('/que', queRoutes);
+	router.use('/ticket', ticketRoutes);
+	router.use('/room', roomRoutes);
 	router.use('/user', userRoutes);
 
 	// Healthcheck Route

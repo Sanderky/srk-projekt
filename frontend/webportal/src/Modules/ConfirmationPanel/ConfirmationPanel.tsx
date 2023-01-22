@@ -1,37 +1,33 @@
-import { useState } from "react";
-import Header from "./Header";
-import HelloScreen from './HelloScreen';
+// import { useState } from 'react';
+// import Header from './Header';
+// import HelloScreen from './HelloScreen';
+import logo from '../../Assets/Images/logo.png';
+import Clock from '../../Components/Clock';
 import CentralBox from './CentralBox';
-import styles from "./ConfirmationPanel.module.css";
+import styles from './ConfirmationPanel.module.css';
 
+function Header() {
+	return (
+		<div className={styles.confirmHeader}>
+			<div className={styles.headerWrapper}>
+				<div className={styles.logo}>
+					<img className={styles.logoImage} src={logo} alt="Logo" />
+					<h1 className={styles.logoText}>SRK</h1>
+				</div>
+				<Clock />
+			</div>
+		</div>
+	);
+}
 
 const ConfirmationPanel = () => {
-    const [helloScreen, renderHelloScreen] = useState(true);
-
-    const hideHelloScreen = () => {
-        renderHelloScreen(false);
-    }
-
-    const showHelloScreen = () => {
-        renderHelloScreen(true);
-    }
-
-    if(helloScreen) {
-        return <HelloScreen onClick={hideHelloScreen}/>;
-    }
-    else{
-        return (
-            <div className={styles.main}>
-                <Header/>
-                <div className={styles.centralBoxWrapper}>
-                    <CentralBox showHelloScreen={showHelloScreen}/>
-                </div>
-                
-            </div>
-            
-        );
-    }
-    
-}
+	return (
+		<div className={styles.main}>
+			<Header />
+			<CentralBox />
+		</div>
+	);
+	// }
+};
 
 export default ConfirmationPanel;

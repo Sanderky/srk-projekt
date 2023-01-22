@@ -1,0 +1,16 @@
+.ticketDefault {
+    font-size: var(--titleBig);
+    font-weight: bold;
+    text-align: center;
+    padding: 10px
+}
+
+.ticketNext {
+    font-size: var(--header2);
+    font-weight: bold;
+    text-align: center;
+    padding: 10px;
+    text-decoration: underline var(--primary) solid 12px;
+    text-underline-offset: 10px;
+    /* border: 1px solid black; */
+}

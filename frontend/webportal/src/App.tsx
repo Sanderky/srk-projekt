@@ -1,20 +1,35 @@
-import React from 'react';
 import ConfirmationPanel from './Modules/ConfirmationPanel/ConfirmationPanel';
-import Dashboard from './Modules/Dashboard/Dashboard';
+import DoctorPanel from './Modules/DoctorPanel/DoctorPanel';
+import LoginPanel from './Modules/LoginPanel/LoginPanel';
+import AdminPanel from './Modules/AdminPanel/AdminPanel';
 import Registration from './Modules/Registration/Registration';
-import ReactDOM from "react-dom/client";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import MainDisplay from './Modules/MainDisplay/MainDisplay';
+import PersistLogin from './Components/PersistLogin';
+import { Routes, Route } from 'react-router-dom';
+import RequireAuth from './Components/RequireAuth';
+import { ROLES } from './config/settings';
 
 function App() {
-  return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/dashboard" element={<Dashboard />}/>
-        <Route path="/confirmation-panel" element={<ConfirmationPanel />}/>
-        <Route path="/" element={<Registration />}/>
-      </Routes>
-    </BrowserRouter>
-  );
+	return (
+		<Routes>
+			{/* Not protected */}
+			<Route path="/" element={<Registration />} />
+			<Route path="login-panel" element={<LoginPanel />} />
+			{/* Protected */}
+			<Route element={<PersistLogin />}>
+				<Route element={<RequireAuth allowedRoles={[ROLES.admin, ROLES.staff]} />}>
+					<Route path="/main-display" element={<MainDisplay />} />
+					<Route path="/confirmation-panel" element={<ConfirmationPanel />} />
+				</Route>
+				<Route element={<RequireAuth allowedRoles={[ROLES.admin, ROLES.doctor]} />}>
+					<Route path="/doctor-panel" element={<DoctorPanel />} />
+				</Route>
+				<Route element={<RequireAuth allowedRoles={[ROLES.admin]} />}>
+					<Route path="/admin-panel" element={<AdminPanel />} />
+				</Route>
+			</Route>
+		</Routes>
+	);
 }
 
 export default App;

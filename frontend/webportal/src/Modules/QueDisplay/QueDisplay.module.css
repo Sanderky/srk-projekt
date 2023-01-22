@@ -1,0 +1,82 @@
+.queDisplay {
+    display: flex;
+    flex-direction: column;
+    padding-top: 40px;
+}
+
+/* activeTicket Container */
+.callingTicket {
+    text-align: center;
+    font-size: var(--header1);
+    margin-bottom: 20px;
+}
+
+.roomID {
+    text-align: center;
+    font-size: var(--titleBig);
+    margin-bottom: 30px;
+}
+
+/* contentWrapper */
+.contentWrapper {
+    width: 100%;
+    background-color: var(--primary);
+    border-radius: var(--radiusNormal);
+}
+
+/* contentContainer with descriptions and ques */
+.contentContainer {
+    display: flex;
+    padding-top: 45px;
+}
+
+.descriptionContainer {
+    flex: 1;
+    justify-content: center;
+    border-top-left-radius: 24px;
+    border-bottom-left-radius: 24px;
+}
+
+.quesContainer {
+    flex: 7;
+    justify-content: center;
+    display: flex;
+    flex-direction: row;
+    height: 76vh;
+}
+
+/* descriptionContainer */
+.descriptionContainer {
+    display: flex;
+    flex-direction: column;
+}
+
+/* decription elements */
+.descriptionElement {
+    text-align: center;
+    padding: 20px;
+    background-color: var(--whiteHover);
+    flex: 1;
+    font-size: var(--titleSmall);
+    font-weight: bold;
+    /* border: 1px solid black; */
+}
+
+.roomNumberDivider {
+    border: 3px solid var(--primary);
+}
+
+.roomNumberTitle {
+    border-top-left-radius: 24px;
+}
+
+.firstTicketTitle {
+    padding: 21px;
+}
+
+.otherTicketTitle {
+    border-bottom-left-radius: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
