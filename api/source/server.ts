@@ -3,7 +3,7 @@ import express from 'express';
 import http from 'http';
 import mongoose from 'mongoose';
 import { config } from '@/config/config';
-import { updateDoctorsDayArrays, deleteOutdatedReservations } from '@/library/CronJobs';
+import { updateDoctorsDayArrays, deleteOutdatedReservations } from '@/services/CronJobs';
 import Log from '@/library/Logging';
 import { logTraffic } from '@/middleware/LogTraffic';
 import { rules } from '@/middleware/Rules';
@@ -54,16 +54,15 @@ const startServer = () => {
 	router.use('/user', userRoutes);
 
 	// Healthcheck Route
-	router.get('/healthcheck', (req, res, next) => {
+	router.get('/healthcheck', (req: express.Request, res: express.Response) => {
 		res.status(200).json({ message: 'All good.' });
 		Log.debug('Healthcheck - all good.');
 	});
 
 	// Error Handling
-	router.use((req, res, next) => {
+	router.use((req: express.Request, res: express.Response) => {
 		const error = new Error('Not found');
 		Log.error(error);
-
 		return res.status(404).json({ message: error.message });
 	});
 

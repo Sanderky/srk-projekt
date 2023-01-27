@@ -85,7 +85,7 @@ function createSlotArray() {
 //====================================================================
 // Creating array of days with length configured in @/config/settings
 //====================================================================
-const createDayArray = (doctorId: mongoose.Types.ObjectId, daysId: mongoose.Types.ObjectId, firstname: string, lastname: string) => {
+const createDayArray = async (doctorId: mongoose.Types.ObjectId, daysId: mongoose.Types.ObjectId, firstname: string, lastname: string) => {
 	const slotsArray = createSlotArray();
 
 	const dayCount = workdaySettings.days.dayCount || 30;
@@ -103,14 +103,14 @@ const createDayArray = (doctorId: mongoose.Types.ObjectId, daysId: mongoose.Type
 		date.setUTCMinutes(0);
 		date.setUTCSeconds(0);
 		date.setUTCMilliseconds(0);
-		new Slots({
+		await new Slots({
 			_id: slotsId,
 			doctorId: doctorId,
 			dayId: dayId,
 			slots: slotsArray
 		}).save();
 	}
-	new Days({
+	await new Days({
 		_id: daysId,
 		doctorId: doctorId,
 		doctorName: `${firstname} ${lastname}`,
@@ -180,10 +180,10 @@ const dayIdByDate = async (doctorId: mongoose.Types.ObjectId, dayDate: Date | st
 			if (found) {
 				return found._id.toString();
 			} else {
-				new Error('Object with specified date cannot be found in days array of days object.');
+				return new Error('Object with specified date cannot be found in days array of days object.');
 			}
 		} else {
-			new Error('Doctor with specified ID does not exist.');
+			return new Error('Doctor with specified ID does not exist.');
 		}
 	});
 };
@@ -193,7 +193,7 @@ const dayIdByDate = async (doctorId: mongoose.Types.ObjectId, dayDate: Date | st
 //====================================================================
 const deleteSlotsForDay = async (slotsId: string) => {
 	if (!slotsId) {
-		throw Error(`Slots object with ID ${slotsId} does not exist.`);
+		return Error(`Slots object with ID ${slotsId} does not exist.`);
 	} else {
 		await Slots.findByIdAndDelete(slotsId);
 	}

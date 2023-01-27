@@ -23,10 +23,10 @@ function updateQuePanel() {
 	return updateResponse.write(`data: ${JSON.stringify('Que updated')}\n\n`);
 }
 
-const createQue = (req: Request, res: Response) => {
+const createQue = async (req: Request, res: Response) => {
 	const { doctorId, roomNumber } = req.body;
 	const doctorIdObj = new mongoose.Types.ObjectId(doctorId);
-	const ticketArray: mongoose.AnyObject = [];
+	const ticketArray: mongoose.Types.ObjectId[] = [];
 	try {
 		let que;
 		if (!doctorIdObj) {
@@ -37,19 +37,13 @@ const createQue = (req: Request, res: Response) => {
 				roomNumber,
 				activeTickets: ticketArray
 			});
+			await que.save();
+			updateQuePanel();
+			return res.status(201).json({ que });
 		}
-		return que
-			.save()
-			.then((que) => {
-				res.status(201).json({ que });
-				updateQuePanel();
-			})
-			.catch((error) => {
-				throw error;
-			});
 	} catch (error) {
 		Log.error(error);
-		res.status(500).json({ error });
+		return res.status(500).json({ error });
 	}
 };
 
