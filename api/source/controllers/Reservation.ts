@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import mongoose, { ObjectId } from 'mongoose';
+import mongoose from 'mongoose';
 import Reservation from '@/models/Reservation';
 import { dayIdByDate } from '@/library/DaysUtils';
 import { generateReservationCode, updateSlotForNewReservation, makeSlotAvailable, flagAsRegistered } from '@/library/ReservationUtils';
@@ -14,28 +14,11 @@ interface CreateResReqBody {
 	doctorName: String;
 }
 
-const createReservation = async (req: Request, res: Response, next: NextFunction) => {
+const createReservation = async (req: Request, res: Response) => {
 	const { email, doctorId, date, time, doctorName }: CreateResReqBody = req.body;
 	try {
 		const day = new Date(date).toISOString();
-		const dayId = await dayIdByDate(doctorId, day)
-			.then((result) => {
-				return result;
-			})
-			.catch((error) => {
-				throw error;
-			});
-		await updateSlotForNewReservation(doctorId.toString(), dayId, date, time).catch((error) => {
-			throw error;
-		});
-
-		const reservationCode = await generateReservationCode()
-			.then((result) => {
-				return result;
-			})
-			.catch((error) => {
-				throw error;
-			});
+		const reservationCode = await generateReservationCode();
 		const reservation = new Reservation({
 			_id: new mongoose.Types.ObjectId(),
 			reservationCode,
@@ -44,21 +27,17 @@ const createReservation = async (req: Request, res: Response, next: NextFunction
 			day,
 			time
 		});
-		return await reservation
-			.save()
-			.then((reservation) => {
-				mailService.sendConfirmationEmail({
-					email: email,
-					date: new Date(date).toLocaleDateString(),
-					code: reservationCode,
-					doctor: doctorName,
-					time: time
-				});
-				res.status(201).json({ reservation });
-			})
-			.catch((error) => {
-				throw error;
-			});
+		const dayId = await dayIdByDate(doctorId, day);
+		const error = await updateSlotForNewReservation(doctorId.toString(), dayId, date, time);
+		await reservation.save();
+		mailService.sendConfirmationEmail({
+			email: email,
+			date: new Date(date).toLocaleDateString(),
+			code: reservationCode,
+			doctor: doctorName,
+			time: time
+		});
+		return res.status(201).json({ reservation });
 	} catch (error) {
 		Log.error(error);
 		res.status(500).json({ error });

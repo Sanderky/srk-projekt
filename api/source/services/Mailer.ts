@@ -17,48 +17,52 @@ interface Email {
 
 const sendConfirmationEmail = (mailParameters: Email) => {
 	const { email, date, code, doctor, time } = mailParameters;
+	try {
+		const transporter = nodemailer.createTransport({
+			service: 'gmail',
+			auth: {
+				user: GMAIL_USERNAME,
+				pass: GMAIL_PASSWORD
+			}
+		});
 
-	const transporter = nodemailer.createTransport({
-		service: 'gmail',
-		auth: {
-			user: GMAIL_USERNAME,
-			pass: GMAIL_PASSWORD
-		}
-	});
+		const handlebarOptions = {
+			viewEngine: {
+				extname: '.handlebars',
+				partialsDir: path.resolve('../api/public/views/email/'),
+				layoutsDir: path.resolve('../api/public/views/email/'),
+				defaultLayout: 'email'
+			},
+			viewPath: path.resolve('../api/public/views/email/')
+		};
 
-	const handlebarOptions = {
-		viewEngine: {
-			extname: '.handlebars',
-			partialsDir: path.resolve('../api/public/views/email/'),
-			layoutsDir: path.resolve('../api/public/views/email/'),
-			defaultLayout: 'email'
-		},
-		viewPath: path.resolve('../api/public/views/email/')
-	};
+		transporter.use('compile', hbs(handlebarOptions));
 
-	transporter.use('compile', hbs(handlebarOptions));
+		const mailOptions = {
+			from: `"SRK" <${GMAIL_USERNAME}>`,
+			to: `${email}`,
+			subject: 'Potwierdzenie rezerwacji SRK',
+			template: 'email',
+			context: {
+				code: `${code}`, //replace {{code}} with reservation code
+				date: `${date}`, //replace {{date}} with reservation date
+				doctor: `${doctor}`,
+				time: `${time}`
+			}
+		};
 
-	const mailOptions = {
-		from: `"SRK" <${GMAIL_USERNAME}>`,
-		to: `${email}`,
-		subject: 'Potwierdzenie rezerwacji SRK',
-		template: 'email',
-		context: {
-			code: `${code}`, //replace {{code}} with reservation code
-			date: `${date}`, //replace {{date}} with reservation date
-			doctor: `${doctor}`,
-			time: `${time}`
-		}
-	};
-
-	transporter.sendMail(mailOptions, (error, info) => {
-		if (error) {
-			Log.error(error);
-			return error;
-		}
-		Log.info('Confirmation email sent to: ' + email);
+		transporter.sendMail(mailOptions, (error, info) => {
+			if (error) {
+				Log.error(error);
+				return;
+			}
+			Log.info('Confirmation email sent to: ' + email);
+			return;
+		});
+	} catch (error) {
+		Log.error(error);
 		return;
-	});
+	}
 };
 
 export default { sendConfirmationEmail };

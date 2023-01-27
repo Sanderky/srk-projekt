@@ -3,26 +3,28 @@ import Reservation from '@/models/Reservation';
 import Slots from '@/models/Slots';
 import mongoose from 'mongoose';
 import { dayIdByDate } from '@/library/DaysUtils';
+import { RESERVATION_CODE_LENGTH } from '@/config/settings';
 import Log from '@/library/Logging';
 
 export { generateReservationCode, updateSlotForNewReservation, makeSlotAvailable, deleteOutdatedReservation, flagAsRegistered };
 
 const generateReservationCode = async () => {
-	let resp: any = [];
-	let randCode;
+	const characters = '0123456789';
+	let result = '';
+	let control = [];
 	do {
-		randCode = 'REZ' + Math.floor(Math.random() * 99999);
-		resp = await Reservation.find({ reservationCode: randCode }).exec();
-	} while (resp.length != 0);
-	return randCode;
+		while (result.length < RESERVATION_CODE_LENGTH) {
+			result += characters.charAt(Math.floor(Math.random() * characters.length));
+		}
+		control = await Reservation.find({ reservationCode: result }).exec();
+	} while (control.length !== 0);
+	return result;
 };
 
 const updateSlotForNewReservation = async (doctorId: string, dayId: string, dayDate: Date, time: string) => {
 	const doctor = new mongoose.Types.ObjectId(doctorId);
 	const day = new mongoose.Types.ObjectId(dayId);
-	const occupied = await Reservation.findOne({ doctorId: doctorId, day: dayDate, time: time }).then((reservation: any) => {
-		return reservation;
-	});
+	const occupied = await Reservation.findOne({ doctorId: doctorId, day: dayDate, time: time });
 	if (occupied) {
 		throw Error('Reservation with given details already exists.');
 	}
@@ -34,6 +36,7 @@ const updateSlotForNewReservation = async (doctorId: string, dayId: string, dayD
 		if (found) {
 			if (found.availability) {
 				found.availability = false;
+				Log.info('Slot updated.');
 				await slotsObj.save();
 			} else {
 				throw Error('Slot occupied.');

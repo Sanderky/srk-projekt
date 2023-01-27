@@ -41,17 +41,11 @@ const createTicket = async (req: Request, res: Response) => {
 			reservationCode: reservationCode,
 			roomNumber: roomNumber
 		});
-		return ticket
-			.save()
-			.then(async (ticket) => {
-				const queResponse = await insertTicketIntoQue(ticketId);
-				updateTicketList();
-				queController.updateQuePanel();
-				res.status(201).json({ ticket, queResponse });
-			})
-			.catch((error) => {
-				throw error;
-			});
+		await ticket.save();
+		const queResponse = await insertTicketIntoQue(ticketId);
+		updateTicketList();
+		queController.updateQuePanel();
+		return res.status(201).json({ ticket, queResponse });
 	} catch (error) {
 		Log.error(error);
 		res.status(500).json({ error });

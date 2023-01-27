@@ -47,7 +47,7 @@ export const cronSettings = {
 // SETTINGS FOR TICKETS
 //====================================================================
 const FIRST_IN_QUE_THESHOLD = 20; //minutes threshold after which ticket is directed to last index
-export const lateThreshhold = FIRST_IN_QUE_THESHOLD;
+export const lateThreshold = FIRST_IN_QUE_THESHOLD;
 
 //====================================================================
 // SETTINGS FOR ROLES
@@ -59,3 +59,5 @@ export const ROLES = {
 };
 
 export const FRONTEND_BASE_URL = 'http://localhost:3030';
+
+export const RESERVATION_CODE_LENGTH = 5;
