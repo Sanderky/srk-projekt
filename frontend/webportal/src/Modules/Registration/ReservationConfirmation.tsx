@@ -98,7 +98,7 @@ function EmailForm({ doctorId, date, time, createReservation }: ReservationDataP
 		if (isEmailDirty) {
 			isValid ? setShowErrorMessageNotValid(true) : setShowErrorMessageNotValid(false);
 		}
-	}, [isEmailDirty, isConfirmEmailDirty]);
+	}, [isEmailDirty]);
 
 	function ifButtonActive() {
 		if (email.current?.value !== '' && confirmEmail.current?.value !== '') {
