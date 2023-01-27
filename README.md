@@ -60,10 +60,10 @@ W katalogu głównym skonfigurowane zostały skrypty umożliwiające szybką ins
 
 - `npm run install` - skrypt, ktory wykonuje polecenie `npm install` w katalogu _api_ oraz w katalogu _frontend_ jednocześnie.
 
-- `npm run devstart` - skrypt umożliwiający jednoczesne uruchomienie frontendu i backendu. W katalogu _api_ uruchamiany jest polecenie `npm run serve`, a w katalogu _frontend/webportal_ `npm start`.
+- `npm run devstart` - skrypt umożliwiający jednoczesne uruchomienie frontendu i backendu. W katalogu _api_ uruchamiany jest polecenie `npm run serve`, a w katalogu _frontend_ `npm start`.
 
 Frontend działa na porcie `:3000`, a backend na `:4000`.
 
 ### Informacje o działaniu backendu dostępne w pliku `README.md` w katalogu `api`.
 
-### Informacje o działaniu frontendu dostępne w pliku `README.md` w katalogu `frontend/webportal`.
+### Informacje o działaniu frontendu dostępne w pliku `README.md` w katalogu `frontend`.

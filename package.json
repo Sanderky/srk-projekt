@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "Praca dyplomowa inżynierska",
   "scripts": {
-    "install": "npm install concurrently && concurrently \"cd frontend/webportal && npm install\" \"cd api && npm install\"",
-    "devstart": "concurrently \"cd frontend/webportal && npm start\" \"cd api && npm run serve\""
+    "install": "npm install concurrently && concurrently \"cd frontend && npm install\" \"cd api && npm install\"",
+    "devstart": "concurrently \"cd frontend && npm start\" \"cd api && npm run serve\""
   },
   "repository": {
     "type": "git",
