@@ -29,11 +29,11 @@ const sendConfirmationEmail = (mailParameters: Email) => {
 		const handlebarOptions = {
 			viewEngine: {
 				extname: '.handlebars',
-				partialsDir: path.resolve('../api/public/views/email/'),
-				layoutsDir: path.resolve('../api/public/views/email/'),
+				partialsDir: path.resolve('public/views/email/'),
+				layoutsDir: path.resolve('public/views/email/'),
 				defaultLayout: 'email'
 			},
-			viewPath: path.resolve('../api/public/views/email/')
+			viewPath: path.resolve('public/views/email/')
 		};
 
 		transporter.use('compile', hbs(handlebarOptions));
