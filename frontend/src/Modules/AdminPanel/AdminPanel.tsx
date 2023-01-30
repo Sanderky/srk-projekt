@@ -19,8 +19,8 @@ function AddNewDoctor({ loading, setLoading }: AddNewDoctorUserProps) {
 	const doctorLastname = useRef<HTMLInputElement>(null);
 	const doctorSpecialization = useRef<HTMLInputElement>(null);
 
-	const createNewDoctor = async (e: any) => {
-		e.preventDefault();
+	const createNewDoctor = async (event: any) => {
+		event.preventDefault();
 		setLoading(true);
 		const newDoctorData = {
 			firstname: doctorName.current?.value,
@@ -33,12 +33,12 @@ function AddNewDoctor({ loading, setLoading }: AddNewDoctorUserProps) {
 			console.log(error);
 		} finally {
 			setLoading(false);
-			e.target.reset();
+			event.target.reset();
 		}
 	};
 
 	return (
-		<form onSubmit={(e) => createNewDoctor(e)} className={styles.addDoctorContainer}>
+		<form onSubmit={(event) => createNewDoctor(event)} className={styles.addDoctorContainer}>
 			<div className={styles.inputPart}>
 				<label htmlFor="doctorName">Imię</label>
 				<input name="doctorName" type="text" ref={doctorName} />

@@ -1,13 +1,13 @@
 import mongoose, { Document, Schema } from 'mongoose';
 
-export interface IDoctor {
+interface IDoctor {
 	firstname: string;
 	lastname: string;
 	specialization: string;
 }
 
 export interface IDoctorModel extends IDoctor, Document {
-	days: mongoose.Types.ObjectId
+	days: mongoose.Types.ObjectId;
 }
 
 const DoctorSchema: Schema = new Schema({

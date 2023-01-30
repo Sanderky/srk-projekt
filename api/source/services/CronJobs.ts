@@ -21,7 +21,7 @@ const updateDoctorsDayArrays = () => {
 	const minutes = cronSettings.updateDayArray.minutes || 0;
 	cron.schedule(`${minutes} ${hour} * * *`, updateDoctorDayArray);
 	Log.info(`Started cron job: 'Update day arrays' every day at ${hour.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}.`);
-}
+};
 
 const deleteOutdatedReservations = () => {
 	deleteOutdatedReservation();
@@ -29,6 +29,6 @@ const deleteOutdatedReservations = () => {
 	const minutes = cronSettings.deleteOutdatedReservations.minutes || 0;
 	cron.schedule(`${minutes} ${hour} * * *`, deleteOutdatedReservation);
 	Log.info(`Started cron job: 'Delete outdated reservations' every day at ${hour.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}.`);
-}
+};
 
 export { updateDoctorsDayArrays, deleteOutdatedReservations };

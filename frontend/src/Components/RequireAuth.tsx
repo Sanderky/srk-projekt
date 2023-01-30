@@ -1,12 +1,18 @@
 import { useLocation, Navigate, Outlet } from 'react-router-dom';
 import useAuth from '../Hooks/useAuth';
 
-const RequireAuth = ({ allowedRoles }: any) => {
+interface AuthProps {
+	allowedRoles: string[];
+}
+
+const RequireAuth = ({ allowedRoles }: AuthProps) => {
 	const { auth }: any = useAuth();
 	const location = useLocation();
 	const redirectTo = () => {
 		if (!auth.roles) {
-			return <Navigate to="/login-panel" state={{ from: location, roleExists: false, roleAllowed: false, rolesAllowed: allowedRoles }} replace />;
+			return (
+				<Navigate to="/login-panel" state={{ from: location, roleExists: false, roleAllowed: false, rolesAllowed: allowedRoles }} replace />
+			);
 		} else if (auth?.roles?.find((role: string) => allowedRoles?.includes(role))) {
 			return <Outlet />;
 		} else {

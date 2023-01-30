@@ -4,7 +4,7 @@ import Log from '@/library/Logging';
 import { compare, hash } from 'bcrypt';
 import jwt from 'jsonwebtoken';
 
-const createUser = async (req: Request, res: Response, next: NextFunction) => {
+const createUser = async (req: Request, res: Response) => {
 	const { username, password, roles, details } = req.body;
 	if (!username || !password) return res.status(400).json({ message: 'Username or password was not provided' });
 
@@ -21,7 +21,7 @@ const createUser = async (req: Request, res: Response, next: NextFunction) => {
 	}
 };
 
-const loginUser = async (req: Request, res: Response, next: NextFunction) => {
+const loginUser = async (req: Request, res: Response) => {
 	const { username, password, allowedRoles } = req.body;
 	if (!username || !password) return res.status(400).json({ message: 'Username or password was not provided' });
 	try {
@@ -69,19 +69,6 @@ const loginUser = async (req: Request, res: Response, next: NextFunction) => {
 	}
 };
 
-const verifyJWT = (req: any, res: Response, next: NextFunction) => {
-	const token = req.headers['authorization'];
-
-	jwt.verify(token, process.env.ACCESS_TOKEN_SECRET!, (err: any, token: any) => {
-		if (err) {
-			return res.status(403).json({ err });
-		}
-		req.user = token.User.username;
-		req.roles = token.User.roles;
-		next();
-	});
-};
-
 const refreshTokenController = async (req: Request, res: Response) => {
 	const cookies = req.cookies;
 	if (!cookies?.jwt) return res.status(401).json({});
@@ -125,16 +112,4 @@ const logout = async (req: Request, res: Response) => {
 	return res.status(100).json({ message: 'Logged out' });
 };
 
-const verifyRoles = (allowedRoles: any) => {
-	return (req: any, res: Response, next: NextFunction) => {
-		if (!req?.roles) return res.status(401).json({ message: 'Unauthorized' });
-		const allowRoles = [...allowedRoles];
-		const result = allowRoles.some((r) => req.roles.includes(r));
-		if (!result) {
-			return res.status(403).json({ message: 'Bad credentials' });
-		}
-		next();
-	};
-};
-
-export default { createUser, loginUser, verifyJWT, verifyRoles, refreshTokenController, logout };
+export default { createUser, loginUser, refreshTokenController, logout };
